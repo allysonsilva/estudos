@@ -925,23 +925,97 @@ $ docker-compose down --volumes
 
 ### [Variáveis de ambiente](https://docs.docker.com/compose/environment-variables/)
 
-++ https://docs.docker.com/compose/env-file/
+> Compose suporta a declaração de variáveis ​​de ambiente padrão em um arquivo de ambiente chamado [`.env`](https://docs.docker.com/compose/env-file/) colocado na pasta onde o comando `docker-compose` é executado (diretório de trabalho atual).
 
-> Compose suporta a declaração de variáveis ​​de ambiente padrão em um arquivo de ambiente chamado `.env` colocado na pasta onde o comando `docker-compose` é executado (diretório de trabalho atual).
+É possível usar variáveis ​​de ambiente em seu shell para preencher valores dentro de um arquivo de composição:
 
-
-*Quaisquer valores booleanos; true, false, yes no, precisa ser colocado entre aspas para garantir que elas não sejam convertidas para True ou False pelo analisador YML.*
-
-*Variáveis ​​de ambiente definidas no arquivo `.env` não são automaticamente visíveis dentro de containers.*
+```docker
+web:
+  image: "webapp:${TAG}"
+```
 
 #### Regras de sintaxe
 
 Essas regras de sintaxe se aplicam ao arquivo `.env`:
 
-- Compose espera que cada linha em um arquivo `env` esteja em formato `VAR=VAL`.
+- Compose espera que cada linha em um arquivo `.env` esteja em formato `VAR=VAL`.
 - Linhas começando com `#` são processadas como comentários e ignoradas.
 - Linhas em branco são ignoradas.
 - Não há tratamento especial de aspas. Isso significa que eles são parte do `VAL`.
+
+#### Definir variáveis ​​de ambiente em contêineres
+
+Você pode definir variáveis ​​de ambiente nos contêineres de um serviço com a [chave 'environment'](https://docs.docker.com/compose/compose-file/#environment) , assim como com `docker run -e VARIABLE=VALUE ...`:
+
+```docker
+web:
+  environment:
+    - DEBUG=1
+```
+
+#### Passar variáveis ​​de ambiente para contêineres
+
+Você pode passar variáveis ​​de ambiente do seu shell diretamente para os contêineres de um serviço com a [chave 'environment'](https://docs.docker.com/compose/compose-file/#environment) , não dando a ele um valor, assim como `docker run -e VARIABLE ...`:
+
+```
+web:
+  environment:
+    - DEBUG
+```
+
+O valor da variável `DEBUG` no contêiner é obtido do valor da mesma variável no shell no qual Compose é executado.
+
+#### A opção de configuração *env_file*
+
+Você pode passar várias variáveis ​​de ambiente de um arquivo externo para os contêineres de um serviço com a [opção 'env_file'](https://docs.docker.com/compose/compose-file/#envfile) , assim como com `docker run --env-file=FILE ...`:
+
+```
+web:
+  env_file:
+    - web-variables.env
+```
+
+*Quaisquer valores booleanos; true, false, yes no, precisa ser colocado entre aspas para garantir que elas não sejam convertidas para True ou False pelo analisador YML.*
+
+*Variáveis ​​de ambiente definidas no arquivo `.env` não são automaticamente visíveis dentro de containers.*
+
+#### O arquivo ".env"
+
+Você pode definir valores padrão para qualquer variável de ambiente referenciada no arquivo Compose, ou usada para configurar o Compose, em um [environment file](https://docs.docker.com/compose/env-file/) chamado `.env`:
+
+```bash
+$ cat .env
+TAG=v1.5
+
+$ cat docker-compose.yml
+version: '3'
+services:
+  web:
+    image: "webapp:${TAG}"
+```
+
+Quando você executa `docker-compose up`, o serviço `web` definido acima usa a imagem `webapp:v1.5`. Você pode verificar isso com o [comando config](https://docs.docker.com/compose/reference/config/) , que imprime a configuração do aplicativo no terminal:
+
+```bash
+$ docker-compose config
+
+version: '3'
+services:
+  web:
+    image: 'webapp:v1.5'
+```
+
+Valores no shell têm precedência sobre aqueles especificados no arquivo `.env`. Se você definir `TAG`um valor diferente em seu shell, a substituição na `image` será:
+
+```bash
+$ export TAG=v2.0
+$ docker-compose config
+
+version: '3'
+services:
+  web:
+    image: 'webapp:v2.0'
+```
 
 #### Ordem de precedências
 
@@ -949,7 +1023,7 @@ Os valores presentes no ambiente em tempo de execução sempre substituem os def
 
 Valores no shell têm precedência sobre aqueles especificados no arquivo `.env`.
 
-```
+```bash
 $ export TAG=v2.0
 $ docker-compose config
 ```
@@ -961,7 +1035,7 @@ services:
     image: 'webapp:v2.0'
 ```
 
-#### Pass environment variables to containers
+#### Passando variáveis de ambiente para os containers
 
 Quando você define a mesma variável de ambiente em vários arquivos, aqui está a prioridade usada pelo Compose para escolher qual valor usar:
 
@@ -972,7 +1046,7 @@ Quando você define a mesma variável de ambiente em vários arquivos, aqui est�
 
 No exemplo abaixo, definimos a mesma variável de ambiente em um arquivo Environment e no arquivo Compose:
 
-```
+```bash
 $ cat ./Docker/api/api.env
 NODE_ENV=test
 ```
@@ -982,7 +1056,7 @@ $ cat docker-compose.yml
 version: '3'
 services:
   api:
-    image: 'node:6-alpine'
+    image: 'node:9-alpine'
     env_file:
      - ./Docker/api/api.env
     environment:
@@ -991,20 +1065,12 @@ services:
 
 Quando você executa o container, a variável de ambiente definida no arquivo Compose tem precedência.
 
-```
+```bash
 $ docker-compose exec api node
 
 > process.env.NODE_ENV
 'production'
 ```
-
-**env_file**
-
-Adicione variáveis ​​de ambiente de um arquivo. Pode ser um valor único ou uma lista.
-
-Se você especificou um arquivo de composição com `docker-compose -f FILE`, os caminhos em `env_file` são relativos ao diretório em que o arquivo está.
-
-As variáveis ​​de ambiente declaradas na seção do ambiente substituem esses valores - isso vale mesmo se esses valores estiverem vazios ou indefinidos.
 
 #### Build com variáveis
 
