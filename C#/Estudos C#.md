@@ -1,16 +1,14 @@
-# Estudos C#
+# C# Language Basics
 
-## C# Language Basics
-
-### Compilation
+## Compilation
 
 The C# compiler compiles source code, specified as a set of files with the `.cs` extension, into an *assembly*. An *assembly* is the unit of packaging and deployment in `.NET`. An assembly can be either an application or a library. A normal console or Windows application has a Main method and is an .exe file. A library is a .dll and is equivalent to an .exe without an entry point. Its purpose is to be called upon (referenced) by an application or by other libraries. The .NET Framework is a set of libraries.
 
-### Syntax
+## Syntax
 
 *C# syntax is inspired by C and C++ syntax.*
 
-#### Identifiers and Keywords
+### Identifiers and Keywords
 
 *Identificadores são os nomes utilizados para distinguir os elementos nos seus programas, como namespaces, classes, métodos e variáveis.*
 
@@ -39,7 +37,7 @@ Most keywords are *reserved*, which means that you can’t use them as identifie
 | default    | if        | params     | this       |   |
 | delegate   | implicit  | private    | throw      |   |
 
-#### Literals, Punctuators, and Operators
+### Literals, Punctuators, and Operators
 
 *Literals* are primitive pieces of data lexically embedded into the program. The literals we used in our example program are 12 and 30.
 
@@ -65,7 +63,7 @@ An *operator* transforms and combines expressions. Most operators in `C#` are de
 
 A period denotes a member of something (or a decimal point with numeric literals). Parentheses are used when declaring or calling a method; empty parentheses are used when the method accepts no arguments. (Parentheses also have other purposes that we’ll see later in this chapter.) An equals sign performs *assignment*. (The double equals sign, ==, performs equality comparison, as we’ll see later.)
 
-### Type Basics
+## Type Basics
 
 A *type* defines the blueprint for a value. In our example, we used two literals of type int with values 12 and 30. We also declared a *variable* of type int whose name was x:
 
@@ -85,7 +83,7 @@ const int y = 360;
 
 All values in C# are *instances* of a type. The meaning of a value, and the set of possible values a variable can have, is determined by its type.
 
-#### Value Types Versus Reference Types
+### Value Types Versus Reference Types
 
 All C# types fall into the following categories:
 
@@ -100,7 +98,7 @@ All C# types fall into the following categories:
 
 The fundamental difference between value types and reference types is how they are handled in memory.
 
-##### Value types
+#### Value types
 
 The content of a *value* type variable or constant is simply a value. For example, the content of the built-in value type, int, is 32 bits of data.
 
@@ -138,7 +136,7 @@ static void Main()
 }
 ```
 
-##### Reference types
+#### Reference types
 
 A reference type is more complex than a value type, having two parts: an `object` and the *reference* to that object. The content of a reference-type variable or constant is a reference to an object that contains the value. Here is the Point type from our previous example rewritten as a class, rather than a `struct`:
 
@@ -171,7 +169,7 @@ static void Main()
 shows that p1 and p2 are two references that point to the same object.
 ![Assignment copies a reference](./Images/Assignment%20copies%20a%20reference.png "Assignment copies a reference")
 
-##### Null
+#### Null
 
 A *reference* can be assigned the literal `null`, indicating that the reference points to no object:
 
@@ -196,11 +194,11 @@ Point p = null; // Compile-time error
 int x = null;   // Compile-time error
 ```
 
-##### Storage overhead
+#### Storage overhead
 
 Reference types require separate allocations of memory for the reference and object. The object consumes as many bytes as its fields, plus additional administrative overhead. The precise overhead is intrinsically private to the implementation of the .NET runtime, but at minimum, the overhead is eight bytes, used to store a key to the object’s type, as well as temporary information such as its lock state for multithreading and a flag to indicate whether it has been fixed from movement by the garbage collector. Each reference to an object requires an extra four or eight bytes, depending on whether the .NET runtime is running on a 32- or 64-bit platform.
 
-#### Predefined Type Taxonomy
+### Predefined Type Taxonomy
 
 The predefined types in C# are:
 
@@ -218,7 +216,7 @@ The predefined types in C# are:
 * String (`string`)
 * Object (`object`)
 
-### Arrays
+## Arrays
 
 An array represents a fixed number of variables (called *elements*) of a particular type. The elements in an array are always stored in a contiguous block of memory, providing highly efficient access.
 
@@ -238,11 +236,11 @@ char[] vowels = {'a','e','i','o','u'};
 
 All arrays inherit from the `System.Array` class, providing common services for all arrays.
 
-#### Default Element Initialization
+### Default Element Initialization
 
 Creating an array always preinitializes the elements with default values. The default value for a type is the result of a bitwise zeroing of memory.
 
-##### Value types versus reference types
+#### Value types versus reference types
 
 Whether an array element type is a value type or a reference type has important performance implications. When the element type is a value type, each element value is allocated as part of the array. For example:
 
@@ -278,11 +276,11 @@ An array *itself* is always a reference type object, regardless of the element t
 int[] a = null;
 ```
 
-#### Multidimensional Arrays
+### Multidimensional Arrays
 
 Multidimensional arrays come in two varieties: *rectangular* and *jagged*. Rectangular arrays represent an *n*-dimensional block of memory, and jagged arrays are arrays of arrays.
 
-##### Rectangular arrays
+#### Rectangular arrays
 
 Rectangular arrays are declared using commas to separate each dimension. The following declares a rectangular two-dimensional array, where the dimensions are 3 by 3:
 
@@ -309,7 +307,7 @@ int[,] matrix = new int[,]
 };
 ```
 
-##### Jagged arrays
+#### Jagged arrays
 
 Jagged arrays are declared using successive square brackets to represent each dimension. Here is an example of declaring a jagged two-dimensional array, where the outermost dimension is 3:
 
@@ -339,7 +337,7 @@ int[][] matrix = new int[][]
 };
 ```
 
-#### Simplified Array Initialization Expressions
+### Simplified Array Initialization Expressions
 
 There are two ways to shorten array initialization expressions. The first is to omit the new operator and type qualifications:
 
@@ -399,7 +397,7 @@ For this to work, the elements must all be implicitly convertible to a single ty
 var x = new[] {1,10000000000}; // all convertible to long
 ```
 
-#### Bounds Checking
+### Bounds Checking
 
 All array indexing is bounds-checked by the runtime. An `IndexOutOfRangeException` is thrown if you use an invalid index:
 
@@ -408,15 +406,15 @@ int[] arr = new int[3];
 arr[3] = 1; // IndexOutOfRangeException thrown
 ```
 
-### Variables and Parameters
+## Variables and Parameters
 
 A variable represents a storage location that has a modifiable value. A variable can be a *local variable*, *parameter* (*value*, *ref*, or *out*), field (*instance* or *static*), or *array element*.
 
-#### The Stack and the Heap
+### The Stack and the Heap
 
 The stack and the heap are the places where variables and constants reside. Each has very different lifetime semantics.
 
-##### Stack
+#### Stack
 
 The stack is a block of memory for storing local variables and parameters. The stack logically grows and shrinks as a function is entered and exited. Consider the following method (to avoid distraction, input argument checking is ignored):
 
@@ -432,7 +430,7 @@ static int Factorial(int x)
 
 This method is recursive, meaning that it calls itself. Each time the method is entered, a new int is allocated on the stack, and each time the method exits, the int is deallocated.
 
-##### Heap
+#### Heap
 
 The heap is a block of memory in which objects (i.e., reference-type instances) reside. Whenever a new object is created, it is allocated on the heap, and a reference to that object is returned. During a program’s execution, the heap starts filling up as new objects are created. The runtime has a garbage collector that periodically deallocates objects from the heap, so your program does not run out of memory. An object is eligible for deallocation as soon as it’s not referenced by anything that’s itself "alive."
 
@@ -467,7 +465,7 @@ Value-type instances (and object references) live wherever the variable was decl
 
 The heap also stores static fields. Unlike objects allocated on the heap (which can get garbage-collected), these live until the application domain is torn down.
 
-#### Definite Assignment
+### Definite Assignment
 
 C# enforces a definite assignment policy. In practice, this means that outside of an `unsafe` context, it’s impossible to access uninitialized memory. Definite assignment has three implications:
 
@@ -509,7 +507,7 @@ class Test
 }
 ```
 
-#### Default Values
+### Default Values
 
 All type instances have a default value. The default value for the predefined types is the result of a bitwise zeroing of memory:
 
@@ -526,7 +524,7 @@ decimal d = default(decimal);
 
 The *default* value in a custom value type (i.e., `struct`) is the same as the default value for each field defined by the custom type.
 
-#### Parameters
+### Parameters
 
 A method has a sequence of parameters. Parameters define the set of arguments that must be provided for that method. In this example, the method Foo has a single parameter named p, of type `int`:
 
@@ -551,7 +549,7 @@ You can control how parameters are passed with the `ref` and `out` modifiers:
 | `ref`              | Reference | Going *in*                         |
 | `out`              | Reference | Going *out*                        |
 
-##### Passing arguments by value
+#### Passing arguments by value
 
 *By default*, arguments in C# are **passed by value**, which is by far the most common case. This means a copy of the value is created when passed to the method:
 
@@ -597,7 +595,7 @@ class Test
 
 Because `fooSB` is a *copy* of a reference, setting it to `null` doesn’t make sb null. (If, however, `fooSB` was declared and called with the `ref` modifier, `sb` would become null.)
 
-##### The `ref` modifier
+#### The `ref` modifier
 
 To *pass by reference*, C# provides the `ref` parameter modifier. In the following example, `p` and `x` refer to the same memory locations:
 
@@ -621,7 +619,7 @@ class Test
 
 Now assigning `p` a new value changes the contents of `x`. Notice how the `ref` modifier is required both when writing and when calling the method. 4 This makes it very clear what’s going on.
 
-##### The `out` modifier
+#### The `out` modifier
 
 An out argument is like a ref argument, except it:
 
@@ -651,7 +649,7 @@ class Test
 
 *Like a ref parameter, an out parameter is passed by reference.*
 
-##### Out variables and discards (C# 7)
+#### Out variables and discards (C# 7)
 
 From C# 7, you can declare variables on the fly when calling methods with out parameters. We can shorten the Main method in our preceding example as follows:
 
@@ -684,7 +682,7 @@ string _;
 Split ("Allyson Silva", out string a, _); // Will not compile
 ```
 
-##### Implications of passing by reference
+#### Implications of passing by reference
 
 When you pass an argument by reference, you alias the storage location of an existing variable rather than create a new storage location. In the following example, the variables x and y represent the same instance:
 
@@ -707,7 +705,7 @@ class Test
 }
 ```
 
-##### The params modifier
+#### The params modifier
 
 The `params` parameter modifier may be specified on the last parameter of a method so that the method accepts any number of arguments of a particular type. The parameter type must be declared as an array. For example:
 
@@ -737,7 +735,7 @@ You can also supply a params argument as an ordinary array. The first line in Ma
 int total = Sum(new int[] { 1, 2, 3, 4 });
 ```
 
-##### Optional parameters
+#### Optional parameters
 
 From C# 4.0, methods, constructors, and indexers can declare optional parameters. A parameter is optional if it specifies a default value in its declaration.
 
@@ -778,7 +776,7 @@ void Test()
 
 To do the converse (pass a default value to `x` and an explicit value to `y`) you must combine optional parameters with *named arguments*.
 
-##### Named arguments
+#### Named arguments
 
 Rather than identifying an argument by position, you can identify an argument by name.
 
@@ -821,7 +819,7 @@ void Bar(int a = 0, int b = 0, int c = 0, int d = 0) { ... }
 
 **positional arguments must come before named arguments.**
 
-#### Ref Locals (C# 7)
+### Ref Locals (C# 7)
 
 C# 7 adds an esoteric feature, whereby you can define a local variable that *references* an element in an array or field in an object:
 
@@ -840,7 +838,7 @@ Console.WriteLine(numbers [2]); // 20
 
 The target for a ref local must be an array element, field, or local variable; it cannot be a property. Ref locals are intended for specialized micro-optimization scenarios, and are typically used in conjunction with ref returns.
 
-#### Ref Returns (C# 7)
+### Ref Returns (C# 7)
 
 You can return a `ref` local from a method. This is called a *ref return*:
 
@@ -857,11 +855,11 @@ static void Main()
 }
 ```
 
-### Null Operators
+## Null Operators
 
 C# provides two operators to make it easier to work with nulls: the *null-coalescing* operator and the *null-conditional* operator.
 
-#### Null-Coalescing Operator
+### Null-Coalescing Operator
 
 The `??` operator is the **null-coalescing operator**. It says “If the operand is non-null, give it to me.
 
@@ -872,7 +870,7 @@ string s2 = s1 ?? "nothing"; // s2 evaluates to "nothing"
 
 If the left-hand expression is non-null, the right-hand expression is never evaluated. The null-coalescing operator also works with nullable value types.
 
-#### Null-conditional operator (C# 6)
+### Null-conditional operator (C# 6)
 
 The `?.` operator is the null-conditional. It allows you to call methods and access members just like the standard dot operator, except that if the operand on the left is `null`, the expression evaluates to null instead of throwing a `NullReferenceException`:
 
@@ -934,11 +932,11 @@ System.Text.StringBuilder sb = null;
 string s = sb?.ToString() ?? "nothing"; // s evaluates to "nothing"
 ```
 
-### Statements
+## Statements
 
 Functions comprise statements that execute sequentially in the textual order in which they appear. A statement block is a series of statements appearing between braces (the {} tokens).
 
-#### Declaration Statements
+### Declaration Statements
 
 A declaration statement declares a new variable, optionally initializing the variable with an expression. A declaration statement ends in a semicolon. You may declare multiple variables of the same type in a comma-separated list. For example:
 
@@ -955,7 +953,7 @@ const double c = 2.99792458E08;
 c += 10;    // Compile-time Error
 ```
 
-##### Local variables
+#### Local variables
 
 The scope of a local variable or local constant extends throughout the current block. You cannot declare another local variable with the same name in the current block or in any nested blocks. For example:
 
@@ -976,7 +974,7 @@ static void Main()
 
 *A variable’s scope extends in both directions throughout its code block. This means that if we moved the initial declaration of x in this example to the bottom of the method, we’d get the same error. This is in contrast to C++ and is somewhat peculiar, given that it’s not legal to refer to a variable or constant before it’s declared.*
 
-### Namespaces
+## Namespaces
 
 A namespace is a domain for type names. Types are typically organized into hierarchical namespaces, making them easier to find and avoiding conflicts. For example, the RSA type that handles public key encryption is defined within the following namespace:
 
@@ -1022,7 +1020,7 @@ You can refer to a type with its *fully qualified name*, which includes all name
 
 Types not defined in any namespace are said to reside in the *global namespace*. The global namespace also includes top-level namespaces, such as Outer in our example.
 
-#### The using Directive
+### The using Directive
 
 The `using` directive *imports* a namespace, allowing you to refer to types without their fully qualified names. The following imports the previous example’s `Outer.Middle.Inner` namespace:
 
@@ -1038,7 +1036,7 @@ class Test
 }
 ```
 
-#### using static (C# 6)
+### using static (C# 6)
 
 From C# 6, you can import not just a namespace, but a specific type, with the using static directive. All static members of that type can then be used without being qualified with the type name. In the following example, we call the Console class’s static WriteLine method:
 
@@ -1068,9 +1066,9 @@ var textBox = new TextBox { Visibility = Hidden };  // XAML-style
 
 Should an ambiguity arise between multiple static imports, the C# compiler is not smart enough to infer the correct type from the context, and will generate an error.
 
-#### Rules Within a Namespace
+### Rules Within a Namespace
 
-##### Name scoping
+#### Name scoping
 
 Names declared in outer namespaces can be used unqualified within inner namespaces. In this example, Class1 does not need qualification within `Inner`:
 
@@ -1103,7 +1101,7 @@ namespace MyTradingCompany
 }
 ```
 
-##### Name hiding
+#### Name hiding
 
 If the same type name appears in both an inner and an outer namespace, the inner name wins. To refer to the type in the outer namespace, you must qualify its name. For example:
 
@@ -1126,7 +1124,7 @@ namespace Outer
 
 *All type names are converted to fully qualified names at compile time. Intermediate Language (IL) code contains no unqualified or partially qualified names.*
 
-##### Repeated namespaces
+#### Repeated namespaces
 
 You can repeat a namespace declaration, as long as the type names within the namespaces don’t conflict:
 
@@ -1161,7 +1159,7 @@ namespace Outer.Middle.Inner
 }
 ```
 
-##### Nested using directive
+#### Nested using directive
 
 You can nest a using directive within a namespace. This allows you to scope the using directive within a namespace declaration. In the following example, Class1 is visible in one scope, but not in another:
 
@@ -1184,7 +1182,7 @@ namespace N2
 }
 ```
 
-#### Aliasing Types and Namespaces
+### Aliasing Types and Namespaces
 
 Importing a namespace can result in type-name collision. Rather than importing the whole namespace, you can import just the specific types you need, giving each type an alias. For example:
 
