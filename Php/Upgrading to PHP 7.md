@@ -1029,9 +1029,9 @@ use Framework\Component\ {
 
 **Existem três tipos de declarações de uso em grupo**:
 
-• *Non mixed group use declarations.*
-• *The compound namespace declaration.*
-• *Mixed group use declarations.*
+* *Non mixed group use declarations.*
+* *The compound namespace declaration.*
+* *Mixed group use declarations.*
 
 **Non mixed group use declarations**
 
@@ -1170,9 +1170,9 @@ class class@anonymous#1 (3) {
 
 **Alguns dos benefícios do uso de classes anônimas são:**
 
-• *Mocking application tests becomes trivial. We can create on-the-fly implementations for interfaces, avoiding using complex mocking APIs.*
-• *Avoid invoking the autoloader every so often for simpler implementations.*
-• *Makes it clear to anyone reading the code that this class is used here and nowhere else.*
+* *Mocking application tests becomes trivial. We can create on-the-fly implementations for interfaces, avoiding using complex mocking APIs.*
+* *Avoid invoking the autoloader every so often for simpler implementations.*
+* *Makes it clear to anyone reading the code that this class is used here and nowhere else.*
 
 Classes anônimas, ou melhor, objetos criados de classes anônimas, não podem ser serializados. Tentando serializar resulta em um erro fatal da seguinte maneira:
 
@@ -2164,13 +2164,13 @@ Apesar do fato de que todos os argumentos são inteiros, o resultado da divisão
 
 Uma alteração final que foi adicionada para types hints é que a lista de nomes de tipos a seguir não pode mais ser usada como nomes de classe, interface ou traço:
 
-• int
-• float
-• bool
-• string
-• true
-• false
-• null
+* int
+* float
+* bool
+* string
+* true
+* false
+* null
 
 Isso foi feito para facilitar possíveis mudanças futuras que, caso contrário, precisariam esperar até o PHP 8 para preservar a compatibilidade com versões anteriores no PHP 7.x.
 
