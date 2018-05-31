@@ -1197,3 +1197,621 @@ An entire namespace can be aliased, as follows:
 using R = System.Reflection;
 class Program { R.PropertyInfo p; }
 ```
+
+# Creating Types in C#
+
+## Classes
+
+A more complex class optionally has the following:
+
+*Preceding the keyword class*: **Attributes and class modifiers. The non-nested class modifiers are `public`, `internal`, `abstract`, `sealed`, `static`, `unsafe`, and `partial`**
+*Within the braces*: **Class members (these are methods, properties, indexers, events, fields, constructors, overloaded operators, nested types, and a finalizer)**
+
+### Fields
+
+> A field is a variable that is a member of a class or struct.
+
+**Modifiers**: `static`, `public`, `internal`, `private`, `protected`, `new`, `unsafe`, `readonly`, `volatile`
+
+Fields allow the following modifiers:
+
+|                      |                                           |
+|----------------------|-------------------------------------------|
+| Static modifier      | `static`                                  |
+| Access modifiers     | `public` `internal` `private` `protected` |
+| Inheritance modifier | `new`                                     |
+| Unsafe code modifier | `unsafe`                                  |
+| Read-only modifier   | `readonly`                                |
+| Threading modifier   | `volatile`                                |
+
+#### The readonly modifier
+
+The readonly modifier prevents a field from being modified after construction. A read-only field can be assigned only in its declaration or within the enclosing type’s constructor.
+
+#### Field initialization
+
+Field initialization is optional. An uninitialized field has a default value (0, \0, null, false). Field initializers run before constructors.
+
+```csharp
+public int Age = 10;
+```
+
+Field initializations occur before the constructor is executed and in the declaration order of the fields.
+
+#### Declaring multiple fields together
+
+For convenience, you may declare multiple fields of the same type in a comma separated list. This is a convenient way for all the fields to share the same attributes and field modifiers. For example:
+
+```csharp
+static readonly int foo = 8,
+                    bar = 2;
+```
+
+### Methods
+
+> A method performs an action in a series of statements. A method can receive input data from the caller by specifying parameters and output data back to the caller by specifying a return type. A method can specify a void return type, indicating that it doesn’t return any value to its caller. A method can also output data back to the caller via `ref`/`out` parameters.
+
+**Modifiers**: `static`, `public`, `internal`, `private`, `protected`, `new`, `virtual`, `abstract`, `override`, `sealed`, `partial`, `unsafe`, `extern`, `async`
+
+A method’s *signature* must be unique within the type. A method’s signature comprises its *name* and *parameter types* (but not the parameter *names*, nor the return type).
+
+Methods allow the following modifiers:
+
+|                            |                                                |
+|----------------------------|------------------------------------------------|
+| Static modifier            | `static`                                       |
+| Access modifiers           | `public` `internal` `private` `protected`      |
+| Inheritance modifiers      | `new` `virtual` `abstract` `override` `sealed` |
+| Partial method modifier    | `partial`                                      |
+| Unmanaged code modifiers   | `unsafe` `extern`                              |
+| Asynchronous code modifier | `async`                                        |
+
+#### Expression-bodied methods (C# 6)
+
+A method that comprises a single expression, such as the following:
+
+```csharp
+int Foo(int x) { return x * 2; }
+```
+
+can be written more tersely as an **expression-bodied** method. A fat arrow replaces the braces and `return` keyword:
+
+```csharp
+int Foo(int x) => x * 2;
+```
+
+Expression-bodied functions can also have a void return type:
+
+```csharp
+void Foo(int x) => Console.WriteLine(x);
+```
+
+#### Overloading methods
+
+A type may overload methods (have multiple methods with the same name), as long as the signatures are different. For example, the following methods can all coexist in the same type:
+
+```csharp
+void Foo(int x) {...}
+void Foo(double x) {...}
+void Foo(int x, float y) {...}
+void Foo(float x, int y) {...}
+```
+
+However, the following pairs of methods cannot coexist in the same type, since the return type and the params modifier are not part of a method’s signature:
+
+```csharp
+void Foo(int x) {...}
+float Foo(int x) {...} // Compile-time error
+
+void Goo(int[] x) {...}
+void Goo(params int[] x) {...} // Compile-time error
+```
+
+#### Pass-by-value versus pass-by-reference
+
+Whether a parameter is pass-by-value or pass-by-reference is also part of the signature. For example, `Foo(int)` can coexist with either `Foo(ref int)` or `Foo(out int)`. However, `Foo(ref int)` and `Foo(out int)` cannot coexist:
+
+```csharp
+void Foo (int x) {...}
+void Foo (ref int x) {...} // OK so far
+void Foo (out int x) {...} // Compile-time error
+```
+
+#### Local methods (C# 7)
+
+From C# 7, you can define a method inside another method:
+
+```csharp
+void WriteCubes()
+{
+    Console.WriteLine(Cube(3));
+    Console.WriteLine(Cube(4));
+    Console.WriteLine(Cube(5));
+
+    int Cube(int value) => value * value * value;
+}
+```
+
+The local method (`Cube`, in this case) is visible only to the enclosing method (Write Cubes). This simplifies the containing type and instantly signals to anyone looking at the code that Cube is used nowhere else. Another benefit of local methods is that they can access the local variables and parameters of the enclosing method.
+
+Local methods can appear inside other function kinds, such as property accessors, constructors, and so on. You can even put local methods inside other local methods, and inside lambda expressions that use a statement block. Local methods can be iterators or asynchronous.
+
+*The `static` modifier is invalid for local methods. They are implicitly static if the enclosing method is static.*
+
+### Instance Constructors
+
+> Constructors run initialization code on a class or struct. A constructor is defined like a method, except that the method name and return type are reduced to the name of the enclosing type.
+
+```csharp
+public class Panda
+{
+    string name;                // Define field
+
+    public Panda(string n)      // Define constructor
+    {
+        name = n;               // Initialization code (set up field)
+    }
+}
+...
+Panda p = new Panda("Petey");   // Call constructor
+```
+
+**Modifiers**: `public` `internal` `private` `protected` `unsafe` `extern`
+
+|                            |                                                |
+|----------------------------|------------------------------------------------|
+| Access modifiers           | `public` `internal` `private` `protected`      |
+| Unmanaged code modifiers   | `unsafe` `extern`                              |
+
+From C# 7, single-statement constructors can also be written as *expression-bodied* members:
+
+```csharp
+public Panda(string n) => name = n;
+```
+
+#### Overloading constructors
+
+A class or struct may overload constructors. To avoid code duplication, one constructor may call another, using the `this` keyword.
+
+```csharp
+using System;
+
+public class Wine
+{
+    public decimal Price;
+    public int Year;
+
+    public Wine(decimal price) { Price = price; }
+    public Wine(decimal price, int year) : this(price) { Year = year; }
+}
+```
+
+When one constructor calls another, the called constructor executes first.
+
+You can pass an expression into another constructor as follows:
+
+```csharp
+public Wine(decimal price, DateTime year) : this(price, year.Year) { }
+```
+
+The expression itself cannot make use of the this reference, for example, to call an instance method. (This is enforced because the object has not been initialized by the constructor at this stage, so any methods that you call on it are likely to fail.) It can, however, call static methods.
+
+#### Implicit parameterless constructors
+
+For classes, the C# compiler automatically generates a parameterless public con‐ structor if and only if you do not define any constructors. However, as soon as you define at least one constructor, the parameterless constructor is no longer automatically generated.
+
+#### Constructor and field initialization order
+
+We saw previously that fields can be initialized with default values in their declaration:
+
+```csharp
+class Player
+{
+    int shields = 50;    // Initialized first
+    int health = 100;   // Initialized second
+}
+```
+
+*Field initializations occur before the constructor is executed, and in the declaration order of the fields.*
+
+### Object Initializers
+
+To simplify object initialization, any accessible fields or properties of an object can be set via an *object initializer* directly after construction.
+
+```csharp
+public class Bunny
+{
+    public string Name;
+    public bool LikesCarrots;
+    public bool LikesHumans;
+
+    public Bunny() {}
+    public Bunny(string n) { Name = n; }
+}
+```
+
+Using object initializers, you can instantiate `Bunny` objects as follows:
+
+```csharp
+// Note parameterless constructors can omit empty parentheses
+Bunny b1 = new Bunny { Name="Bo", LikesCarrots=true, LikesHumans=false };
+Bunny b2 = new Bunny("Bo") { LikesCarrots=true, LikesHumans=false };
+```
+
+The code to construct `b1` and `b2` is precisely equivalent to:
+
+```csharp
+Bunny temp1 = new Bunny();  // temp1 is a compiler-generated name
+temp1.Name = "Bo";
+temp1.LikesCarrots = true;
+temp1.LikesHumans = false;
+Bunny b1 = temp1;
+
+Bunny temp2 = new Bunny("Bo");
+temp2.LikesCarrots = true;
+temp2.LikesHumans = false;
+Bunny b2 = temp2;
+```
+
+The temporary variables are to ensure that if an exception is thrown during initialization, you can’t end up with a half-initialized object.
+
+[Object Initializers Versus Optional Parameters](Object%20Initializers%20Versus%20Optional%20Parameters.md)
+
+### The this Reference
+
+> The `this` reference refers to the instance itself.
+
+In the following example, the Marry method uses this to set the partner’s mate field:
+
+```csharp
+public class Panda
+{
+    public Panda Mate;
+
+    public void Marry(Panda partner)
+    {
+        Mate = partner;
+        partner.Mate = this;
+    }
+}
+```
+
+The `this` reference also disambiguates a local variable or parameter from a field. For example:
+
+```csharp
+public class Test
+{
+    string name;
+
+    public Test(string name)
+    {
+        this.name = name;
+    }
+}
+```
+
+*The `this` reference is valid only within nonstatic members of a class or struct.*
+
+### Properties
+
+> Properties look like fields from the outside, but internally they contain logic, like methods do.
+
+For example, you can’t tell by looking at the following code whether CurrentPrice is a field or a property:
+
+```csharp
+Stock msft = new Stock();
+msft.CurrentPrice = 30;
+msft.CurrentPrice -= 3;
+Console.WriteLine(msft.CurrentPrice);
+```
+
+A property is declared like a field, but with a `get`/`set` block added. Here’s how to implement CurrentPrice as a property:
+
+```csharp
+public class Stock
+{
+    decimal currentPrice;       // The private "backing" field
+
+    public decimal CurrentPrice // The public property
+    {
+        get { return currentPrice; }
+        set { currentPrice = value; }
+    }
+}
+```
+
+`get` and `set` denote property *accessors*. The `get` accessor runs when the property is read. It must return a value of the property’s type. The `set` accessor runs when the property is assigned. It has an implicit parameter named `value` of the property’s type that you typically assign to a private field (in this case, `currentPrice`).
+
+Although properties are accessed in the same way as fields, they differ in that they give the implementer complete control over getting and setting its value. This con‐ trol enables the implementer to choose whatever internal representation is needed, without exposing the internal details to the user of the property.
+
+**Modifiers**: `static`, `public`, `internal`, `private`, `protected`, `new`, `virtual`, `abstract`, `override`, `sealed`, `unsafe`, `extern`
+
+|                            |                                                |
+|----------------------------|------------------------------------------------|
+| Static modifier            | `static`                                       |
+| Access modifiers           | `public` `internal` `private` `protected`      |
+| Inheritance modifiers      | `new` `virtual` `abstract` `override` `sealed` |
+| Unmanaged code modifiers   | `unsafe` `extern`                              |
+
+#### Read-only and calculated properties
+
+A property is read-only if it specifies only a `get` accessor, and it is write-only if it specifies only a `set` accessor. Write-only properties are rarely used.
+
+Just as with read-only fields, read-only automatic properties can also be assigned in the type’s constructor. This is useful in creating immutable (read-only) types.
+
+A property typically has a dedicated backing field to store the underlying data. However, a property can also be computed from other data. For example:
+
+```csharp
+decimal currentPrice,sharesOwned;
+
+public decimal Worth
+{
+    get { return currentPrice * sharesOwned; }
+}
+```
+
+#### Expression-bodied properties (C# 6, C# 7)
+
+From C# 6, you can declare a read-only property, such as the preceding example, more tersely as an **expression-bodied property**. A fat arrow replaces all the braces and the get and `return` keywords:
+
+```csharp
+public decimal Worth => currentPrice * sharesOwned;
+```
+
+C# 7 extends this further by allowing set accessors to be expression-bodied, with a little extra syntax:
+
+```csharp
+public decimal Worth
+{
+    get => currentPrice * sharesOwned;
+    set => sharesOwned = value / currentPrice;
+}
+```
+
+#### Property initializers (C# 6)
+
+From C# 6, you can add a property *initializer* to automatic properties, just as with fields:
+
+```csharp
+public decimal CurrentPrice { get; set; } = 123;
+```
+
+This gives `CurrentPrice` an initial value of 123. Properties with an initializer can be *read-only*:
+
+```csharp
+public int Maximum { get; } = 999;
+```
+
+#### get and set accessibility
+
+The `get` and `set` accessors can have different access levels. The typical use case for this is to have a public property with an `internal` or `private` access modifier on the setter:
+
+```csharp
+public class Foo
+{
+    private decimal x;
+    public decimal X
+    {
+        get { return x; }
+        private set { x = Math.Round (value, 2); }
+    }
+}
+```
+
+Notice that you declare the property itself with the more permissive access level (`public`, in this case), and add the modifier to the accessor you want to be less accessible.
+
+#### CLR property implementation
+
+C# property accessors internally compile to methods called get_XXX and set_XXX:
+
+```csharp
+public decimal get_CurrentPrice {...}
+public void set_CurrentPrice (decimal value) {...}
+```
+
+Simple nonvirtual property accessors are *inlined* by the JIT (Just-In-Time) compiler, eliminating any performance difference between accessing a property and a field. Inlining is an optimization in which a method call is replaced with the body of that method.
+
+### Indexers
+
+> Indexers provide a natural syntax for accessing elements in a class or struct that encapsulate a list or dictionary of values. Indexers are similar to properties but are accessed via an index argument rather than a property name.
+
+The `string` class has an indexer that lets you access each of its char values via an `int` index:
+
+```csharp
+string s = "hello";
+Console.WriteLine(s[0]); // 'h'
+Console.WriteLine(s[3]); // 'l'
+```
+
+The syntax for using indexers is like that for using arrays, except that the index argument(s) can be of any type(s).
+
+Indexers have the same modifiers as properties, and can be called null-conditionally by inserting a question mark before the square bracket.
+
+```csharp
+string s = null;
+Console.WriteLine(s?[0]); // Writes nothing; no error.
+```
+
+#### Implementing an indexer
+
+To write an indexer, define a property called this, specifying the arguments in square brackets.
+
+```csharp
+class Sentence
+{
+    string[] words = "The quick brown fox".Split();
+
+    public string this[int wordNum] // indexer
+    {
+        get { return words[wordNum]; }
+        set { words[wordNum] = value; }
+    }
+}
+```
+
+Here’s how we could use this indexer:
+
+```csharp
+Sentence s = new Sentence();
+Console.WriteLine(s[3]);    // fox
+s[3] = "kangaroo";
+Console.WriteLine(s[3]);    // kangaroo
+```
+
+A type may declare multiple indexers, each with parameters of different types. An indexer can also take more than one parameter:
+
+```csharp
+public string this[int arg1, string arg2]
+{
+    get { ... } set { ... }
+}
+```
+
+If you omit the set accessor, an indexer becomes read-only, and expression-bodied syntax may be used in C# 6 to shorten its definition:
+
+```csharp
+public string this[int wordNum] => words[wordNum];
+```
+
+### Constants
+
+> A constant is a static field whose value can never change. A constant is evaluated statically at compile time, and the compiler literally substitutes its value whenever used (rather like a macro in C++). A constant can be any of the built-in numeric types, bool, char, string, or an enum type.
+
+**A constant is declared with the const keyword and must be initialized with a value.**
+
+A constant is declared with the `const` keyword and must be initialized with a value. For example:
+
+```csharp
+public class Test
+{
+    public const string Message = "Hello World";
+}
+```
+
+A constant is much more restrictive than a `static readonly` field—both in the types you can use and in field initialization semantics. A constant also differs from a `static readonly` field in that the evaluation of the constant occurs at compile time. For example:
+
+```csharp
+public static double Circumference(double radius)
+{
+    return 2 * System.Math.PI * radius;
+}
+```
+
+is compiled to:
+
+```csharp
+public static double Circumference(double radius)
+{
+    return 6.2831853071795862 * radius;
+}
+```
+
+---------
+
+A `static readonly` field is also advantageous when exposing to other assemblies a value that might change in a later version. For instance, suppose assembly X exposes a constant as follows:
+
+```csharp
+public const decimal ProgramVersion = 2.3;
+```
+
+If assembly Y references X and uses this constant, the value 2.3 will be baked into assembly Y when compiled. This means that if X is later recompiled with the constant set to 2.4, Y will still use the old value of 2.3 until Y is recompiled. A `static readonly` field avoids this problem.
+
+Another way of looking at this is that any value that might change in the future is not constant by definition, and so should not be represented as one.
+
+---------
+
+Constants can also be declared local to a method. For example:
+
+```csharp
+static void Main()
+{
+    const double twoPI  = 2 * System.Math.PI;
+    ...
+}
+```
+
+Nonlocal constants allow the following modifiers:
+
+**Modifiers**: `public`, `internal`, `private`, `protected`, `new`
+
+|                      |                                          |
+|----------------------|------------------------------------------|
+| Access modifiers     | `public` `internal` `private` `protected` |
+| Inheritance modifier | `new`                                     |
+
+### Static Classes
+
+A class can be marked `static`, indicating that it must be composed solely of static members and cannot be subclassed. The `System.Console` and `System.Math` classes are good examples of static classes.
+
+### Finalizers
+
+Finalizers are class-only methods that execute before the garbage collector reclaims the memory for an unreferenced object. The syntax for a finalizer is the name of the class prefixed with the ~ symbol:
+
+```csharp
+class Class1
+{
+    ~Class1()
+    {
+        ...
+    }
+}
+```
+
+This is actually C# syntax for overriding Object’s Finalize method, and the compiler expands it into the following method declaration:
+
+```csharp
+protected override void Finalize()
+{
+    ...
+    base.Finalize();
+}
+```
+
+Finalizers allow the following modifier: `unsafe`
+
+From C# 7, single-statement finalizers can be written with expression-bodied syntax:
+
+```csharp
+~Class1() => Console.WriteLine("Finalizing");
+```
+
+### Partial Types and Methods
+
+Partial types allow a type definition to be split—typically across multiple files. A common scenario is for a partial class to be auto-generated from some other source (such as a Visual Studio template or designer) and for that class to be augmented with additional hand-authored methods.
+
+*A constructor with the same parameters, for instance, cannot be repeated*. Partial types are resolved entirely by the compiler, which means that each participant must be available at compile time and must reside in the same assembly.
+
+#### Partial methods
+
+A partial type may contain *partial methods*. These let an auto-generated partial type provide customizable hooks for manual authoring.
+
+```csharp
+partial class PaymentForm   // In auto-generated file
+{
+    ...
+    partial void ValidatePayment (decimal amount);
+}
+
+partial class PaymentForm   // In hand-authored file
+{
+    ...
+    partial void ValidatePayment (decimal amount)
+    {
+        if (amount > 100)
+            ...
+    }
+}
+```
+
+A partial method consists of two parts: a definition and an implementation. The definition is typically written by a code generator, and the implementation is typically manually authored. If an implementation is not provided, the definition of the partial method is compiled away (as is the code that calls it). This allows auto-generated code to be liberal in providing hooks, without having to worry about bloat. Partial methods must be void and are implicitly private.
+
+### The nameof operator (C# 6)
+
+The `nameof` operator returns the name of any symbol (type, member, variable, and so on) as a string:
+
+```csharp
+int count = 123;
+string name = nameof(count); // name is "count"
+```
+
+Its advantage over simply specifying a string is that of static type checking. Tools such as Visual Studio can understand the symbol reference, so if you rename the symbol in question, all its references will be renamed, too.
