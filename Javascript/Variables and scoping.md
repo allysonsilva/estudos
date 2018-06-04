@@ -4,6 +4,73 @@
 
 *ES6* provides two new ways of declaring variables: `let` and `const`, which mostly replace the *ES5* way of declaring variables, `var`.
 
+### De `var` para `const/let`
+
+No *ES5*, você declara variáveis ​​via `var`. Tais variáveis ​​são ***escopo de função***. O comportamento de `var` é ocasionalmente confuso.
+
+Veja o exemplo:
+
+```js
+var x = 3;
+
+function func(randomize) {
+    if (randomize) {
+        var x = Math.random();  // (A) scope: whole function
+        return x;
+    }
+    return x;   // accesses the x from line A
+}
+
+func(false);    // undefined
+```
+
+De modo que `func()` retorna `undefined` pode ser imprevisto. Você pode ver por que se você reescrever o código para que ele reflita mais de perto o que realmente está acontecendo:
+
+```js
+var x = 3;
+
+function func(randomize) {
+    var x;
+    if (randomize) {
+        x = Math.random();
+        return x;
+    }
+
+    return x;
+}
+
+func(false); // undefined
+```
+
+Em *ES6*, você poderá declarar variáveis via `let` e `const`. Tais variáveis são ***escopo de bloco***, their scopes are the innermost enclosing blocks. `let` é aproximadamente uma versão de escopo de bloco de `var`. `const` funciona como `let`, mas cria variáveis cujos valores não podem ser alterados.
+
+`let` and `const` behave more strictly and throw more exceptions (e.g. when you access their variables inside their scope before they are declared). Block-scoping helps with keeping the effects of code fragments more local. And it’s more mainstream than function-scoping, which eases moving between JavaScript and other programming languages.
+
+If you replace `var` with `let` in the initial version, you get different behavior:
+
+```js
+let x = 3;
+
+function func(randomize) {
+    if (randomize) {
+        let x = Math.random();
+        return x;
+    }
+
+    return x;
+}
+
+func(false); // 3
+```
+
+That means that you can’t blindly replace `var` with `let` or `const` in existing code; you have to be careful during refactoring.
+
+*My advice is*:
+
+* Prefer `const`. You can use it for all variables whose values never change.
+* Otherwise, use `let` – for variables whose values do change.
+* Avoid `var`.
+
 ### let
 
 `let` funciona de forma semelhante a `var`, mas a variável declara é ***block-scoped***, ela só existe dentro do bloco atual. `var` é *function-scoped*.
