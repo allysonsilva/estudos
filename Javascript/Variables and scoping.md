@@ -4,6 +4,15 @@
 
 *ES6* provides two new ways of declaring variables: `let` and `const`, which mostly replace the *ES5* way of declaring variables, `var`.
 
+####  Valores avaliados como falso:
+
+* `false`
+* `undefined`
+* `null`
+* `0`
+* `NaN`
+* the empty string (`""`)
+
 ### De `var` para `const/let`
 
 No *ES5*, você declara variáveis ​​via `var`. Tais variáveis ​​são ***escopo de função***. O comportamento de `var` é ocasionalmente confuso.
