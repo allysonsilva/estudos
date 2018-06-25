@@ -1,16 +1,16 @@
 # Collections
 
-| **Namespace** | **Contains** |
-| --- | --- |
-| `System.Collections` | *Nongeneric collection classes and interfaces* |
+| **Namespace**                    | **Contains**                                   |
+| -------------------------------- | ---------------------------------------------- |
+| `System.Collections`             | *Nongeneric collection classes and interfaces* |
 | `System.Collections.Specialized` | *Strongly typed nongeneric collection classes* |
-| `System.Collections.Generic` | *Generic collection classes and interfaces* |
-| `System.Collections.ObjectModel` | *Proxies and bases for custom collections* |
-| `System.Collections.Concurrent` | *Thread-safe collections* |
+| `System.Collections.Generic`     | *Generic collection classes and interfaces*    |
+| `System.Collections.ObjectModel` | *Proxies and bases for custom collections*     |
+| `System.Collections.Concurrent`  | *Thread-safe collections*                      |
 
 ## Enumeration
 
-In computing, there are many different kinds of collections ranging from simple data structures, such as arrays or linked lists, to more complex ones, such as red/black trees and hashtables. Although the internal implementation and external characteristics of these data structures vary widely, the ability to traverse the contents of the collection is an almost universal need. The Framework supports this need via a pair of interfaces (`IEnumerable`, `IEnumerator`, and their generic counterparts) that allow different data structures to expose a common traversal API.
+In computing, there are many different kinds of collections ranging from simple data structures, such as arrays or linked lists, to more complex ones, such as red/black trees and hashtables. Although the internal implementation and external characteristics of these data structures vary widely, the ability to traverse the contents of the collection is an almost universal need. The Framework supports this need via a pair of interfaces(`IEnumerable`, `IEnumerator`, and their generic counterparts) that allow different data structures to expose a common traversal API.
 
 ![Collection interfaces](./Images/Collection%20interfaces.png "Collection interfaces")
 
@@ -18,7 +18,7 @@ In computing, there are many different kinds of collections ranging from simple 
 
 The `IEnumerator` interface defines the basic low-level protocol by which elements in a collection are traversed—or enumerated—in a forward-only manner. Its declaration is as follows:
 
-```c#
+```csharp
 public interface IEnumerator
 {
     bool MoveNext();
@@ -32,11 +32,11 @@ public interface IEnumerator
 - `Current`: Retorna o elemento na posição atual(geralmente feito `cast` do objeto atual para o tipo um tipo mais específico).
 - `Reset`: Se implementado, volta para o início, permitindo que a coleção seja enumerada novamente.
 
-`MoveNext` advances the current element or “cursor” to the next position, returning false if there are no more elements in the collection. Current returns the element at the current position(usually cast from object to a more specific type). `MoveNext` must be called before retrieving the first element—this is to allow for an empty collection. The `Reset` method, if implemented, moves back to the start, allowing the collection to be enumerated again. `Reset` exists mainly for COM interop; calling it directly is generally avoided because it’s not universally supported (and is unnecessary in that it’s usually just as easy to instantiate a new enumerator).
+`MoveNext` advances the current element or “cursor” to the next position, returning false if there are no more elements in the collection. Current returns the element at the current position(usually cast from object to a more specific type). `MoveNext` must be called before retrieving the first element—this is to allow for an empty collection. The `Reset` method, if implemented, moves back to the start, allowing the collection to be enumerated again. `Reset` exists mainly for COM interop; calling it directly is generally avoided because it’s not universally supported(and is unnecessary in that it’s usually just as easy to instantiate a new enumerator).
 
 Collections do not usually implement enumerators; instead, they *provide* enumerators, via the interface `IEnumerable`:
 
-```c#
+```csharp
 public interface IEnumerable
 {
     IEnumerator GetEnumerator();
@@ -47,7 +47,7 @@ By defining a single method retuning an enumerator, `IEnumerable` provides flexi
 
 The following example illustrates low-level use of `IEnumerable` and `IEnumerator`:
 
-```c#
+```csharp
 string s = "Hello";
 
 // Because string implements IEnumerable, we can call GetEnumerator():
@@ -87,15 +87,15 @@ public interface IEnumerable<T> : IEnumerable
 }
 ```
 
-By defining a typed version of `Current` and `GetEnumerator`, these interfaces strengthen static type safety, avoid the overhead of boxing with value-type elements, and are more convenient to the consumer. Arrays automatically implement `IEnumerable<T>` (where `T` is the member type of the array).
+By defining a typed version of `Current` and `GetEnumerator`, these interfaces strengthen static type safety, avoid the overhead of boxing with value-type elements, and are more convenient to the consumer. Arrays automatically implement `IEnumerable<T>`(where `T` is the member type of the array).
 
 Thanks to the improved static type safety, calling the following method with an array of characters will generate a compile-time error:
 
 ```csharp
-void Test (IEnumerable<int> numbers) { ... }
+void Test(IEnumerable<int> numbers) { ... }
 ```
 
-It’s a standard practice for collection classes to publicly expose `IEnumerable<T>`, while “hiding” the nongeneric `IEnumerable` through explicit interface implementation. This is so that if you directly call `GetEnumerator()`, you get back the type-safe generic `IEnumerator<T>`. There are times, though, when this rule is broken for reasons of backward compatibility (generics did not exist prior to C# 2.0). A good example is arrays—these must return the nongeneric (the nice way of putting it is “classic”) IEnumerator to avoid breaking earlier code. In order to get a generic `IEnumerator<T>`, you must cast to expose the explicit interface:
+It’s a standard practice for collection classes to publicly expose `IEnumerable<T>`, while “hiding” the nongeneric `IEnumerable` through explicit interface implementation. This is so that if you directly call `GetEnumerator()`, you get back the type-safe generic `IEnumerator<T>`. There are times, though, when this rule is broken for reasons of backward compatibility(generics did not exist prior to C# 2.0). A good example is arrays—these must return the nongeneric(the nice way of putting it is “classic”) IEnumerator to avoid breaking earlier code. In order to get a generic `IEnumerator<T>`, you must cast to expose the explicit interface:
 
 ```csharp
 int[] data = { 1, 2, 3 };
@@ -106,7 +106,7 @@ Fortunately, you rarely need to write this sort of code, thanks to the foreach s
 
 #### IEnumerable<T> and IDisposable
 
-`IEnumerator<T>` inherits from `IDisposable`. This allows enumerators to hold references to resources such as database connections—and ensure that those resources are released when enumeration is complete (or abandoned partway through). The foreach statement recognizes this detail and translates this:
+`IEnumerator<T>` inherits from `IDisposable`. This allows enumerators to hold references to resources such as database connections—and ensure that those resources are released when enumeration is complete(or abandoned partway through). The foreach statement recognizes this detail and translates this:
 
 ```csharp
 foreach (var element in somethingEnumerable) { ... }
@@ -127,14 +127,14 @@ using (var rator = somethingEnumerable.GetEnumerator())
 
 ### When to Use the Nongeneric Interfaces
 
-Given the extra type safety of the generic collection interfaces such as `IEnumerable<T>`, the question arises: do you ever need to use the nongeneric `IEnumerable` (or ICollection or IList)?
+Given the extra type safety of the generic collection interfaces such as `IEnumerable<T>`, the question arises: do you ever need to use the nongeneric `IEnumerable`(or ICollection or IList)?
 
 In the case of `IEnumerable`, you must implement this interface in conjunction with `IEnumerable<T>`—because the latter derives from the former. However, it’s very rare that you actually implement these interfaces from scratch: in nearly all cases, you can take the higher-level approach of using iterator methods, `Collection<T>`, and LINQ.
 
 So, what about as a consumer? In nearly all cases, you can manage entirely with the generic interfaces. The nongeneric interfaces are still occasionally useful, though, in their ability to provide type unification for collections across all element types. The following method, for instance, counts elements in any collection recursively:
 
 ```csharp
-public static int Count (IEnumerable e)
+public static int Count(IEnumerable e)
 {
     int count = 0;
 
@@ -142,7 +142,7 @@ public static int Count (IEnumerable e)
     {
         var subCollection = element as IEnumerable;
         if (subCollection != null)
-            count += Count (subCollection);
+            count += Count(subCollection);
         else
             count++;
     }
@@ -187,7 +187,7 @@ public class MyCollection : IEnumerable
 }
 ```
 
-Notice the “black magic”: `GetEnumerator` doesn’t appear to return an enumerator at all! Upon parsing the `yield` return statement, the compiler writes a hidden nested enumerator class behind the scenes, and then refactors `GetEnumerator` to instantiate and return that class. Iterators are powerful and simple (and are used extensively in the implementation of LINQ-to-Object’s standard query operators).
+Notice the “black magic”: `GetEnumerator` doesn’t appear to return an enumerator at all! Upon parsing the `yield` return statement, the compiler writes a hidden nested enumerator class behind the scenes, and then refactors `GetEnumerator` to instantiate and return that class. Iterators are powerful and simple(and are used extensively in the implementation of LINQ-to-Object’s standard query operators).
 
 Keeping with this approach, we can also implement the generic interface `IEnumerable<T>`:
 
@@ -282,7 +282,7 @@ public class MyIntList : IEnumerable
 }
 ```
 
-Note that the first call to MoveNext should move to the first (and not the second) item in the list.
+Note that the first call to MoveNext should move to the first(and not the second) item in the list.
 
 To get on par with an iterator in functionality, we must also implement `IEnumerator<T>`. Here’s an example with bounds checking omitted for brevity:
 
@@ -331,16 +331,16 @@ Although the enumeration interfaces provide a protocol for forward-only iteratio
 
 The inheritance hierarchy for these interfaces was shown in Figure. The easiest way to summarize them is as follows:
 
-`IEnumerable<T>` (and `IEnumerable`)
-    Provides minimum functionality (enumeration only)
+`IEnumerable<T>`(and `IEnumerable`)
+    Provides minimum functionality(enumeration only)
 
-`ICollection<T>` (and `ICollection`)
-    Provides medium functionality (e.g., the Count property)
+`ICollection<T>`(and `ICollection`)
+    Provides medium functionality(e.g., the Count property)
 
 IList <T>/`IDictionary` <K,V> and their nongeneric versions
-    Provide maximum functionality (including “random” access by index/key
+    Provide maximum functionality(including “random” access by index/key
 
-The generic and nongeneric versions differ in ways over and above what you might expect, particularly in the case of `ICollection`. The reasons for this are mostly historical: because generics came later, the generic interfaces were developed with the benefit of hindsight, leading to a different (and better) choice of members. For this reason, `ICollection<T>` does not extend `ICollection`, `IList<T>` does not extend `IList`, and `IDictionary<TKey, TValue>` does not extend IDictionary. Of course, a collection class itself is free to implement both versions of an interface if beneficial (which it often is).
+The generic and nongeneric versions differ in ways over and above what you might expect, particularly in the case of `ICollection`. The reasons for this are mostly historical: because generics came later, the generic interfaces were developed with the benefit of hindsight, leading to a different(and better) choice of members. For this reason, `ICollection<T>` does not extend `ICollection`, `IList<T>` does not extend `IList`, and `IDictionary<TKey, TValue>` does not extend IDictionary. Of course, a collection class itself is free to implement both versions of an interface if beneficial(which it often is).
 
 *Another, subtler reason for `IList<T>` not extending `IList` is that casting to `IList<T>` would then return an interface with both `Add(T)` and `Add(object)` members. This would effectively defeat static type safety, because you could call Add with an object of any type.*
 
@@ -348,7 +348,7 @@ The generic and nongeneric versions differ in ways over and above what you might
 
 ### ICollection<T> and ICollection
 
-`ICollection<T>` is the standard interface for countable collections of objects. It provides the ability to determine the size of a collection(`Count`), determine whether an item exists in the collection(`Contains`), copy the collection into an array (`ToArray`), and determine whether the collection is read-only (`IsReadOnly`). For writable collections, you can also `Add`, `Remove`, and `Clear` items from the collection. And since it extends `IEnumerable<T>`, it can also be traversed via the foreach statement.
+`ICollection<T>` is the standard interface for countable collections of objects. It provides the ability to determine the size of a collection(`Count`), determine whether an item exists in the collection(`Contains`), copy the collection into an array(`ToArray`), and determine whether the collection is read-only(`IsReadOnly`). For writable collections, you can also `Add`, `Remove`, and `Clear` items from the collection. And since it extends `IEnumerable<T>`, it can also be traversed via the foreach statement.
 
 ```csharp
 public interface ICollection<T> : IEnumerable<T>, IEnumerable
@@ -417,7 +417,7 @@ public interface IList : ICollection, IEnumerable
 
 The `Add` method on the nongeneric `IList` interface returns an integer—this is the index of the newly added item. In contrast, the `Add` method on `ICollection<T>` has a void return type.
 
-The general-purpose `List<T>` class is the quintessential implementation of both `IList<T>` and `IList`. C# arrays also implement both the generic and nongeneric `ILists` (although the methods that add or remove elements are hidden via explicit interface implementation and throw a `NotSupportedException` if called).
+The general-purpose `List<T>` class is the quintessential implementation of both `IList<T>` and `IList`. C# arrays also implement both the generic and nongeneric `ILists`(although the methods that add or remove elements are hidden via explicit interface implementation and throw a `NotSupportedException` if called).
 
 ### IReadOnlyList<T>
 
@@ -435,7 +435,7 @@ Because its type parameter is used only in output positions, it’s marked as co
 
 *`IReadOnlyList<T>` represents a read-only view of a list. It doesn’t necessarily imply that the underlying implementation is read-only.*
 
-It would be logical for `IList<T>` to derive from `IReadOnlyList<T>`. However, Microsoft was unable to make this change because doing so would require moving members from `IList<T>` to `IReadOnlyList<T>`, which would introduce a breaking change into CLR 4.5 (consumers would need to re-compile their programs to avoid runtime errors). Instead, implementers of `IList<T>` need to manually add `IReadOnlyList<T>` to their list of implemented interfaces.
+It would be logical for `IList<T>` to derive from `IReadOnlyList<T>`. However, Microsoft was unable to make this change because doing so would require moving members from `IList<T>` to `IReadOnlyList<T>`, which would introduce a breaking change into CLR 4.5(consumers would need to re-compile their programs to avoid runtime errors). Instead, implementers of `IList<T>` need to manually add `IReadOnlyList<T>` to their list of implemented interfaces.
 
 `IReadOnlyList<T>` maps to the Windows Runtime type `IVectorView<T>`.
 
@@ -447,9 +447,9 @@ Since arrays are so fundamental, C# provides explicit syntax for their declarati
 
 The CLR also treats array types specially upon construction, assigning them a contiguous space in memory. This makes indexing into arrays highly efficient, but prevents them from being resized later on.
 
-`Array` implements the collection interfaces up to `IList<T>` in both their generic and nongeneric forms. `IList<T>` itself is implemented explicitly, though, to keep Array’s public interface clean of methods such as `Add` or `Remove`, which throw an exception on fixed-length collections such as arrays. The `Array` class does actually offer a static `Resize` method, although this works by creating a new array and then copying over each element. As well as being inefficient, references to the array elsewhere in the program will still point to the original version. A better solution for resizable collections is to use the `List<T>` class (described in the following section).
+`Array` implements the collection interfaces up to `IList<T>` in both their generic and nongeneric forms. `IList<T>` itself is implemented explicitly, though, to keep Array’s public interface clean of methods such as `Add` or `Remove`, which throw an exception on fixed-length collections such as arrays. The `Array` class does actually offer a static `Resize` method, although this works by creating a new array and then copying over each element. As well as being inefficient, references to the array elsewhere in the program will still point to the original version. A better solution for resizable collections is to use the `List<T>` class(described in the following section).
 
-An array can contain value-type or reference-type elements. Value-type elements are stored in place in the array, so an array of three long integers (each 8 bytes) will occupy 24 bytes of contiguous memory. A reference-type element, however, occupies only as much space in the array as a reference (4 bytes in a 32-bit environment or 8 bytes in a 64-bit environment). Figure illustrates the effect, in memory, of the following program:
+An array can contain value-type or reference-type elements. Value-type elements are stored in place in the array, so an array of three long integers(each 8 bytes) will occupy 24 bytes of contiguous memory. A reference-type element, however, occupies only as much space in the array as a reference(4 bytes in a 32-bit environment or 8 bytes in a 64-bit environment). Figure illustrates the effect, in memory, of the following program:
 
 ```csharp
 StringBuilder[] builders = new StringBuilder [5];
@@ -464,7 +464,7 @@ numbers [1] = 54321;
 
 ![Arrays in memory](./Images/Arrays%20in%20memory.png "Arrays in memory")
 
-Because `Array` is a class, arrays are always (themselves) reference types—regardless of the array’s element type. This means that the statement `arrayB = arrayA` results in two variables that reference the same array. Similarly, two distinct arrays will always fail an equality test—unless you use a custom equality comparer. Framework 4.0 introduced one for the purpose of comparing elements in arrays which you can access via the `StructuralComparisons` type:
+Because `Array` is a class, arrays are always(themselves) reference types—regardless of the array’s element type. This means that the statement `arrayB = arrayA` results in two variables that reference the same array. Similarly, two distinct arrays will always fail an equality test—unless you use a custom equality comparer. Framework 4.0 introduced one for the purpose of comparing elements in arrays which you can access via the `StructuralComparisons` type:
 
 ```csharp
 object[] a1 = { "string", 123, true };
@@ -477,7 +477,7 @@ IStructuralEquatable se1 = a1;
 Console.WriteLine(se1.Equals(a2, StructuralComparisons.StructuralEqualityComparer)); // True
 ```
 
-Arrays can be duplicated with the `Clone` method: `arrayB = arrayA.Clone()`. However, this results in a shallow clone, meaning that only the memory represented by the array itself is copied. If the array contains value-type objects, the values themselves are copied; if the array contains reference-type objects, just the references are copied (resulting in two arrays whose members reference the same objects). Figure demonstrates the effect of adding the following code to our example:
+Arrays can be duplicated with the `Clone` method: `arrayB = arrayA.Clone()`. However, this results in a shallow clone, meaning that only the memory represented by the array itself is copied. If the array contains value-type objects, the values themselves are copied; if the array contains reference-type objects, just the references are copied(resulting in two arrays whose members reference the same objects). Figure demonstrates the effect of adding the following code to our example:
 
 ```csharp
 StringBuilder[] builders2 = builders;
@@ -488,7 +488,7 @@ StringBuilder[] shallowClone = (StringBuilder[]) builders.Clone();
 
 To create a deep copy—where reference-type subobjects are duplicated—you must loop through the array and clone each element manually. The same rules apply to other .NET collection types.
 
-Although Array is designed primarily for use with 32-bit indexers, it also has limited support for 64-bit indexers (allowing an array to theoretically address up to 2 64 elements) via several methods that accept both Int32 and Int64 parameters. These overloads are useless in practice, because the CLR does not permit any objectincluding arrays—to exceed 2GB in size (whether running on a 32- or 64-bit environment).
+Although Array is designed primarily for use with 32-bit indexers, it also has limited support for 64-bit indexers(allowing an array to theoretically address up to 2 64 elements) via several methods that accept both Int32 and Int64 parameters. These overloads are useless in practice, because the CLR does not permit any objectincluding arrays—to exceed 2GB in size(whether running on a 32- or 64-bit environment).
 
 *Many of the methods on the `Array` class that you expect to be instance methods are in fact static methods. This is an odd design decision, and means you should check for both static and instance methods when looking for a method on `Array`.*
 
@@ -502,9 +502,9 @@ int first = myArray [0];
 int last = myArray [myArray.Length - 1];
 ```
 
-Alternatively, you can instantiate an array dynamically by calling `Array.CreateIn` stance. This allows you to specify element type and rank (number of dimensions) at runtime—as well as allowing nonzero-based arrays through specifying a lower bound. Nonzero-based arrays are not CLS (Common Language Specification)compliant.
+Alternatively, you can instantiate an array dynamically by calling `Array.CreateIn` stance. This allows you to specify element type and rank(number of dimensions) at runtime—as well as allowing nonzero-based arrays through specifying a lower bound. Nonzero-based arrays are not CLS(Common Language Specification)compliant.
 
-The `GetValue` and `SetValue` methods let you access elements in a dynamically created array (they also work on ordinary arrays):
+The `GetValue` and `SetValue` methods let you access elements in a dynamically created array(they also work on ordinary arrays):
 
 ```csharp
 // Create a string array 2 elements in length:
@@ -518,7 +518,7 @@ string[] cSharpArray = (string[]) a;
 string s2 = cSharpArray [0];
 ```
 
-Zero-indexed arrays created dynamically can be cast to a C# array of a matching or compatible type (compatible by standard array-variance rules). For example, if `Apple` subclasses `Fruit`, `Apple[]` can be cast to `Fruit[]`. This leads to the issue of why `object[]` was not used as the unifying array type rather the Array class. The answer is that `object[]` is incompatible with both multidimensional and value-type arrays (and nonzero-based arrays). An `int[]` array cannot be cast to `object[]`. Hence, we require the Array class for full type unification.
+Zero-indexed arrays created dynamically can be cast to a C# array of a matching or compatible type(compatible by standard array-variance rules). For example, if `Apple` subclasses `Fruit`, `Apple[]` can be cast to `Fruit[]`. This leads to the issue of why `object[]` was not used as the unifying array type rather the Array class. The answer is that `object[]` is incompatible with both multidimensional and value-type arrays(and nonzero-based arrays). An `int[]` array cannot be cast to `object[]`. Hence, we require the Array class for full type unification.
 
 `GetValue` and `SetValue` also work on compiler-created arrays, and they are useful when writing methods that can deal with an array of any type and rank. For multidimensional arrays, they accept an array of indexers:
 
@@ -553,13 +553,13 @@ void Demo()
 
 `SetValue` throws an exception if the element is of an incompatible type for the array.
 
-When an array is instantiated, whether via language syntax or `Array.CreateIn` stance, its elements are automatically initialized. For arrays with reference-type elements, this means writing nulls; for arrays with value-type elements, this means calling the value-type’s default constructor (effectively “zeroing” the members). The `Array` class also provides this functionality on demand via the `Clear` method:
+When an array is instantiated, whether via language syntax or `Array.CreateIn` stance, its elements are automatically initialized. For arrays with reference-type elements, this means writing nulls; for arrays with value-type elements, this means calling the value-type’s default constructor(effectively “zeroing” the members). The `Array` class also provides this functionality on demand via the `Clear` method:
 
 ```csharp
 public static void Clear(Array array, int index, int length);
 ```
 
-This method doesn’t affect the size of the array. This is in contrast to the usual use of `Clear` (such as in `ICollection<T>.Clear`) where the collection is reduced to zero elements.
+This method doesn’t affect the size of the array. This is in contrast to the usual use of `Clear`(such as in `ICollection<T>.Clear`) where the collection is reduced to zero elements.
 
 ### Enumeration
 
@@ -603,11 +603,11 @@ The `Array` class offers a range of methods for finding elements within a one-di
 `Find`/`FindLast`/`FindIndex`/`FindLastIndex`/`FindAll`/`Exists`/`TrueForAll`
     For searching unsorted arrays for item(s) that satisfy a given `Predicate<T>`
 
-None of the array searching methods throws an exception if the specified value is not found. Instead, if an item is not found, methods returning an integer return `-1` (assuming a zero-indexed array), and methods returning a generic type return the type’s default value (e.g., `0` for an `int`, or `null` for a `string`).
+None of the array searching methods throws an exception if the specified value is not found. Instead, if an item is not found, methods returning an integer return `-1`(assuming a zero-indexed array), and methods returning a generic type return the type’s default value(e.g., `0` for an `int`, or `null` for a `string`).
 
-The binary search methods are fast, but they work only on sorted arrays and require that the elements be compared for *order*, rather than simply *equality*. To this effect, the binary search methods can accept an `IComparer` or `IComparer<T>` object to arbitrate on ordering decisions (see the section “Plugging in Equality and Order” later in this chapter). This must be consistent with any comparer used in originally sorting the array. If no comparer is provided, the type’s default ordering algorithm will be applied, based on its implementation of `IComparable`/`IComparable<T>`.
+The binary search methods are fast, but they work only on sorted arrays and require that the elements be compared for *order*, rather than simply *equality*. To this effect, the binary search methods can accept an `IComparer` or `IComparer<T>` object to arbitrate on ordering decisions(see the section “Plugging in Equality and Order” later in this chapter). This must be consistent with any comparer used in originally sorting the array. If no comparer is provided, the type’s default ordering algorithm will be applied, based on its implementation of `IComparable`/`IComparable<T>`.
 
-The `IndexOf` and `LastIndexOf` methods perform a simple enumeration over the array, returning the position of the first (or last) element that matches the given value.
+The `IndexOf` and `LastIndexOf` methods perform a simple enumeration over the array, returning the position of the first(or last) element that matches the given value.
 
 The predicate-based searching methods allow a method delegate or lambda expression to arbitrate on whether a given element is a “match.” A predicate is simply a delegate accepting an object and returning true or `false`:
 
@@ -690,7 +690,7 @@ Array.Sort(numbers, words);
 // words array is now { "one", "two", "three" }
 ```
 
-`Array.Sort` requires that the elements in the array implement `IComparable`. This means that most built-in C# types (such as integers, as in the preceding example) can be sorted. If the elements are not intrinsically comparable, or you want to override the default ordering, you must provide `Sort` with a custom comparison provider that reports on the relative position of two elements. There are ways to do this:
+`Array.Sort` requires that the elements in the array implement `IComparable`. This means that most built-in C# types(such as integers, as in the preceding example) can be sorted. If the elements are not intrinsically comparable, or you want to override the default ordering, you must provide `Sort` with a custom comparison provider that reports on the relative position of two elements. There are ways to do this:
 
 - Via a helper object that implements `IComparer`/`IComparer<T>`.
 - Via a Comparison delegate:
@@ -721,9 +721,9 @@ Array.Sort(numbers, (x, y) => x % 2 == y % 2 ? 0 : x % 2 == 1 ? -1 : 1);
 - Ao contrário dos arrays, todas as interfaces são implementadas publicamente e métodos como Adicionar e Remover são Expostos e funcionam como seria de esperar.
 - `List<T>` is up to several times faster than `ArrayList` if `T` is a value type because `List<T>` avoids the overhead of boxing and unboxing elements.
 
-The generic List and nongeneric `ArrayList` classes provide a dynamically sized array of objects and are among the most commonly used of the collection classes. `ArrayList` implements `IList`, whereas `List<T>` implements both `IList` and `IList<T>` (and the new read-only version, `IReadOnlyList<T>`). Unlike with arrays, all interfaces are implemented publicly, and methods such as Add and Remove are exposed and work as you would expect.
+The generic List and nongeneric `ArrayList` classes provide a dynamically sized array of objects and are among the most commonly used of the collection classes. `ArrayList` implements `IList`, whereas `List<T>` implements both `IList` and `IList<T>`(and the new read-only version, `IReadOnlyList<T>`). Unlike with arrays, all interfaces are implemented publicly, and methods such as Add and Remove are exposed and work as you would expect.
 
-Internally, `List<T>` and `ArrayList` work by maintaining an internal array of objects, replaced with a larger array upon reaching capacity. Appending elements is efficient (since there is usually a free slot at the end), but inserting elements can be slow (since all elements after the insertion point have to be shifted to make a free slot). As with arrays, searching is efficient if the `BinarySearch` method is used on a list that has been sorted, but is otherwise inefficient because each item must be individually checked.
+Internally, `List<T>` and `ArrayList` work by maintaining an internal array of objects, replaced with a larger array upon reaching capacity. Appending elements is efficient(since there is usually a free slot at the end), but inserting elements can be slow(since all elements after the insertion point have to be shifted to make a free slot). As with arrays, searching is efficient if the `BinarySearch` method is used on a list that has been sorted, but is otherwise inefficient because each item must be individually checked.
 
 *`List<T>` is up to several times faster than `ArrayList` if `T` is a value type, because `List<T>` avoids the overhead of boxing and unboxing elements.*
 
@@ -821,7 +821,7 @@ Such casts cannot be verified by the compiler; the following compiles successful
 int first = (int) al[0]; // Runtime exception
 ```
 
-*An `ArrayList` is functionally similar to `List<object>`. Both are useful when you need a list of mixed-type elements that share no common base type (other than object). A possible advantage of choosing an `ArrayList`, in this case, would be if you need to deal with the list using reflection. Reflection is easier with a nongeneric `ArrayList` than a `List<object>`.*
+*An `ArrayList` is functionally similar to `List<object>`. Both are useful when you need a list of mixed-type elements that share no common base type(other than object). A possible advantage of choosing an `ArrayList`, in this case, would be if you need to deal with the list using reflection. Reflection is easier with a nongeneric `ArrayList` than a `List<object>`.*
 
 If you import the `System.Linq` namespace, you can convert an `ArrayList` to a generic `List` by calling `Cast` and then `ToList`:
 
@@ -839,13 +839,13 @@ List<int> list = al.Cast<int>().ToList();
 - A doubly linked list is a chain of nodes in which each references the node before, the node after, and the actual element.
 - O principal benefício é que um elemento sempre pode ser inserido eficientemente em qualquer lugar da lista, pois envolve apenas a criação de um novo nó e a atualização de algumas referências.
 - No entanto, encontrar onde inserir o nó em primeiro lugar pode ser lento, pois não há mecanismo intrínseco para indexar diretamente em uma lista vinculada; Cada nó deve ser  percorrido e as buscas binárias não são possíveis.
-- `LinkedList<T>` implements `IEnumerable<T>` and `ICollection<T>` (and their nongeneric versions), but not `IList<T>`, since access by index is not supported.
+- `LinkedList<T>` implements `IEnumerable<T>` and `ICollection<T>`(and their nongeneric versions), but not `IList<T>`, since access by index is not supported.
 
-`LinkedList<T>` is a generic doubly linked list (see Figure). A doubly linked list is a chain of nodes in which each references the node before, the node after, and the actual element. Its main benefit is that an element can always be inserted efficiently anywhere in the list, since it just involves creating a new node and updating a few references. However, finding where to insert the node in the first place can be slow, as there’s no intrinsic mechanism to index directly into a linked list; each node must be traversed, and binary-chop searches are not possible.
+`LinkedList<T>` is a generic doubly linked list(see Figure). A doubly linked list is a chain of nodes in which each references the node before, the node after, and the actual element. Its main benefit is that an element can always be inserted efficiently anywhere in the list, since it just involves creating a new node and updating a few references. However, finding where to insert the node in the first place can be slow, as there’s no intrinsic mechanism to index directly into a linked list; each node must be traversed, and binary-chop searches are not possible.
 
 ![LinkedList<T>](./Images/LinkedList<T>.png "LinkedList<T>")
 
-`LinkedList<T>` implements `IEnumerable<T>` and `ICollection<T>` (and their nongeneric versions), but not `IList<T>` since access by index is not supported. List nodes are implemented via the following class:
+`LinkedList<T>` implements `IEnumerable<T>` and `ICollection<T>`(and their nongeneric versions), but not `IList<T>` since access by index is not supported. List nodes are implemented via the following class:
 
 ```csharp
 public sealed class LinkedListNode<T>
@@ -893,7 +893,7 @@ public LinkedListNode<T> First { get; } // Fast
 public LinkedListNode<T> Last { get; } // Fast
 ```
 
-`LinkedList<T>` also supports the following searching methods (each requiring that the list be internally enumerated):
+`LinkedList<T>` also supports the following searching methods(each requiring that the list be internally enumerated):
 
 ```csharp
 public bool Contains(T value);
@@ -931,7 +931,7 @@ foreach(string s in tune) Console.WriteLine(s);
 
 ### Queue<T> and Queue
 
-`Queue<T>` and Queue are first-in, first-out (FIFO) data structures, providing methods to `Enqueue` (add an item to the tail of the queue) and Dequeue (retrieve and remove the item at the head of the queue). A Peek method is also provided to return the element at the head of the queue without removing it, and a Count property (useful in checking that elements are present before dequeuing).
+`Queue<T>` and Queue are first-in, first-out(FIFO) data structures, providing methods to `Enqueue`(add an item to the tail of the queue) and Dequeue(retrieve and remove the item at the head of the queue). A Peek method is also provided to return the element at the head of the queue without removing it, and a Count property(useful in checking that elements are present before dequeuing).
 
 Although queues are enumerable, they do not implement `IList<T>`/`IList`, since members cannot be accessed directly by index. A `ToArray` method is provided, however, for copying the elements to an array where they can be randomly accessed:
 
@@ -968,11 +968,11 @@ Console.WriteLine(q.Dequeue()); // "20"
 Console.WriteLine(q.Dequeue()); // throws an exception(queue empty)
 ```
 
-Queues are implemented internally using an array that’s resized as required—much like the generic `List` class. The queue maintains indexes that point directly to the head and tail elements; therefore, enqueuing and dequeuing are extremely quick operations (except when an internal resize is required).
+Queues are implemented internally using an array that’s resized as required—much like the generic `List` class. The queue maintains indexes that point directly to the head and tail elements; therefore, enqueuing and dequeuing are extremely quick operations(except when an internal resize is required).
 
 ### Stack<T> and Stack
 
-`Stack<T>` and `Stack` are last-in, first-out (LIFO) data structures, providing methods to Push (add an item to the top of the stack) and Pop (retrieve and remove an element from the top of the stack). A nondestructive Peek method is also provided, as is a Count property and a ToArray method for exporting the data for random access:
+`Stack<T>` and `Stack` are last-in, first-out(LIFO) data structures, providing methods to Push(add an item to the top of the stack) and Pop(retrieve and remove an element from the top of the stack). A nondestructive Peek method is also provided, as is a Count property and a ToArray method for exporting the data for random access:
 
 ```csharp
 public class Stack<T> : IEnumerable<T>, ICollection, IEnumerable
@@ -1020,13 +1020,13 @@ Stacks are implemented internally with an array that’s resized as required, as
 
 `SortedSet<T>` keeps elements in order whereas `HashSet<T>` does not.
 
-*The commonality of these types is captured by the interface `ISet<T>`. For historical reasons, `HashSet<T>` lives in `System.Core.dll` (whereas `SortedSet<T>` and `ISet<T>` live in `System.dll`).*
+*The commonality of these types is captured by the interface `ISet<T>`. For historical reasons, `HashSet<T>` lives in `System.Core.dll`(whereas `SortedSet<T>` and `ISet<T>` live in `System.dll`).*
 
 `HashSet<T>` is implemented with a hashtable that stores just keys; `SortedSet<T>` is implemented with a red/black tree.
 
 Both collections implement `ICollection<T>` and offer methods that you would expect, such as Contains, Add, and Remove. In addition, there’s a predicate-based removal method called `RemoveWhere`.
 
-The following constructs a `HashSet<char>` from an existing collection, tests for membership, and then enumerates the collection (notice the absence of duplicates):
+The following constructs a `HashSet<char>` from an existing collection, tests for membership, and then enumerates the collection(notice the absence of duplicates):
 
 ```csharp
 var letters = new HashSet<char>("the quick brown fox");
@@ -1059,7 +1059,7 @@ public bool Overlaps(IEnumerable<T> other);
 public bool SetEquals(IEnumerable<T> other);
 ```
 
-`UnionWith` adds all the elements in the second set to the original set (excluding duplicates). `IntersectWith` removes the elements that are not in both sets. We can extract all the vowels from our set of characters as follows:
+`UnionWith` adds all the elements in the second set to the original set(excluding duplicates). `IntersectWith` removes the elements that are not in both sets. We can extract all the vowels from our set of characters as follows:
 
 ```csharp
 var letters = new HashSet<char>("the quick brown fox");
@@ -1083,7 +1083,7 @@ letters.SymmetricExceptWith("the lazy brown fox");
 foreach (char c in letters) Console.Write(c); // quicklazy
 ```
 
-Note that because `HashSet<T>` and `SortedSet<T>` implement `IEnumerable<T>`, you can use another type of set (or collection) as the argument to any of the set operation methods.
+Note that because `HashSet<T>` and `SortedSet<T>` implement `IEnumerable<T>`, you can use another type of set(or collection) as the argument to any of the set operation methods.
 
 `SortedSet<T>` offers all the members of `HashSet<T>`, plus the following:
 
@@ -1094,7 +1094,7 @@ public T Min { get; }
 public T Max { get; }
 ```
 
-`SortedSet<T>` also accepts an optional `IComparer<T>` in its constructor (rather than an equality comparer).
+`SortedSet<T>` also accepts an optional `IComparer<T>` in its constructor(rather than an equality comparer).
 
 Here’s an example of loading the same letters into a `SortedSet<char>`:
 
@@ -1107,7 +1107,7 @@ Following on from this, we can obtain the letters between `f` and `j` as follows
 
 ```csharp
 foreach (char c in letters.GetViewBetween('f', 'j'))
-    Console.Write (c);  // fhi
+    Console.Write(c);  // fhi
 ```
 
 ## Dictionaries
@@ -1117,7 +1117,7 @@ A dictionary is a collection in which each element is a key/value pair. Dictiona
 The Framework defines a standard protocol for dictionaries, via the interfaces `IDictionary` and `IDictionary <TKey, TValue>`, as well as a set of general-purpose dictionary classes. The classes each differ in the following regard:
 
 - Whether or not items are stored in sorted sequence
-- Whether or not items can be accessed by position (index) as well as by key
+- Whether or not items can be accessed by position(index) as well as by key
 - Whether generic or nongeneric
 - Whether it’s fast or slow to retrieve items by key from a large dictionary
 
@@ -1138,7 +1138,7 @@ public interface IDictionary <TKey, TValue> : ICollection <KeyValuePair <TKey, T
 }
 ```
 
-To add an item to a dictionary, you either call Add or use the index’s set accessorthe latter adds an item to the dictionary if the key is not already present (or updates the item if it is present). Duplicate keys are forbidden in all dictionary implementations, so calling Add twice with the same key throws an exception.
+To add an item to a dictionary, you either call Add or use the index’s set accessorthe latter adds an item to the dictionary if the key is not already present(or updates the item if it is present). Duplicate keys are forbidden in all dictionary implementations, so calling Add twice with the same key throws an exception.
 
 To retrieve an item from a dictionary, use either the indexer or the `TryGetValue` method. If the key doesn’t exist, the indexer throws an exception whereas `TryGet` Value returns false. You can test for membership explicitly by calling `ContainsKey`; however, this incurs the cost of two lookups if you then subsequently retrieve the item.
 
@@ -1158,9 +1158,9 @@ We demonstrate the use of this interface with the generic `Dictionary` class in 
 
 ### IDictionary
 
-The nongeneric `IDictionary` interface is the same in principle as `IDictionary <TKey,TValue>`, apart from two important functional differences. It’s important to be aware of these differences, because `IDictionary` appears in legacy code (including the .NET Framework itself in places):
+The nongeneric `IDictionary` interface is the same in principle as `IDictionary <TKey,TValue>`, apart from two important functional differences. It’s important to be aware of these differences, because `IDictionary` appears in legacy code(including the .NET Framework itself in places):
 
-- Retrieving a nonexistent key via the indexer returns `null` (rather than throwing an exception).
+- Retrieving a nonexistent key via the indexer returns `null`(rather than throwing an exception).
 - Contains tests for membership rather than `ContainsKey`.
 
 Enumerating over a nongeneric `IDictionary` returns a sequence of `Dictionary` Entry structs:
@@ -1175,7 +1175,7 @@ public struct DictionaryEntry
 
 ### Dictionary<TKey,TValue> and Hashtable
 
-The generic `Dictionary` class is one of the most commonly used collections (along with the `List<T>` collection). It uses a hashtable data structure to store keys and values, and it is fast and efficient.
+The generic `Dictionary` class is one of the most commonly used collections(along with the `List<T>` collection). It uses a hashtable data structure to store keys and values, and it is fast and efficient.
 
 *The nongeneric version of `Dictionary<TKey,TValue>` is called `Hashtable`; there is no nongeneric class called Dictio nary. When we refer simply to `Dictionary`, we mean the generic `Dictionary<TKey,TValue>` class.*
 
@@ -1208,7 +1208,7 @@ Console.WriteLine();
 foreach (int i in d.Values) Console.Write(i); // 1223
 ```
 
-Its underlying hashtable works by converting each element’s key into an integer hashcode—a pseudo-unique value—and then applying an algorithm to convert the hashcode into a hash key. This hash key is used internally to determine which “bucket” an entry belongs to. If the bucket contains more than one value, a linear search is performed on the bucket. A good hash function does not strive to return strictly unique hashcodes (which would usually be impossible); it strives to return hashcodes that are evenly distributed across the 32-bit integer space. This avoids the scenario of ending up with a few very large (and inefficient) buckets.
+Its underlying hashtable works by converting each element’s key into an integer hashcode—a pseudo-unique value—and then applying an algorithm to convert the hashcode into a hash key. This hash key is used internally to determine which “bucket” an entry belongs to. If the bucket contains more than one value, a linear search is performed on the bucket. A good hash function does not strive to return strictly unique hashcodes (which would usually be impossible); it strives to return hashcodes that are evenly distributed across the 32-bit integer space. This avoids the scenario of ending up with a few very large(and inefficient) buckets.
 
 A dictionary can work with keys of any type, providing it’s able to determine equality between keys and obtain hashcodes. By default, equality is determined via the key’s object.Equals method, and the pseudo-unique hashcode is obtained via the key’s GetHashCode method. This behavior can be changed, either by overriding these methods or by providing an IEqualityComparer object when constructing the dictionary. A common application of this is to specify a case-insensitive equality comparer when using string keys:
 
@@ -1222,7 +1222,7 @@ The nongeneric version is named Hashtable and is functionally similar apart from
 
 The downside to Dictionary and Hashtable is that the items are not sorted. Furthermore, the original order in which the items were added is not retained. As with all dictionaries, duplicate keys are not allowed.
 
-*When the generic collections were introduced in Framework 2.0, the CLR team chose to name them according to what they represent (`Dictionary`, `List`) rather than how they are internally implemented (`Hashtable`, `ArrayList`). While this is good because it gives them the freedom to later change the implementation, it also means that the performance contract (often the most important criteria in choosing one kind of collection over another) is no longer captured in the name.*
+*When the generic collections were introduced in Framework 2.0, the CLR team chose to name them according to what they represent(`Dictionary`, `List`) rather than how they are internally implemented(`Hashtable`, `ArrayList`). While this is good because it gives them the freedom to later change the implementation, it also means that the performance contract(often the most important criteria in choosing one kind of collection over another) is no longer captured in the name.*
 
 ### OrderedDictionary
 
@@ -1245,9 +1245,9 @@ The Framework provides two dictionary classes internally structured such that th
 
 `SortedDictionary<,>` uses a red/black tree: a data structure designed to perform consistently well in any insertion or retrieval scenario.
 
-`SortedList<,>` is implemented internally with an ordered array pair, providing fast retrieval (via a binary-chop search) but poor insertion performance (because existing values have to be shifted to make room for a new entry).
+`SortedList<,>` is implemented internally with an ordered array pair, providing fast retrieval(via a binary-chop search) but poor insertion performance(because existing values have to be shifted to make room for a new entry).
 
-`SortedDictionary<,>` is much faster than `SortedList<,>` at inserting elements in a random sequence (particularly with large lists). `SortedList<,>`, however, has an extra ability: to access items by index as well as by key. With a sorted list, you can go directly to the nth element in the sorting sequence (via the indexer on the Keys/Values properties). To do the same with a `SortedDictionary<,>`, you must manually enumerate over n items. (Alternatively, you could write a class that combines a sorted dictionary with a list class.)
+`SortedDictionary<,>` is much faster than `SortedList<,>` at inserting elements in a random sequence(particularly with large lists). `SortedList<,>`, however, has an extra ability: to access items by index as well as by key. With a sorted list, you can go directly to the nth element in the sorting sequence(via the indexer on the Keys/Values properties). To do the same with a `SortedDictionary<,>`, you must manually enumerate over n items. (Alternatively, you could write a class that combines a sorted dictionary with a list class.)
 
 The following example uses reflection to load all the methods defined in `System.Object` into a sorted list keyed by name, and then enumerates their keys and values:
 
@@ -1256,7 +1256,7 @@ The following example uses reflection to load all the methods defined in `System
 
 var sorted = new SortedList <string, MethodInfo>();
 
-foreach (MethodInfo m in typeof (object).GetMethods())
+foreach (MethodInfo m in typeof(object).GetMethods())
     sorted [m.Name] = m;
 
 foreach (string name in sorted.Keys)
@@ -1296,7 +1296,7 @@ The collection classes discussed in previous sections are convenient in that the
 
 - To fire an event when an item is added or removed
 - To update properties because of the added or removed item
-- To detect an “illegal” add/remove operation and throw an exception (for example, if the operation violates a business rule)
+- To detect an “illegal” add/remove operation and throw an exception(for example, if the operation violates a business rule)
 
 The .NET Framework provides collection classes for this exact purpose, in the `System.Collections.ObjectModel` namespace. These are essentially proxies or wrappers that implement `IList<T>` or `IDictionary<,>` by forwarding the methods through to an underlying collection. Each `Add`, `Remove`, or `Clear` operation is routed via a virtual method that acts as a “gateway” when overridden.
 
@@ -1428,7 +1428,7 @@ public class Zoo
 }
 ```
 
-`Collection<T>` also has a constructor accepting an existing `IList<T>`. Unlike with other collection classes, the supplied list is proxied rather than copied, meaning that subsequent changes will be reflected in the wrapping `Collection<T>` (although without `Collection<T>`’s virtual methods firing). Conversely, changes made via the `Collection<T>` will change the underlying list.
+`Collection<T>` also has a constructor accepting an existing `IList<T>`. Unlike with other collection classes, the supplied list is proxied rather than copied, meaning that subsequent changes will be reflected in the wrapping `Collection<T>`(although without `Collection<T>`’s virtual methods firing). Conversely, changes made via the `Collection<T>` will change the underlying list.
 
 #### CollectionBase
 
@@ -1532,7 +1532,7 @@ public interface IEqualityComparer // Nongeneric version
 }
 ```
 
-To write a custom comparer, you implement one or both of these interfaces (implementing both gives maximum interoperability). As this is somewhat tedious, an alternative is to subclass the abstract `EqualityComparer` class, defined as follows:
+To write a custom comparer, you implement one or both of these interfaces(implementing both gives maximum interoperability). As this is somewhat tedious, an alternative is to subclass the abstract `EqualityComparer` class, defined as follows:
 
 ```csharp
 public abstract class EqualityComparer<T> : IEqualityComparer, IEqualityComparer<T>
@@ -1610,7 +1610,7 @@ In this example, we would have to be careful not to change the customer’s Firs
 Calling `EqualityComparer<T>.Default` returns a general-purpose equality comparer that can be used as an alternative to the static `object.Equals` method. The advantage is that first checks if `T` implements `IEquatable<T>` and if so, calls that implementation instead, avoiding the boxing overhead. This is particularly useful in generic methods:
 
 ```csharp
-static bool Foo<T> (T x, T y)
+static bool Foo<T>(T x, T y)
 {
     bool same = EqualityComparer<T>.Default.Equals(x, y);
     ...
@@ -1701,11 +1701,11 @@ In the next example, `SurnameComparer` allows you to sort surname strings in an 
 ```csharp
 class SurnameComparer : Comparer <string>
 {
-    string Normalize (string s)
+    string Normalize(string s)
     {
         s = s.Trim().ToUpper();
-        if (s.StartsWith ("MC"))
-            s = "MAC" + s.Substring (2);
+        if (s.StartsWith("MC"))
+            s = "MAC" + s.Substring(2);
 
         return s;
     }
@@ -1729,7 +1729,7 @@ foreach (string s in dic.Values)
 
 ### StringComparer
 
-`StringComparer` is a predefined plug-in class for equating and comparing strings, allowing you to specify language and case sensitivity. `StringComparer` implements both `IEqualityComparer` and `IComparer` (and their generic versions), so it can be used with any type of dictionary or sorted collection:
+`StringComparer` is a predefined plug-in class for equating and comparing strings, allowing you to specify language and case sensitivity. `StringComparer` implements both `IEqualityComparer` and `IComparer`(and their generic versions), so it can be used with any type of dictionary or sorted collection:
 
 ```csharp
 // CultureInfo is defined in System.Globalization
@@ -1765,7 +1765,7 @@ CultureInfo ci = new CultureInfo("en-AU");
 Array.Sort<string>(names, StringComparer.Create(ci, false));
 ```
 
-The final example is a culture-aware version of the `SurnameComparer` we wrote in the previous section (to compare names suitable for a phonebook listing):
+The final example is a culture-aware version of the `SurnameComparer` we wrote in the previous section(to compare names suitable for a phonebook listing):
 
 ```csharp
 class SurnameComparer : Comparer<string>
