@@ -2,9 +2,9 @@
 
 > Extension methods allow an existing type to be extended with new methods without altering the definition of the original type. An extension method is a static method of a static class, where the `this` modifier is applied to the first parameter. The type of the first parameter will be the type that is extended.
 
-- Os métodos de extensão permitem que um tipo existente seja estendido com novos métodos sem alterar a definição do tipo original.
-- Um método de extensão é um método estático de uma classe estática, onde `this` modificador é aplicado ao primeiro parâmetro. O tipo do primeiro parâmetro será o tipo que é estendido.
-- Os métodos de extensão foram adicionados no C# 3.0.
+-   Os métodos de extensão permitem que um tipo existente seja estendido com novos métodos sem alterar a definição do tipo original.
+-   Um método de extensão é um método estático de uma classe estática, onde `this` modificador é aplicado ao primeiro parâmetro. O tipo do primeiro parâmetro será o tipo que é estendido.
+-   Os métodos de extensão foram adicionados no C# 3.0.
 
 Por exemplo:
 
@@ -21,7 +21,7 @@ public static class StringHelper
 }
 ```
 
-The `IsCapitalized` *extension method* can be called as though it were an instance method on a string, as follows:
+The `IsCapitalized` _extension method_ can be called as though it were an instance method on a string, as follows:
 
 ```csharp
 Console.WriteLine("Allyson".IsCapitalized());
@@ -30,14 +30,14 @@ Console.WriteLine("Allyson".IsCapitalized());
 An extension method `call`, when compiled, is translated back into an ordinary static method call:
 
 ```csharp
-Console.WriteLine(StringHelper.IsCapitalized ("Allyson"));
+Console.WriteLine(StringHelper.IsCapitalized("Allyson"));
 ```
 
 The translation works as follows:
 
 ```csharp
-arg0.Method (arg1, arg2, ...); // Extension method call
-StaticClass.Method (arg0, arg1, arg2, ...); // Static method call
+arg0.Method(arg1, arg2, ...); // Extension method call
+StaticClass.Method(arg0, arg1, arg2, ...); // Static method call
 ```
 
 Interfaces can be extended, too:
@@ -48,10 +48,10 @@ public static T First<T>(this IEnumerable<T> sequence)
     foreach (T element in sequence)
         return element;
 
-    throw new InvalidOperationException ("No elements!");
+    throw new InvalidOperationException("No elements!");
 }
 ...
-Console.WriteLine ("Seattle".First());  // S
+Console.WriteLine("Seattle".First());  // S
 ```
 
 ## Extension Method Chaining
@@ -70,7 +70,7 @@ public static class StringHelper
 
 ```csharp
 string x = "sausage".Pluralize().Capitalize();
-string y = StringHelper.Capitalize(StringHelper.Pluralize ("sausage"));
+string y = StringHelper.Capitalize(StringHelper.Pluralize("sausage"));
 ```
 
 ## Ambiguity and Resolution
