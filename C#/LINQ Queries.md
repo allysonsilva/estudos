@@ -129,13 +129,13 @@ class LinqDemo
 }
 ```
 
-`Where`, `OrderBy`, and `Select` are standard query operators that resolve to extension methods in the `Enumerable` class (if you import the `System.Linq` namespace).
+`Where`, `OrderBy`, and `Select` are standard query operators that resolve to extension methods in the `Enumerable` class(if you import the `System.Linq` namespace).
 
-We already introduced the `Where` operator, which emits a filtered version of the input sequence. The `OrderBy` operator emits a sorted version of its input sequence; the `Select` method emits a sequence where each input element is transformed or projected with a given lambda expression (`n.ToUpper()`, in this case). Data flows from left to right through the chain of operators, so the data is first filtered, then sorted, then projected.
+We already introduced the `Where` operator, which emits a filtered version of the input sequence. The `OrderBy` operator emits a sorted version of its input sequence; the `Select` method emits a sequence where each input element is transformed or projected with a given lambda expression(`n.ToUpper()`, in this case). Data flows from left to right through the chain of operators, so the data is first filtered, then sorted, then projected.
 
 *A query operator never alters the input sequence; instead, it returns a new sequence. This is consistent with the functional programming paradigm, from which LINQ was inspired.*
 
-Here are the signatures of each of these extension methods (with the `OrderBy` signature simplified slightly):
+Here are the signatures of each of these extension methods(with the `OrderBy` signature simplified slightly):
 
 ```csharp
 public static IEnumerable<TSource> Where<TSource>
@@ -180,7 +180,7 @@ foreach (string name in finalQuery)
 In previous examples, we fed the following lambda expression to the Where operator:
 
 ```csharp
-n => n.Contains ("a")   // Input type=string, return type=bool.
+n => n.Contains("a")   // Input type=string, return type=bool.
 ```
 
 *A lambda expression that takes a value and returns a bool is called a predicate.*
@@ -214,11 +214,11 @@ Similarly, `Func<TSource,TResult>` matches a `TSource=>TResult` lambda expressio
 
 The standard query operators use the following type parameter names:
 
-|  **Generic type letter**  | **Meaning**                                                      |
-|---------------------------|------------------------------------------------------------------|
-| `TSource`                 | Element type for the input sequence                              |
-| `TResult`                 | Element type for the output sequence—if different from `TSource` |
-| `TKey`                    | Element type for the key used in sorting, grouping, or joining   |
+| **Generic type letter** | **Meaning**                                                       |
+| ----------------------- | ----------------------------------------------------------------- |
+| `TSource`               | Element type for the input sequence                               |
+| `TResult`               | Element type for the output sequence—if different from `TSource` |
+| `TKey`                  | Element type for the key used in sorting, grouping, or joining    |
 
 `TSource` is determined by the input sequence. `TResult` and TKey are typically inferred from your lambda expression.
 
@@ -253,7 +253,7 @@ Finally, consider the signature of the `OrderBy` operator:
 public static IEnumerable<TSource> OrderBy<TSource,TKey>(this IEnumerable<TSource> source, Func<TSource,TKey> keySelector)
 ```
 
-`Func<TSource,TKey>` maps an input element to a sorting key. `TKey` is inferred from your lambda expression and is separate from the input and output element types. For instance, we could choose to sort a list of names by length (int `key`) or alphabetically (string `key`):
+`Func<TSource,TKey>` maps an input element to a sorting key. `TKey` is inferred from your lambda expression and is separate from the input and output element types. For instance, we could choose to sort a list of names by length(int `key`) or alphabetically(string `key`):
 
 ```csharp
 string[] names = { "Tom", "Dick", "Harry", "Mary", "Jay" };
@@ -263,7 +263,7 @@ sortedByLength = names.OrderBy(n => n.Length); // int key
 sortedAlphabetically = names.OrderBy(n => n); // string key
 ```
 
-You can call the query operators in `Enumerable` with traditional delegates that refer to methods instead of lambda expressions. This approach is effective in simplifying certain kinds of local queries—particularly with LINQ to XML—and. It doesn’t work with `IQueryable<T>`-based sequences, however (e.g., when querying a database), because the operators in `Queryable` require lambda expressions in order to emit expression trees.
+You can call the query operators in `Enumerable` with traditional delegates that refer to methods instead of lambda expressions. This approach is effective in simplifying certain kinds of local queries—particularly with LINQ to XML—and. It doesn’t work with `IQueryable<T>`-based sequences, however(e.g., when querying a database), because the operators in `Queryable` require lambda expressions in order to emit expression trees.
 
 ### Natural Ordering
 
@@ -292,7 +292,7 @@ int[] numbers = { 10, 9, 8, 7, 6 };
 IEnumerable<int> reversed = numbers.Reverse(); // { 6, 7, 8, 9, 10 }
 ```
 
-With local queries (LINQ-to-objects), operators such as `Where` and `Select` preserve the original ordering of the input sequence (as do all other query operators, except for those that specifically change the ordering).
+With local queries(LINQ-to-objects), operators such as `Where` and `Select` preserve the original ordering of the input sequence(as do all other query operators, except for those that specifically change the ordering).
 
 ### Other Operators
 
@@ -365,18 +365,18 @@ class LinqDemo
 // HARRY
 ```
 
-Query expressions always start with a `from` clause and end with either a `select` or `group` clause. The `from` clause declares a range variable (in this case, `n`), which you can think of as traversing the input sequence—rather like foreach. Figure illustrates the complete syntax as a railroad diagram.
+Query expressions always start with a `from` clause and end with either a `select` or `group` clause. The `from` clause declares a range variable(in this case, `n`), which you can think of as traversing the input sequence—rather like foreach. Figure illustrates the complete syntax as a railroad diagram.
 
 *To read this diagram, start at the left and then proceed along the track as if you were a train. For instance, after the mandatory `from` clause, you can optionally include an `orderby`, `where`, `let`, or `join` clause. After that, you can either continue with a `select` or `group` clause, or go back and include another `from`, `orderby`, `where`, let, or `join` clause.*
 
 ![Query syntax](./Images/Query%20syntax.png "Query syntax")
 
-The compiler processes a query expression by translating it into fluent syntax. It does this in a fairly mechanical fashion—much like it translates `foreach` statements into calls to `GetEnumerator` and `MoveNext`. This means that anything you can write in query syntax you can also write in fluent syntax. The compiler (initially) translates our example query into the following:
+The compiler processes a query expression by translating it into fluent syntax. It does this in a fairly mechanical fashion—much like it translates `foreach` statements into calls to `GetEnumerator` and `MoveNext`. This means that anything you can write in query syntax you can also write in fluent syntax. The compiler(initially) translates our example query into the following:
 
 ```csharp
 IEnumerable<string> query = names.Where(n => n.Contains("a"))
-                                .OrderBy (n => n.Length)
-                                .Select (n => n.ToUpper());
+                                .OrderBy(n => n.Length)
+                                .Select(n => n.ToUpper());
 ```
 
 The `Where`, `OrderBy`, and `Select` operators then resolve using the same rules that would apply if the query were written in fluent syntax. In this case, they bind to extension methods in the `Enumerable` class, because the `System.Linq` namespace is imported and `names` implements `IEnumerable<string>`. The compiler doesn’t specifically favor the `Enumerable` class, however, when translating query expressions. You can think of the compiler as mechanically injecting the words “Where,” “OrderBy,” and “Select” into the statement, and then compiling it as though you’d typed the method names yourself. This offers flexibility in how they resolve. The operators in the database queries that we’ll write in later sections, for instance, will bind instead to extension methods in `Queryable`.
@@ -446,7 +446,7 @@ GroupBy, Join, GroupJoin
 
 ### Mixed-Syntax Queries
 
-If a query operator has no query-syntax support, you can mix query syntax and fluent syntax. The only restriction is that each query-syntax component must be complete (i.e., start with a from clause and end with a select or group clause).
+If a query operator has no query-syntax support, you can mix query syntax and fluent syntax. The only restriction is that each query-syntax component must be complete(i.e., start with a from clause and end with a select or group clause).
 
 Assuming this array declaration:
 
@@ -479,7 +479,7 @@ Where applicable, the remainder of this chapter will show key concepts in both f
 
 ## Deferred Execution
 
-An important feature of most query operators is that they execute not when constructed, but when *enumerated* (in other words, when `MoveNext` is called on its enumerator). Consider the following query:
+An important feature of most query operators is that they execute not when constructed, but when *enumerated*(in other words, when `MoveNext` is called on its enumerator). Consider the following query:
 
 ```csharp
 var numbers = new List<int> { 1 };
@@ -533,7 +533,7 @@ foreach (int n in query)
 There are a couple of reasons why reevaluation is sometimes disadvantageous:
 
 - Sometimes you want to “freeze” or cache the results at a certain point in time.
-- Some queries are computationally intensive (or rely on querying a remote database), so you don’t want to unnecessarily repeat them.
+- Some queries are computationally intensive(or rely on querying a remote database), so you don’t want to unnecessarily repeat them.
 
 You can defeat reevaluation by calling a conversion operator, such as `ToArray` or `ToList`. `ToArray` copies the output of a query to an array; `ToList` copies to a generic `List<T>`:
 
@@ -590,7 +590,7 @@ foreach (char c in query)
     Console.Write(c);
 ```
 
-An `IndexOutOfRangeException` is thrown upon enumerating the query, because the compiler scopes the iteration variable in the for loop as if it was declared outside the loop. Hence each closure captures the *same* variable (`i`) whose value is 5 when the query is actually enumerated. To solve this, you must assign the loop variable to another variable declared *inside* the statement block:
+An `IndexOutOfRangeException` is thrown upon enumerating the query, because the compiler scopes the iteration variable in the for loop as if it was declared outside the loop. Hence each closure captures the *same* variable(`i`) whose value is 5 when the query is actually enumerated. To solve this, you must assign the loop variable to another variable declared *inside* the statement block:
 
 ```csharp
 for (int i = 0; i < vowels.Length; i++)
@@ -606,7 +606,7 @@ This forces a fresh local variable to be captured on each loop iteration.
 
 Query operators provide deferred execution by returning *decorator* sequences.
 
-Unlike a traditional collection class such as an array or linked list, a decorator sequence (in general) has no backing structure of its own to store elements. Instead, it wraps another sequence that you supply at runtime, to which it maintains a permanent dependency. Whenever you request data from a decorator, it in turn must request data from the wrapped input sequence.
+Unlike a traditional collection class such as an array or linked list, a decorator sequence(in general) has no backing structure of its own to store elements. Instead, it wraps another sequence that you supply at runtime, to which it maintains a permanent dependency. Whenever you request data from a decorator, it in turn must request data from the wrapped input sequence.
 
 *The query operator’s transformation constitutes the “decoration.” If the output sequence performed no transformation, it would be a proxy rather than a decorator.*
 
@@ -622,7 +622,7 @@ IEnumerable<int> lessThanTen = new int[] { 5, 12, 3 }.Where(n => n < 10);
 
 When you enumerate `lessThanTen`, you’re, in effect, querying the array through the `Where` decorator.
 
-The good news—if you ever want to write your own query operator—is that implementing a decorator sequence is easy with a C# iterator. Here’s how you can write your own `Select` method (argument validation aside):
+The good news—if you ever want to write your own query operator—is that implementing a decorator sequence is easy with a C# iterator. Here’s how you can write your own `Select` method(argument validation aside):
 
 ```csharp
 public static IEnumerable<TResult> Select<TSource,TResult>(this IEnumerable<TSource> source, Func<TSource,TResult> selector)
@@ -641,7 +641,7 @@ public static IEnumerable<TResult> Select<TSource,TResult>(this IEnumerable<TSou
 }
 ```
 
-where `SelectSequence` is a (compiler-written) class whose enumerator encapsulates the logic in the iterator method.
+where `SelectSequence` is a(compiler-written) class whose enumerator encapsulates the logic in the iterator method.
 
 Hence, when you call an operator such as `Select` or `Where`, you’re doing nothing more than instantiating an enumerable class that decorates the input sequence.
 
@@ -653,7 +653,7 @@ Chaining query operators creates a layering of decorators. Consider the followin
 IEnumerable<int> query = new int[] { 5, 12, 3 }.Where(n => n < 10).OrderBy(n => n).Select(n => n * 10);
 ```
 
-Each query operator instantiates a new decorator that wraps the previous sequence (rather like a Russian nesting doll). The object model of this query is illustrated in Figure. Note that this object model is fully constructed prior to any enumeration.
+Each query operator instantiates a new decorator that wraps the previous sequence(rather like a Russian nesting doll). The object model of this query is illustrated in Figure. Note that this object model is fully constructed prior to any enumeration.
 
 ![Layered decorator sequences](./Images/Layered%20decorator%20sequences.png "Layered decorator sequences")
 
@@ -685,11 +685,11 @@ foreach (int n in query)
 // 50
 ```
 
-Behind the scenes, the foreach calls `GetEnumerator` on `Select’s` decorator (the last or outermost operator), which kicks everything off. The result is a chain of enumerators that structurally mirrors the chain of decorator sequences. Figure illustrates the flow of execution as enumeration proceeds.
+Behind the scenes, the foreach calls `GetEnumerator` on `Select’s` decorator(the last or outermost operator), which kicks everything off. The result is a chain of enumerators that structurally mirrors the chain of decorator sequences. Figure illustrates the flow of execution as enumeration proceeds.
 
 ![Execution of a local query](./Images/Execution%20of%20a%20local%20query.png "Execution of a local query")
 
-In the first section of this chapter, we depicted a query as a production line of conveyor belts. Extending this analogy, we can say a LINQ query is a lazy production line where the conveyor belts roll elements only upon demand. Constructing a query constructs a production line — with everything in place — but with nothing rolling. Then when the consumer requests an element (enumerates over the query), the rightmost conveyor belt activates; this in turn triggers the others to roll — as and when input sequence elements are needed. LINQ follows a demand-driven pull model, rather than a supply-driven push model. This is important — as we’ll see later — in allowing LINQ to scale to querying SQL databases.
+In the first section of this chapter, we depicted a query as a production line of conveyor belts. Extending this analogy, we can say a LINQ query is a lazy production line where the conveyor belts roll elements only upon demand. Constructing a query constructs a production line — with everything in place — but with nothing rolling. Then when the consumer requests an element(enumerates over the query), the rightmost conveyor belt activates; this in turn triggers the others to roll — as and when input sequence elements are needed. LINQ follows a demand-driven pull model, rather than a supply-driven push model. This is important — as we’ll see later — in allowing LINQ to scale to querying SQL databases.
 
 ## Subqueries
 
@@ -703,11 +703,11 @@ IEnumerable<string> query = musos.OrderBy(m => m.Split().Last());
 
 `m.Split` converts each string into a collection of words, upon which we then call the Last query operator. `m.Split().Last` is the subquery; query references the *outer query*.
 
-Subqueries are permitted because you can put any valid C# expression on the righthand side of a lambda. A subquery is simply another C# expression. This means that the rules for subqueries are a consequence of the rules for lambda expressions (and the behavior of query operators in general).
+Subqueries are permitted because you can put any valid C# expression on the righthand side of a lambda. A subquery is simply another C# expression. This means that the rules for subqueries are a consequence of the rules for lambda expressions(and the behavior of query operators in general).
 
 *The term subquery, in the general sense, has a broader meaning. For the purpose of describing LINQ, we use the term only for a query referenced from within the lambda expression of another query. In a query expression, a subquery amounts to a query referenced from an expression in any clause except the `from` clause.*
 
-A subquery is privately scoped to the enclosing expression and is able to reference parameters in the outer lambda expression (or range variables in a query expression).
+A subquery is privately scoped to the enclosing expression and is able to reference parameters in the outer lambda expression(or range variables in a query expression).
 
 `m.Split().Last` is a very simple subquery. The next query retrieves all strings in an array whose length matches that of the shortest string:
 
@@ -730,11 +730,11 @@ IEnumerable<string> outerQuery =
                         select n;
 ```
 
-Because the outer range variable (`n`) is in scope for a subquery, we cannot reuse n as the subquery’s range variable.
+Because the outer range variable(`n`) is in scope for a subquery, we cannot reuse n as the subquery’s range variable.
 
-A subquery is executed whenever the enclosing lambda expression is evaluated. This means a subquery is executed upon demand, at the discretion of the outer query. You could say that execution proceeds from the *outside in*. Local queries follow this model literally; interpreted queries (e.g., database queries) follow this model conceptually.
+A subquery is executed whenever the enclosing lambda expression is evaluated. This means a subquery is executed upon demand, at the discretion of the outer query. You could say that execution proceeds from the *outside in*. Local queries follow this model literally; interpreted queries(e.g., database queries) follow this model conceptually.
 
-The subquery executes as and when required, to feed the outer query. In our example, the subquery (the top conveyor belt in Figure) executes once for every outer loop iteration. This is illustrated in Figures.
+The subquery executes as and when required, to feed the outer query. In our example, the subquery(the top conveyor belt in Figure) executes once for every outer loop iteration. This is illustrated in Figures.
 
 *Subquery composition*
 ![Subquery composition](./Images/Subquery%20composition.png "Subquery composition")
@@ -760,7 +760,7 @@ IEnumerable<string> query =
     select n;
 ```
 
-In the later section “Interpreted Queries”, we’ll describe how remote sources such as SQL tables can be queried. Our example makes an ideal database query, since it would be processed as a unit, requiring only one round trip to the database server. This query, however, is inefficient for a local collection because the subquery is recalculated on each outer loop iteration. We can avoid this inefficiency by running the subquery separately (so that it’s no longer a subquery):
+In the later section “Interpreted Queries”, we’ll describe how remote sources such as SQL tables can be queried. Our example makes an ideal database query, since it would be processed as a unit, requiring only one round trip to the database server. This query, however, is inefficient for a local collection because the subquery is recalculated on each outer loop iteration. We can avoid this inefficiency by running the subquery separately(so that it’s no longer a subquery):
 
 ```csharp
 int shortest = names.Min(n => n.Length);
@@ -840,7 +840,7 @@ select n;
 
 ### The into Keyword
 
-*The into keyword is interpreted in two very different ways by query expressions, depending on context. The meaning we’re describing now is for signaling query continuation (the other is for signaling a `GroupJoin`).*
+*The into keyword is interpreted in two very different ways by query expressions, depending on context. The meaning we’re describing now is for signaling query continuation(the other is for signaling a `GroupJoin`).*
 
 The `into` keyword lets you “continue” a query after a projection and is a shortcut for progressively querying. With into, we can rewrite the preceding query as:
 
@@ -876,7 +876,7 @@ var query = names.Select(n1 => n1.ToUpper())
                  .Where(n2 => n1.Contains("x")); // Error: n1 no longer in scope
 ```
 
-The original name (`n1`) is lost by the time the `Where` filter runs. Where’s input sequence contains only uppercase names, so it cannot filter based on `n1`.
+The original name(`n1`) is lost by the time the `Where` filter runs. Where’s input sequence contains only uppercase names, so it cannot filter based on `n1`.
 
 ### Wrapping Queries
 
@@ -893,7 +893,7 @@ can be reformulated as:
 var finalQuery = from ... in (tempQueryExpr)
 ```
 
-Wrapping is semantically identical to progressive query building or using the into keyword (without the intermediate variable). The end result in all cases is a linear chain of query operators. For example, consider the following query:
+Wrapping is semantically identical to progressive query building or using the into keyword(without the intermediate variable). The end result in all cases is a linear chain of query operators. For example, consider the following query:
 
 ```csharp
 IEnumerable<string> query = from n in names
@@ -931,7 +931,7 @@ IEnumerable<string> query = names
 
 Wrapped queries can be confusing because they resemble the *subqueries* we wrote earlier. Both have the concept of an inner and outer query. When converted to fluent syntax, however, you can see that wrapping is simply a strategy for sequentially chaining operators. The end result bears no resemblance to a subquery, which embeds an inner query within the *lambda expression* of another.
 
-Returning to a previous analogy: when wrapping, the “inner” query amounts to the *preceding conveyor* belts. In contrast, a subquery rides above a conveyor belt and is activated upon demand through the conveyor belt’s lambda worker (as illustrated in Figure).
+Returning to a previous analogy: when wrapping, the “inner” query amounts to the *preceding conveyor* belts. In contrast, a subquery rides above a conveyor belt and is activated upon demand through the conveyor belt’s lambda worker(as illustrated in Figure).
 
 ## Projection Strategies
 
@@ -1031,15 +1031,15 @@ let accomplishes two things:
 - It projects new elements alongside existing elements.
 - It allows an expression to be used repeatedly in a query without being rewritten.
 
-The `let` approach is particularly advantageous in this example, because it allows the select clause to project either the original name (`n`) or its vowel-removed version (`vowelless`).
+The `let` approach is particularly advantageous in this example, because it allows the select clause to project either the original name(`n`) or its vowel-removed version(`vowelless`).
 
-You can have any number of let statements, before or after a where statement (see Figure). A `let` statement can reference variables introduced in earlier let statements (subject to the boundaries imposed by an `into` clause). `let` reprojects all existing variables transparently.
+You can have any number of let statements, before or after a where statement(see Figure). A `let` statement can reference variables introduced in earlier let statements(subject to the boundaries imposed by an `into` clause). `let` reprojects all existing variables transparently.
 
 A `let` expression need not evaluate to a scalar type: sometimes it’s useful to have it evaluate to a subsequence, for instance.
 
 ## Interpreted Queries
 
-LINQ provides two parallel architectures: *local* queries for local object collections, and *interpreted* queries for remote data sources. So far, we’ve examined the architecture of local queries, which operate over collections implementing `IEnumerable<T>`. Local queries resolve to query operators in the `Enumerable` class (by default), which in turn resolve to chains of decorator sequences. The delegates that they accept—whether expressed in query syntax, fluent syntax, or traditional delegates—are fully local to Intermediate Language (IL) code, just like any other C# method.
+LINQ provides two parallel architectures: *local* queries for local object collections, and *interpreted* queries for remote data sources. So far, we’ve examined the architecture of local queries, which operate over collections implementing `IEnumerable<T>`. Local queries resolve to query operators in the `Enumerable` class(by default), which in turn resolve to chains of decorator sequences. The delegates that they accept—whether expressed in query syntax, fluent syntax, or traditional delegates—are fully local to Intermediate Language(IL) code, just like any other C# method.
 
 By contrast, interpreted queries are *descriptive*. They operate over sequences that implement `IQueryable<T>`, and they resolve to the query operators in the Querya ble class, which emit *expression trees* that are interpreted at runtime.
 
@@ -1048,13 +1048,13 @@ By contrast, interpreted queries are *descriptive*. They operate over sequences 
 There are two `IQueryable<T>` implementations in the .NET Framework:
 
 - LINQ to SQL
-- Entity Framework (EF)
+- Entity Framework(EF)
 
 These LINQ-to-db technologies are very similar in their LINQ support: the LINQto-db queries in this book will work with both LINQ to SQL and EF unless otherwise specified.
 
 It’s also possible to generate an `IQueryable<T>` wrapper around an ordinary enumerable collection by calling the `AsQueryable` method. We describe `AsQueryable` in the section “Building Query Expressions”.
 
-In this section, we’ll use LINQ to SQL to illustrate interpreted query architecture because LINQ to SQL lets us query without having to first write an Entity Data Model. The queries that we write, however, work equally well with Entity Framework (and also many third-party products).
+In this section, we’ll use LINQ to SQL to illustrate interpreted query architecture because LINQ to SQL lets us query without having to first write an Entity Data Model. The queries that we write, however, work equally well with Entity Framework(and also many third-party products).
 
 *`IQueryable<T>` is an extension of `IEnumerable<T>` with additional methods for constructing expression trees. Most of the time you can ignore the details of these methods; they’re called indirectly by the Framework. The section “Building Query Expressions” covers `IQueryable<T>` in more detail.*
 
@@ -1141,7 +1141,7 @@ IQueryable<string> query = customers.Where(n => n.Name.Contains("a"))
 
 Next, the compiler resolves the query operator methods. Here’s where local and interpreted queries differ—interpreted queries resolve to query operators in the `Queryable` class instead of the `Enumerable` class.
 
-To see why, we need to look at the `customers` variable, the source upon which the whole query builds. `customers` is of type `Table<T>`, which implements `IQueryable<T>` (a subtype of `IEnumerable<T>`). This means the compiler has a choice in resolving Where: it could call the extension method in `Enumerable` or the following extension method in `Queryable`:
+To see why, we need to look at the `customers` variable, the source upon which the whole query builds. `customers` is of type `Table<T>`, which implements `IQueryable<T>`(a subtype of `IEnumerable<T>`). This means the compiler has a choice in resolving Where: it could call the extension method in `Enumerable` or the following extension method in `Queryable`:
 
 ```csharp
 public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, Expression <Func<TSource,bool>> predicate)
@@ -1149,7 +1149,7 @@ public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source
 
 The compiler chooses `Queryable`.`Where` because its signature is a more specific match.
 
-`Queryable.Where` accepts a predicate wrapped in an `Expression<TDelegate> `type. This instructs the compiler to translate the supplied lambda expression—in other words, `n=>n.Name.Contains("a")`—to an expression tree rather than a compiled delegate. An expression tree is an object model based on the types in `System.Linq.Expressions` that can be inspected at runtime (so that LINQ to SQL or EF can later translate it to a SQL statement).
+`Queryable.Where` accepts a predicate wrapped in an `Expression<TDelegate> `type. This instructs the compiler to translate the supplied lambda expression—in other words, `n=>n.Name.Contains("a")`—to an expression tree rather than a compiled delegate. An expression tree is an object model based on the types in `System.Linq.Expressions` that can be inspected at runtime(so that LINQ to SQL or EF can later translate it to a SQL statement).
 
 Because `Queryable.Where` also returns `IQueryable<T>`, the same process follows with the OrderBy and Select operators. The end result is illustrated in Figure. In the shaded box, there is an expression tree describing the entire query, which can be traversed at runtime.
 
@@ -1162,11 +1162,11 @@ queried twice.
 
 Under the covers, interpreted queries differ from local queries in how they execute. When you enumerate over an interpreted query, the outermost sequence runs a program that traverses the entire expression tree, processing it as a unit. In our example, LINQ to SQL translates the expression tree to a SQL statement, which it then executes, yielding the results as a sequence.
 
-*To work, LINQ to SQL needs some clues as to the schema of the database. The Table and Column attributes that we applied to the Customer class serve just this function. The section “LINQ to SQL and Entity Framework” on page 386 describes these attributes in more detail. Entity Framework is similar except that it also requires an Entity Data Model (EDM)—an XML file describing the mapping between database and entities.*
+*To work, LINQ to SQL needs some clues as to the schema of the database. The Table and Column attributes that we applied to the Customer class serve just this function. The section “LINQ to SQL and Entity Framework” on page 386 describes these attributes in more detail. Entity Framework is similar except that it also requires an Entity Data Model(EDM)—an XML file describing the mapping between database and entities.*
 
-We said previously that a LINQ query is like a production line. When you enumerate an IQueryable conveyor belt, though, it doesn’t start up the whole production line, like with a local query. Instead, just the IQueryable belt starts up, with a special enumerator that calls upon a production manager. The manager reviews the entire production line—which consists not of compiled code, but of dummies (method call expressions) with instructions pasted to their foreheads (expression trees). The manager then traverses all the expressions, in this case transcribing them to a single piece of paper (a SQL statement), which it then executes, feeding the results back to the consumer. Only one belt turns; the rest of the production line is a network of empty shells, existing just to describe what has to be done.
+We said previously that a LINQ query is like a production line. When you enumerate an IQueryable conveyor belt, though, it doesn’t start up the whole production line, like with a local query. Instead, just the IQueryable belt starts up, with a special enumerator that calls upon a production manager. The manager reviews the entire production line—which consists not of compiled code, but of dummies(method call expressions) with instructions pasted to their foreheads(expression trees). The manager then traverses all the expressions, in this case transcribing them to a single piece of paper(a SQL statement), which it then executes, feeding the results back to the consumer. Only one belt turns; the rest of the production line is a network of empty shells, existing just to describe what has to be done.
 
-This has some practical implications. For instance, with local queries, you can write your own query methods (fairly easily, with iterators) and then use them to supplement the predefined set. With remote queries, this is difficult, and even undesirable. If you wrote a `MyWhere` extension method accepting `IQueryable<T>`, it would be like putting your own dummy into the production line. The production manager wouldn’t know what to do with your dummy. Even if you intervened at this stage, your solution would be hard-wired to a particular provider, such as LINQ to SQL, and would not work with other IQueryable implementations. Part of the benefit of having a standard set of methods in Queryable is that they define a standard vocabulary for querying any remote collection. As soon as you try to extend the vocabulary, you’re no longer interoperable.
+This has some practical implications. For instance, with local queries, you can write your own query methods(fairly easily, with iterators) and then use them to supplement the predefined set. With remote queries, this is difficult, and even undesirable. If you wrote a `MyWhere` extension method accepting `IQueryable<T>`, it would be like putting your own dummy into the production line. The production manager wouldn’t know what to do with your dummy. Even if you intervened at this stage, your solution would be hard-wired to a particular provider, such as LINQ to SQL, and would not work with other IQueryable implementations. Part of the benefit of having a standard set of methods in Queryable is that they define a standard vocabulary for querying any remote collection. As soon as you try to extend the vocabulary, you’re no longer interoperable.
 
 Another consequence of this model is that an `IQueryable` provider may be unable to cope with some queries—even if you stick to the standard methods. LINQ to SQL and EF are both limited by the capabilities of the database server; some LINQ queries have no SQL translation. If you’re familiar with SQL, you’ll have a good intuition for what these are, although at times you have to experiment to see what causes a runtime error; it can be surprising what does work!
 
@@ -1215,10 +1215,10 @@ Because customers is of a type implementing `IQueryable<T>`, the `Select` operat
 On the LINQ to SQL side, the resulting SQL statement is equivalent to:
 
 ```sql
-SELECT UPPER (Name) FROM Customer ORDER BY UPPER (Name)
+SELECT UPPER(Name) FROM Customer ORDER BY UPPER(Name)
 ```
 
-The remaining work is done locally. In effect, we end up with a local query (on the outside), whose source is an interpreted query (the inside).
+The remaining work is done locally. In effect, we end up with a local query(on the outside), whose source is an interpreted query(the inside).
 
 ### AsEnumerable
 
@@ -1265,11 +1265,11 @@ var query = dataContext.MedicalArticles
 
 An alternative to calling `AsEnumerable` is to call `ToArray` or `ToList`. The advantage of `AsEnumerable` is that it doesn’t force immediate query execution, nor does it create any storage structure.
 
-*Moving query processing from the database server to the client can hurt performance, especially if it means retrieving more rows. A more efficient (though more complex) way to solve our example would be to use SQL CLR integration to expose a function on the database that implemented the regular expression.*
+*Moving query processing from the database server to the client can hurt performance, especially if it means retrieving more rows. A more efficient(though more complex) way to solve our example would be to use SQL CLR integration to expose a function on the database that implemented the regular expression.*
 
 ## LINQ to SQL and Entity Framework
 
-Throughout this and the following chapter, we use LINQ to SQL (L2S) and Entity Framework (EF) to demonstrate interpreted queries. We’ll now examine the key features of these technologies.
+Throughout this and the following chapter, we use LINQ to SQL(L2S) and Entity Framework(EF) to demonstrate interpreted queries. We’ll now examine the key features of these technologies.
 
 ---------
 
@@ -1279,7 +1279,7 @@ Both LINQ to SQL and Entity Framework are LINQ-enabled object-relational mappers
 
 L2S was written by the C# team and was released with Framework 3.5; EF was written by the ADO.NET team and was released later as part of Service Pack 1. L2S has since been taken over by the ADO.NET team. This has resulted in the product receiving only minor subsequent improvements, with the team concentrating more on EF.
 
-EF has improved considerably in later versions, although each technology still has unique strengths. L2S’s strengths are ease of use, simplicity, performance, and the quality of its SQL translations. EF’s strength is its flexibility in creating sophisticated mappings between the database and entity classes. EF also allows for databases other than SQL Server via a provider model (L2S also features a provider model, but this was made internal to encourage third parties to focus on EF instead).
+EF has improved considerably in later versions, although each technology still has unique strengths. L2S’s strengths are ease of use, simplicity, performance, and the quality of its SQL translations. EF’s strength is its flexibility in creating sophisticated mappings between the database and entity classes. EF also allows for databases other than SQL Server via a provider model(L2S also features a provider model, but this was made internal to encourage third parties to focus on EF instead).
 
 L2S is excellent for learning how to query databases in LINQ—because it keeps the object-relational side of things simple while you learn querying principles that also work with EF.
 
@@ -1304,7 +1304,7 @@ public class Customer
 The `[Table]` attribute, in the `System.Data.Linq.Mapping` namespace, tells L2S that an object of this type represents a row in a database table. By default, it assumes the table name matches the class name; if this is not the case, you can specify the table name as follows:
 
 ```csharp
-[Table (Name="Customers")]
+[Table(Name="Customers")]
 ```
 
 A class decorated with the `[Table]` attribute is called an entity in L2S. To be useful, its structure must closely—or exactly—match that of a database table, making it a low-level construct.
@@ -1312,7 +1312,7 @@ A class decorated with the `[Table]` attribute is called an entity in L2S. To be
 The `[Column]` attribute flags a field or property that maps to a column in a table. If the column name differs from the field or property name, you can specify the column name as follows:
 
 ```csharp
-[Column (Name="FullName")]
+[Column(Name="FullName")]
 public string Name;
 ```
 
@@ -1323,34 +1323,34 @@ Instead of defining public fields, you can define public properties in conjuncti
 ```csharp
 string _name;
 
-[Column (Storage="_name")]
+[Column(Storage="_name")]
 public string Name { get { return _name; } set { _name = value; } }
 ```
 
-`Column(Storage="_name")` tells L2S to write directly to the _name field (rather than the `Name` property) when populating the entity. L2S’s use of reflection allows the field to be private—as in this example.
+`Column(Storage="_name")` tells L2S to write directly to the _name field(rather than the `Name` property) when populating the entity. L2S’s use of reflection allows the field to be private—as in this example.
 
-*You can generate entity classes automatically from a database using either Visual Studio (add a new “LINQ to SQL Classes” project item) or with the SqlMetal command-line tool.*
+*You can generate entity classes automatically from a database using either Visual Studio(add a new “LINQ to SQL Classes” project item) or with the SqlMetal command-line tool.*
 
 ### Entity Framework Entity Classes
 
-As with L2S, EF lets you use any class to represent data (although you have to implement special interfaces if you want functionality such as navigation properties).
+As with L2S, EF lets you use any class to represent data(although you have to implement special interfaces if you want functionality such as navigation properties).
 
 The following entity class, for instance, represents a customer that ultimately maps to a customer table in the database:
 
 ```csharp
 // You'll need to reference System.Data.Entity.dll
-[EdmEntityType (NamespaceName = "NutshellModel", Name = "Customer")]
+[EdmEntityType(NamespaceName = "NutshellModel", Name = "Customer")]
 public partial class Customer
 {
-    [EdmScalarPropertyAttribute (EntityKeyProperty=true, IsNullable=false)]
+    [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
     public int ID { get; set; }
 
-    [EdmScalarProperty (EntityKeyProperty = false, IsNullable = false)]
+    [EdmScalarProperty(EntityKeyProperty = false, IsNullable = false)]
     public string Name { get; set; }
 }
 ```
 
-Unlike with L2S, however, a class such as this is not enough on its own. Remember that with EF, you’re not querying the database directly—you’re querying a higher-level model called the Entity Data Model (EDM). There needs to be some way to describe the EDM, and this is most commonly done via an XML file with an .edmx extension, which contains three parts:
+Unlike with L2S, however, a class such as this is not enough on its own. Remember that with EF, you’re not querying the database directly—you’re querying a higher-level model called the Entity Data Model(EDM). There needs to be some way to describe the EDM, and this is most commonly done via an XML file with an .edmx extension, which contains three parts:
 
 - The *conceptual model*, which describes the EDM in isolation of the database
 - The *store model*, which describes the database schema
@@ -1374,22 +1374,22 @@ A single table maps to one type, meaning that an inherited type maps to several 
 
 (In contrast, L2S supports only table per hierarchy.)
 
-EF also lets you query through the EDM without LINQ—using a textual language called Entity SQL (ESQL). This can be useful for dynamically constructed queries.
+EF also lets you query through the EDM without LINQ—using a textual language called Entity SQL(ESQL). This can be useful for dynamically constructed queries.
 
 ### DataContext and ObjectContext
 
-Once you’ve defined entity classes (and an EDM in the case of EF) you can start querying. The first step is to instantiate a DataContext (L2S) or ObjectContext (EF), specifying a connection string:
+Once you’ve defined entity classes(and an EDM in the case of EF) you can start querying. The first step is to instantiate a DataContext(L2S) or ObjectContext(EF), specifying a connection string:
 
 ```csharp
 var l2sContext = new DataContext("database connection string");
 var efContext = new ObjectContext("entity connection string");
 ```
 
-*Instantiating a `DataContext`/`ObjectContext` directly is a low-level approach and is good for demonstrating how the classes work. More typically, though, you instantiate a typed context (a subclassed version of these classes), a process we’ll describe shortly.*
+*Instantiating a `DataContext`/`ObjectContext` directly is a low-level approach and is good for demonstrating how the classes work. More typically, though, you instantiate a typed context(a subclassed version of these classes), a process we’ll describe shortly.*
 
 With L2S, you pass in the database connection string; with EF, you must pass an entity connection string, which incorporates the database connection string plus information on how to find the EDM. (If you’ve created an EDM in Visual Studio, you can find the entity connection string for your EDM in the `app.config` file.)
 
-You can then obtain a queryable object by calling `GetTable` (L2S) or `CreateObject` Set (EF). The following example uses the Customer class that we defined earlier:
+You can then obtain a queryable object by calling `GetTable`(L2S) or `CreateObject` Set(EF). The following example uses the Customer class that we defined earlier:
 
 ```csharp
 var context = new DataContext("database connection string");
@@ -1464,7 +1464,7 @@ If you use Visual Studio to create a “LINQ to SQL Classes” or “ADO.NET Ent
 
 ### Disposing DataContext/ObjectContext
 
-Although `DataContext`/`ObjectContext` implement `IDisposable`, you can (in general) get away without disposing instances. Disposing forces the context’s connection to dispose—but this is usually unnecessary because L2S and EF close connections automatically whenever you finish retrieving results from a query.
+Although `DataContext`/`ObjectContext` implement `IDisposable`, you can(in general) get away without disposing instances. Disposing forces the context’s connection to dispose—but this is usually unnecessary because L2S and EF close connections automatically whenever you finish retrieving results from a query.
 
 Disposing a context can actually be problematic because of lazy evaluation. Consider the following:
 
@@ -1485,9 +1485,9 @@ This will fail because the query is evaluated when we enumerate it—which is af
 
 There are some caveats, though, on not disposing contexts:
 
-- It relies on the connection object releasing all unmanaged resources on the Close method. While this holds true with `SqlConnection`, it’s theoretically possible for a third-party connection to keep resources open if you call Close but not Dispose (though this would arguably violate the contract defined by `IDbConnection.Close`).
-- If you manually call `GetEnumerator` on a query (instead of using foreach) and then fail to either dispose the enumerator or consume the sequence, the connection will remain open. Disposing the `DataContext`/`ObjectContext` provides a backup in such scenarios.
-- Some people feel that it’s tidier to dispose contexts (and all objects that implement `IDisposable`).
+- It relies on the connection object releasing all unmanaged resources on the Close method. While this holds true with `SqlConnection`, it’s theoretically possible for a third-party connection to keep resources open if you call Close but not Dispose(though this would arguably violate the contract defined by `IDbConnection.Close`).
+- If you manually call `GetEnumerator` on a query(instead of using foreach) and then fail to either dispose the enumerator or consume the sequence, the connection will remain open. Disposing the `DataContext`/`ObjectContext` provides a backup in such scenarios.
+- Some people feel that it’s tidier to dispose contexts(and all objects that implement `IDisposable`).
 
 If you want to explicitly dispose contexts, you must pass a `DataContext`/`ObjectContext` instance into methods such as `GetCustomers` to avoid the problem described.
 
@@ -1495,7 +1495,7 @@ If you want to explicitly dispose contexts, you must pass a `DataContext`/`Objec
 
 #### Object tracking
 
-A `DataContext`/`ObjectContext` instance keeps track of all the entities it instantiates, so it can feed the same ones back to you whenever you request the same rows in a table. In other words, a context in its lifetime will never emit two separate entities that refer to the same row in a table (where a row is identified by primary key).
+A `DataContext`/`ObjectContext` instance keeps track of all the entities it instantiates, so it can feed the same ones back to you whenever you request the same rows in a table. In other words, a context in its lifetime will never emit two separate entities that refer to the same row in a table(where a row is identified by primary key).
 
 -------
 
@@ -1518,7 +1518,7 @@ Customer a = context.Customers.OrderBy(c => c.Name).First();
 Customer b = context.Customers.OrderBy(c => c.ID).First();
 ```
 
-This has a couple of interesting consequences. First, consider what happens when L2S or EF encounters the second query. It starts by querying the database—and obtaining a single row. It then reads the primary key of this row and performs a lookup in the context’s entity cache. Seeing a match, it returns the existing object without updating any values. So, if another user had just updated that customer’s Name in the database, the new value would be ignored. This is essential for avoiding unexpected side effects (the `Customer` object could be in use elsewhere) and also for managing concurrency. If you had altered properties on the `Customer` object and not yet called `SubmitChanges`/`SaveChanges`, you wouldn’t want your properties automatically overwritten.
+This has a couple of interesting consequences. First, consider what happens when L2S or EF encounters the second query. It starts by querying the database—and obtaining a single row. It then reads the primary key of this row and performs a lookup in the context’s entity cache. Seeing a match, it returns the existing object without updating any values. So, if another user had just updated that customer’s Name in the database, the new value would be ignored. This is essential for avoiding unexpected side effects(the `Customer` object could be in use elsewhere) and also for managing concurrency. If you had altered properties on the `Customer` object and not yet called `SubmitChanges`/`SaveChanges`, you wouldn’t want your properties automatically overwritten.
 
 *To get fresh information from the database, you must either instantiate a new context or call its `Refresh` method, passing in the entity or entities that you want refreshed.*
 
@@ -1563,9 +1563,9 @@ create table Purchase
 With automatically generated entity classes, we can write queries such as this:
 
 ```csharp
-var context = new NutshellContext ("connection string");
+var context = new NutshellContext("connection string");
 
-// Retrieve all purchases made by the first customer (alphabetically):
+// Retrieve all purchases made by the first customer(alphabetically):
 
 Customer cust1 = context.Customers.OrderBy(c => c.Name).First();
 
@@ -1583,14 +1583,14 @@ Further, if `cust1` and `cust2` happened to refer to the same customer, `c1` and
 Let’s examine the signature of the automatically generated Purchases property on the Customer entity. With L2S:
 
 ```csharp
-[Association (Storage="_Purchases", OtherKey="CustomerID")]
+[Association(Storage="_Purchases", OtherKey="CustomerID")]
 public EntitySet <Purchase> Purchases { get {...} set {...} }
 ```
 
 With EF:
 
 ```csharp
-[EdmRelationshipNavigationProperty ("NutshellModel", "FK...", "Purchase")]
+[EdmRelationshipNavigationProperty("NutshellModel", "FK...", "Purchase")]
 public EntityCollection<Purchase> Purchases { get {...} set {...} }
 ```
 
@@ -1601,16 +1601,16 @@ As with any other type of query, you get deferred execution. With L2S, an Entity
 Here’s the `Purchases.Customer` property, on the other side of the relationship, with L2S:
 
 ```csharp
-[Association (Storage="_Customer",ThisKey="CustomerID",IsForeignKey=true)]
+[Association(Storage="_Customer",ThisKey="CustomerID",IsForeignKey=true)]
 public Customer Customer { get {...} set {...} }
 ```
 
-Although the property is of type `Customer`, its underlying field (`_Customer`) is of type `EntityRef`. The `EntityRef` type implements deferred loading, so the related `Customer` is not retrieved from the database until you actually ask for it.
+Although the property is of type `Customer`, its underlying field(`_Customer`) is of type `EntityRef`. The `EntityRef` type implements deferred loading, so the related `Customer` is not retrieved from the database until you actually ask for it.
 
 EF works in the same way, except that it doesn’t populate the property simply by you accessing it: you must call `Load` on its `EntityReference` object. This means EF contexts must expose properties for both the actual parent object and its `EntityReference` wrapper:
 
 ```csharp
-[EdmRelationshipNavigationProperty ("NutshellModel", "FK..., "Customer")]
+[EdmRelationshipNavigationProperty("NutshellModel", "FK..., "Customer")]
 public Customer Customer { get {...} set {...} }
 
 public EntityReference<Customer> CustomerReference { get; set; }
@@ -1668,8 +1668,8 @@ We’ve seen that you can avoid round-tripping by explicitly projecting associat
 
 The `DataLoadOptions` class is specific to L2S. It has two distinct uses:
 
-- It lets you specify, in advance, a filter for `EntitySet` associations (Associate `With`).
-- It lets you request that certain `EntitySets` be eagerly loaded, to lessen roundtripping (`LoadWith`).
+- It lets you specify, in advance, a filter for `EntitySet` associations(Associate `With`).
+- It lets you request that certain `EntitySets` be eagerly loaded, to lessen roundtripping(`LoadWith`).
 
 #### Specifying a filter in advance
 
@@ -1757,7 +1757,7 @@ You can request in EF that associations be eagerly loaded with the Include metho
 `Include` can be used with arbitrary breadth and depth. For example, if each `Purchase` also had `PurchaseDetails` and `SalesPersons` navigation properties, the entire nested structure could be eagerly loaded as follows:
 
 ```csharp
-context.Customers.Include("Purchases.PurchaseDetails").Include ("Purchases.SalesPersons")
+context.Customers.Include("Purchases.PurchaseDetails").Include("Purchases.SalesPersons")
 ```
 
 ### Updates
@@ -1770,7 +1770,7 @@ L2S’s `Table<T>` class provides `InsertOnSubmit` and `DeleteOnSubmit` methods 
 var context = new NutshellContext("connection string");
 
 Customer cust = new Customer { ID=1000, Name="Bloggs" };
-context.Customers.InsertOnSubmit (cust); // AddObject with EF
+context.Customers.InsertOnSubmit(cust); // AddObject with EF
 context.SubmitChanges(); // SaveChanges with EF
 ```
 
@@ -1787,9 +1787,9 @@ context.Customers.DeleteOnSubmit(cust); // DeleteObject with EF
 context.SubmitChanges(); // Deletes the customer
 ```
 
-`SubmitChanges`/`SaveChanges` gathers all the changes that were made to its entities since the context’s creation (or the last save), and then executes a SQL statement to write them to the database. Any `TransactionScope` is honored; if none is present it wraps all statements in a new transaction.
+`SubmitChanges`/`SaveChanges` gathers all the changes that were made to its entities since the context’s creation(or the last save), and then executes a SQL statement to write them to the database. Any `TransactionScope` is honored; if none is present it wraps all statements in a new transaction.
 
-You can also add new or existing rows to an `EntitySet`/`EntityCollection` by calling `Add`. L2S and EF automatically populate the foreign keys when you do this (after calling `SubmitChanges` or `SaveChanges`):
+You can also add new or existing rows to an `EntitySet`/`EntityCollection` by calling `Add`. L2S and EF automatically populate the foreign keys when you do this(after calling `SubmitChanges` or `SaveChanges`):
 
 ```csharp
 Purchase p1 = new Purchase { ID=100, Description="Bike", Price=500 };
@@ -1803,12 +1803,12 @@ cust.Purchases.Add(p2);
 context.SubmitChanges(); // (or SaveChanges with EF)
 ```
 
-*If you don’t want the burden of allocating unique keys, you can use either an auto-incrementing field (IDENTITY in SQL Server) or a Guid for the primary key.*
+*If you don’t want the burden of allocating unique keys, you can use either an auto-incrementing field(IDENTITY in SQL Server) or a Guid for the primary key.*
 
-In this example, L2S/EF automatically writes 1 into the CustomerID column of each of the new purchases (L2S knows to do this because of the association attribute that we defined on the Purchases property; EF knows to do this because of information in the EDM):
+In this example, L2S/EF automatically writes 1 into the CustomerID column of each of the new purchases(L2S knows to do this because of the association attribute that we defined on the Purchases property; EF knows to do this because of information in the EDM):
 
 ```csharp
-[Association (Storage="_Purchases", OtherKey="CustomerID")]
+[Association(Storage="_Purchases", OtherKey="CustomerID")]
 public EntitySet <Purchase> Purchases { get {...} set {...} }
 ```
 
@@ -1839,7 +1839,7 @@ context.SubmitChanges(); // Submit SQL to database (SaveChanges in EF)
 
 Because this tries to set each purchase’s `CustomerID` field to `null`, `Purchase.CustomerID` must be *nullable* in the database; otherwise, an exception is thrown. (Further, the `CustomerID` field or property in the entity class must be a *nullable* type.)
 
-To delete child entities entirely, remove them from the `Table<T>` or `ObjectSet<T>` instead (this means you must retrieve them first). With L2S:
+To delete child entities entirely, remove them from the `Table<T>` or `ObjectSet<T>` instead(this means you must retrieve them first). With L2S:
 
 ```csharp
 var c = context;
@@ -1853,8 +1853,8 @@ With EF:
 
 ```csharp
 var c = context;
-c.Purchases.DeleteObject(c.Purchases.Single (p => p.ID == 100));
-c.Purchases.DeleteObject(c.Purchases.Single (p => p.ID == 101));
+c.Purchases.DeleteObject(c.Purchases.Single(p => p.ID == 100));
+c.Purchases.DeleteObject(c.Purchases.Single(p => p.ID == 101));
 
 c.SaveChanges(); // Submit SQL to database
 ```
@@ -1896,7 +1896,7 @@ public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> sour
 public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, Expression<Func<TSource,bool>> predicate);
 ```
 
-When you assign a lambda expression to an intermediate variable, however, you must be explicit on whether to resolve to a delegate (i.e., `Func<>`) or an expression tree (i.e., `Expression<Func<>>`). In the following example, predicate1 and predicate2 are not interchangeable:
+When you assign a lambda expression to an intermediate variable, however, you must be explicit on whether to resolve to a delegate(i.e., `Func<>`) or an expression tree(i.e., `Expression<Func<>>`). In the following example, predicate1 and predicate2 are not interchangeable:
 
 ```csharp
 Func <Product, bool> predicate1 = p => !p.Discontinued;
@@ -1960,7 +1960,7 @@ void Test()
 }
 ```
 
-`AsQueryable` wraps `IQueryable<T>` clothing around a local sequence so that subsequent query operators resolve to expression trees. When you later enumerate over the result, the expression trees are implicitly compiled (at a small performance cost), and the local sequence enumerates as it would ordinarily.
+`AsQueryable` wraps `IQueryable<T>` clothing around a local sequence so that subsequent query operators resolve to expression trees. When you later enumerate over the result, the expression trees are implicitly compiled(at a small performance cost), and the local sequence enumerates as it would ordinarily.
 
 ### Expression Trees
 
@@ -1970,13 +1970,13 @@ We said previously that an implicit conversion from a lambda expression to `Expr
 
 An expression tree is a miniature code DOM. Each node in the tree is represented by a type in the `System.Linq.Expressions` namespace; these types are illustrated in Figure.
 
-The base class for all nodes is the (nongeneric) Expression class. The generic `Expression<TDelegate>` class actually means “typed lambda expression” and might have been named `LambdaExpression<TDelegate> `if it wasn’t for the clumsiness of this:
+The base class for all nodes is the(nongeneric) Expression class. The generic `Expression<TDelegate>` class actually means “typed lambda expression” and might have been named `LambdaExpression<TDelegate> `if it wasn’t for the clumsiness of this:
 
 ```
 LambdaExpression<Func<Customer,bool>> f = ...
 ```
 
-`Expression<T>’s` base type is the (nongeneric) `LambdaExpression` class. LamdbaEx pression provides type unification for lambda expression trees: any typed `Expression<T>` can be cast to a `LambdaExpression`.
+`Expression<T>’s` base type is the(nongeneric) `LambdaExpression` class. LamdbaEx pression provides type unification for lambda expression trees: any typed `Expression<T>` can be cast to a `LambdaExpression`.
 
 The thing that distinguishes `LambdaExpressions` from ordinary `Expressions` is that lambda expressions have parameters.
 
@@ -1985,22 +1985,22 @@ The thing that distinguishes `LambdaExpressions` from ordinary `Expressions` is 
 
 To create an expression tree, don’t instantiate node types directly; rather, call static methods provided on the `Expression` class. Here are all the methods:
 
-|                   |                       |                       |               |
-|-------------------|-----------------------|-----------------------|---------------|
-| `Add`             | `ElementInit`         | `MakeMemberAccess`    | `Or`          |
-| `AddChecked`      | `Equal`               | `MakeUnary`           | `OrElse`      |
-| `And`             | `ExclusiveOr`         | `MemberBind`          | `Parameter`   |
-| `AndAlso`         | `Field`               | `MemberInit`          | `Power`       |
-| `ArrayIndex`      | `GreaterThan`         | `Modulo`              | `Property`    |
-| `ArrayLength`     | `GreaterThanOrEqual`  | `Multiply`            | `PropertyOrField` |
-| `Bind`            | `Invoke`              | `MultiplyChecked`     | `Quote`       |
-| `Call`            | `Lambda`              | `Negate`              | `RightShift`  |
-| `Coalesce`        | `LeftShift`           | `NegateChecked`       | `Subtract`    |
-| `Condition`       | `LessThan`            | `New`                 | `SubtractChecked` |
-| `Constant`        | `LessThanOrEqual`     | `NewArrayBounds`      | `TypeAs`      |
-| `Convert`         | `ListBind`            | `NewArrayInit`        | `TypeIs`      |
-| `ConvertChecked`  | `ListInit`            | `Not`                 | `UnaryPlus`   |
-| `Divide`          | `MakeBinary`          | `NotEqual`            ||
+|                  |                      |                    |                   |
+| ---------------- | -------------------- | ------------------ | ----------------- |
+| `Add`            | `ElementInit`        | `MakeMemberAccess` | `Or`              |
+| `AddChecked`     | `Equal`              | `MakeUnary`        | `OrElse`          |
+| `And`            | `ExclusiveOr`        | `MemberBind`       | `Parameter`       |
+| `AndAlso`        | `Field`              | `MemberInit`       | `Power`           |
+| `ArrayIndex`     | `GreaterThan`        | `Modulo`           | `Property`        |
+| `ArrayLength`    | `GreaterThanOrEqual` | `Multiply`         | `PropertyOrField` |
+| `Bind`           | `Invoke`             | `MultiplyChecked`  | `Quote`           |
+| `Call`           | `Lambda`             | `Negate`           | `RightShift`      |
+| `Coalesce`       | `LeftShift`          | `NegateChecked`    | `Subtract`        |
+| `Condition`      | `LessThan`           | `New`              | `SubtractChecked` |
+| `Constant`       | `LessThanOrEqual`    | `NewArrayBounds`   | `TypeAs`          |
+| `Convert`        | `ListBind`           | `NewArrayInit`     | `TypeIs`          |
+| `ConvertChecked` | `ListInit`           | `Not`              | `UnaryPlus`       |
+| `Divide`         | `MakeBinary`         | `NotEqual`         |
 
 shows the expression tree that the following assignment creates:
 
@@ -2021,7 +2021,7 @@ Console.WriteLine(((BinaryExpression) f.Body).Right); // 5
 Let’s now build this expression from scratch. The principle is that you start from the bottom of the tree and work your way up. The bottommost thing in our tree is a `ParameterExpression`, the lambda expression parameter called “s” of type `string`:
 
 ```csharp
-ParameterExpression p = Expression.Parameter(typeof (string), "s");
+ParameterExpression p = Expression.Parameter(typeof(string), "s");
 ```
 
 The next step is to build the `MemberExpression` and `ConstantExpression`. In the former case, we need to access the Length property of our parameter, “s”:
