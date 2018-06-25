@@ -9,7 +9,7 @@ string s = null;    // OK, Reference Type
 int i = null;       // Compile Error, Value Type cannot be null
 ```
 
-Para representar `null` em um tipo de valor, você deve usar um `construct` especial chamada de *nullable type*. Um *nullable type* é denotado com um tipo de valor seguido pelo símbolo `?`:
+Para representar `null` em um tipo de valor, você deve usar um `construct` especial chamada de _nullable type_. Um _nullable type_ é denotado com um tipo de valor seguido pelo símbolo `?`:
 
 ```csharp
 int? i = null;                  // OK, Nullable Type
@@ -104,7 +104,7 @@ int length = sb?.ToString().Length ?? 0; // Evaluates to 0 if sb is null
 
 ## Scenarios for Nullable Types
 
-One of the most common scenarios for nullable types is to represent unknown values. This frequently occurs in database programming, where a class is mapped to a table with nullable columns. If these columns are strings (e.g., an `EmailAddress` column on a Customer table), there is no problem, as string is a reference type in the CLR, which can be null. However, most other SQL column types map to CLR struct types, making nullable types very useful when mapping SQL to the CLR. For example:
+One of the most common scenarios for nullable types is to represent unknown values. This frequently occurs in database programming, where a class is mapped to a table with nullable columns. If these columns are strings(e.g., an `EmailAddress` column on a Customer table), there is no problem, as string is a reference type in the CLR, which can be null. However, most other SQL column types map to CLR struct types, making nullable types very useful when mapping SQL to the CLR. For example:
 
 ```csharp
 // Maps to a Customer table in a database
@@ -115,7 +115,7 @@ public class Customer
 }
 ```
 
-A nullable type can also be used to represent the backing field of what’s sometimes called an *ambient property*. An ambient property, if null, returns the value of its parent. For example:
+A nullable type can also be used to represent the backing field of what’s sometimes called an _ambient property_. An ambient property, if null, returns the value of its parent. For example:
 
 ```csharp
 public class Row
