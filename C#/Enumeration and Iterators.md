@@ -2,16 +2,16 @@
 
 ## Enumeration
 
-- An *enumerator* is a read-only, forward-only cursor over a sequence of values.
-- Um enumerator é um objeto que implementa qualquer uma das seguintes interfaces:
-    - `System.Collections.IEnumerator`
-    - `System.Collections.Generic.IEnumerator<T>`
-- `foreach` itera sobre um objeto *enumerable*.
-- An *enumerable* object is the logical representation of a sequence. It is not itself a cursor, but an object that produces cursors over itself.
-- Um objeto *enumerable*:
-    - Implementa `IEnumerable` ou `IEnumerable<T>`.
-    - Tem um método chamado `GetEnumerator` que retorna um `enumerator`.
-- `IEnumerator` and `IEnumerable` are defined in `System.Collections`. `IEnumerator<T>` and `IEnumerable<T>` are defined in `System.Collections.Generic`.
+-   An _enumerator_ is a read-only, forward-only cursor over a sequence of values.
+-   Um enumerator é um objeto que implementa qualquer uma das seguintes interfaces:
+    -   `System.Collections.IEnumerator`
+    -   `System.Collections.Generic.IEnumerator<T>`
+-   `foreach` itera sobre um objeto _enumerable_.
+-   An _enumerable_ object is the logical representation of a sequence. It is not itself a cursor, but an object that produces cursors over itself.
+-   Um objeto _enumerable_:
+    -   Implementa `IEnumerable` ou `IEnumerable<T>`.
+    -   Tem um método chamado `GetEnumerator` que retorna um `enumerator`.
+-   `IEnumerator` and `IEnumerable` are defined in `System.Collections`. `IEnumerator<T>` and `IEnumerable<T>` are defined in `System.Collections.Generic`.
 
 -------------
 
@@ -21,9 +21,9 @@
 
 -------------
 
-*If the enumerator implements `IDisposable`, the foreach statement also acts as a using statement, implicitly disposing the enumerator object.*
+_If the enumerator implements `IDisposable`, the foreach statement also acts as a using statement, implicitly disposing the enumerator object._
 
-O padrão *enumeration* é o seguinte:
+O padrão _enumeration_ é o seguinte:
 
 ```csharp
 class Enumerator // Typically implements IEnumerator or IEnumerator<T>
@@ -38,7 +38,7 @@ class Enumerable // Typically implements IEnumerable or IEnumerable<T>
 }
 ```
 
-Aqui está a maneira **de alto nível(*high-level*)** de iteração através dos caracteres na palavra `beer` usando uma instrução `foreach`:
+Aqui está a maneira **de alto nível(_high-level_)** de iteração através dos caracteres na palavra `beer` usando uma instrução `foreach`:
 
 ```csharp
 foreach(char c in "beer")
@@ -56,7 +56,7 @@ using (var enumerator = "beer".GetEnumerator())
     }
 ```
 
-Se o *enumerator* implementar `IDisposable`, a instrução `foreach` também atua como uma declaração de `using`, descartando implicitamente o objeto *enumerator*.
+Se o _enumerator_ implementar `IDisposable`, a instrução `foreach` também atua como uma declaração de `using`, descartando implicitamente o objeto _enumerator_.
 
 ## Collection Initializers
 
@@ -105,7 +105,7 @@ O último é válido não apenas com dicionários, mas com qualquer tipo para o 
 
 ## Iterators
 
-Enquanto uma declaração `foreach` é um consumidor de um *enumerador*, um *iterador* é um produtor de um *enumerador*. Neste exemplo, usamos um *iterador* para retornar uma seqüência de números de Fibonacci (onde cada número é a soma dos dois anteriores):
+Enquanto uma declaração `foreach` é um consumidor de um _enumerador_, um _iterador_ é um produtor de um _enumerador_. Neste exemplo, usamos um _iterador_ para retornar uma seqüência de números de Fibonacci(onde cada número é a soma dos dois anteriores):
 
 ```csharp
 using System;
@@ -135,11 +135,11 @@ class Test
 
 Considerando que uma declaração de `return` expressa "Aqui está o valor que você me pediu para retornar deste método", uma declaração de `yield return` expressa "Aqui está o próximo elemento que você me pediu para produção deste enumerador." Em cada declaração de `yield`, o controle é retornado ao chamador, mas o estado do receptor é mantido para que o método possa continuar sendo executado assim que o chamador enumera o próximo elemento. A vida útil desse estado é vinculada ao enumerador, de modo que o estado possa ser liberado quando o responsável pela chamada terminar de enumerar.
 
-*The compiler converts iterator methods into private classes that implement `IEnumerable<T>` and/or `IEnumerator<T>`. The logic within the iterator block is “inverted” and spliced into the `MoveNext` method and `Current` property on the compiler written enumerator class. This means that when you call an iterator method, all you’re doing is instantiating the compiler written class; none of your code actually runs! Your code runs only when you start enumerating over the resultant sequence, typically with a foreach statement.*
+_The compiler converts iterator methods into private classes that implement `IEnumerable<T>` and/or `IEnumerator<T>`. The logic within the iterator block is “inverted” and spliced into the `MoveNext` method and `Current` property on the compiler written enumerator class. This means that when you call an iterator method, all you’re doing is instantiating the compiler written class; none of your code actually runs! Your code runs only when you start enumerating over the resultant sequence, typically with a foreach statement._
 
 ## Iterator Semantics
 
-An *iterator* is a method, property, or indexer that contains one or more `yield` statements. An *iterator* must return one of the following four interfaces (otherwise, the compiler will generate an error):
+An _iterator_ is a method, property, or indexer that contains one or more `yield` statements. An _iterator_ must return one of the following four interfaces(otherwise, the compiler will generate an error):
 
 ```csharp
 // Enumerable interfaces
@@ -151,9 +151,9 @@ System.Collections.IEnumerator
 System.Collections.Generic.IEnumerator<T>
 ```
 
-An iterator has different semantics, depending on whether it returns an *enumerable* interface or an *enumerator* interface.
+An iterator has different semantics, depending on whether it returns an _enumerable_ interface or an _enumerator_ interface.
 
-*Multiple yield statements* are permitted. For example:
+_Multiple yield statements_ are permitted. For example:
 
 ```csharp
 class Test
@@ -189,7 +189,7 @@ static IEnumerable<string> Foo(bool breakEarly)
 }
 ```
 
-*A return statement is illegal in an iterator block—you must use a `yield break` instead.*
+_A return statement is illegal in an iterator block—you must use a `yield break` instead._
 
 ### Iterators and try/catch/finally blocks
 
@@ -204,7 +204,6 @@ IEnumerable<string> Foo()
 ```
 
 Nor can `yield return` appear in a `catch` or `finally` block. These restrictions are due to the fact that the compiler must translate iterators into ordinary classes with `MoveNext`, `Current`, and `Dispose` members, and translating exception handling blocks would create excessive complexity.
-
 
 ```csharp
 IEnumerable<string> Foo()
@@ -262,6 +261,6 @@ class Test
 
 Each element is not calculated until the last moment—when requested by a `Move` `Next()` operation. Figure shows the data requests and data output over time.
 
-![Fibonacci Composing Sequences](./Images/Fibonacci%20Composing%20Sequences.png "Fibonacci Composing Sequences")
+![Fibonacci Composing Sequences](./Images/Fibonacci%20Composing%20Sequences.png 'Fibonacci Composing Sequences')
 
-*The composability of the iterator pattern is extremely useful in LINQ;*
+_The composability of the iterator pattern is extremely useful in LINQ;_
