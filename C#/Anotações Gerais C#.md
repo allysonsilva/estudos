@@ -1,6 +1,6 @@
 # Anotações `C#`
 
-- **Os programas C# são verificados de forma estática (em tempo de compilação) e em tempo de execução (pelo CLR)**.
+- **Os programas C# são verificados de forma estática(em tempo de compilação) e em tempo de execução(pelo CLR)**.
 
 - Classes estáticas tem todos os seus membros estáticos.
 
@@ -20,7 +20,7 @@
 
 - O modificador `out` é mais utilizado para obter vários valores de retorno de um método.
 
-- Os parâmetros obrigatórios devem ocorrer antes dos parâmetros opcionais tanto na declaração do método como na chamada do método (a exceção é com o argumento `params`, que sempre são os últimos).
+- Os parâmetros obrigatórios devem ocorrer antes dos parâmetros opcionais tanto na declaração do método como na chamada do método(a exceção é com o argumento `params`, que sempre são os últimos).
 
 - Os argumentos nomeados podem ocorrer em qualquer ordem.
 
@@ -28,7 +28,7 @@
 
 - Se a classe não estiver aninhada dentro de outra classe, o modificador de acesso padrão é `internal`. Se a classe estiver aninhada dentro de outra classe, o especificador de acesso padrão é `private`.
 
-- Um tipo pode sobrecarregar métodos (tem vários métodos com o mesmo nome), desde que as assinaturas sejam diferentes.
+- Um tipo pode sobrecarregar métodos(tem vários métodos com o mesmo nome), desde que as assinaturas sejam diferentes.
 
 - Um tipo de retorno de um método não faz parte da assinatura do método para fins de sobrecarga de método. No entanto, ele faz parte da assinatura do método ao determinar a compatibilidade entre um delegate e o método para o qual ele aponta.
 
@@ -80,13 +80,13 @@
 
 - Um upcast sempre é bem-sucedido; Um downcast só é bem sucedido se o objeto for apropriado.
 
-- Uma operação de `upcast` cria uma referência de classe base a partir de uma referência de subclasse. Upcast referência ainda o mesmo objeto. O objeto a ser referenciado não é alterado ou convertido. O objeto depois de realizado o upcast tem uma visão mais restritiva sobre esse objeto(Original).
+- Uma operação de upcast cria uma referência de classe base a partir de uma referência de subclasse. Upcast referência ainda o mesmo objeto. O objeto a ser referenciado não é alterado ou convertido. O objeto depois de realizado o upcast tem uma visão mais restritiva sobre esse objeto(Original).
 
 - Uma operação de downcast cria uma referência de subclasse a partir de uma referência de classe base. Se um downcast falhar, uma `InvalidCastException` é lançado.
 
 - O operador `as` avalia downcast como `null` (em vez de lançar uma exceção) se o downcast falhar.
 
-- O operador `is` se testar se uma conversão de referência seria bem sucedida; Em outras palavras, se um objeto deriva de uma classe especificada (ou implementa uma interface).
+- O operador `is` se testar se uma conversão de referência seria bem sucedida; Em outras palavras, se um objeto deriva de uma classe especificada(ou implementa uma interface).
 
 - Boxing é o ato de converter uma instância de tipo de valor em uma instância de tipo de referência.
 
@@ -94,7 +94,7 @@
 
 - O Boxing copia a instância do tipo de valor no novo objeto e o unboxing copia o conteúdo do objeto de volta para uma instância de tipo de valor.
 
-- Os programas C# são verificados de forma estática (no tempo de compilação) e no tempo de execução (pelo CLR).
+- Os programas C# são verificados de forma estática(no tempo de compilação) e no tempo de execução(pelo CLR).
 
 - Uma estrutura é um tipo de valor, enquanto uma classe é um tipo de referência.
 
@@ -104,7 +104,7 @@
     - Um finalizador.
     - Membros virtuais ou protegidos.
 
-- Por convenção, parâmetros, variáveis ​​locais e campos privados devem estar em **camel case** (por exemplo, *myVariable*) e todos os outros identificadores devem estar em **Pascal case** (por exemplo, *MyMethod*).
+- Por convenção, parâmetros, variáveis ​​locais e campos privados devem estar em **camel case**(por exemplo, *myVariable*) e todos os outros identificadores devem estar em **Pascal case**(por exemplo, *MyMethod*).
 
 - **Literals** are primitive pieces of data lexically embedded into the program.
 
@@ -120,7 +120,7 @@
 
 - Quando uma **overload**(sobrecarga) é chamada, o tipo mais específico tem precedência.
 
-- **GetType** is evaluated at runtime; **typeof** is evaluated statically at compile time (when generic type parameters are involved, it’s resolved by the just-in-time compiler).
+- **GetType** is evaluated at runtime; **typeof** is evaluated statically at compile time(when generic type parameters are involved, it’s resolved by the just-in-time compiler).
 
 - The data members and function members that operate on the **instance** of the type are called instance members. By default, members are instance members.
 
@@ -133,7 +133,7 @@
 
 - All C# types fall into the following categories:
     - **Value types**
-        - Os tipos de valor compreendem a maioria dos tipos incorporados (especificamente, todos os tipos `numeric`, o tipo `char` e o tipo `bool`), bem como tipos de struct e enum personalizados .
+        - Os tipos de valor compreendem a maioria dos tipos incorporados(especificamente, todos os tipos `numeric`, o tipo `char` e o tipo `bool`), bem como tipos de struct e enum personalizados .
     - **Reference types**
         - Os tipos de referência compreendem todos os tipos de `class`, `array`, `delegate` e interface.(This includes the predefined string type).
     - Generic type parameters.
@@ -155,21 +155,21 @@
 
 - Numeric suffixes explicitly define the type of a literal. Suffixes can be either lower or uppercase.
 
-- O *conditional operator* (mais comumente chamado de  *ternary operator*, pois é o único operador que leva três operandos) tem a forma `q ? a : b`, onde se a condição `q` é verdade, `a` é avaliado, senão `b` é avaliado.
+- O *conditional operator*(mais comumente chamado de  *ternary operator*, pois é o único operador que leva três operandos) tem a forma `q ? a : b`, onde se a condição `q` é verdade, `a` é avaliado, senão `b` é avaliado.
 
 - Um literal de *string* é representado dentro de aspas duplas.
 
 - *String* é um tipo de **referência**, em vez de um tipo de valor. Seus operadores de igualdade, no entanto, seguem a semântica do tipo de valor:
 
-    ```c#
+    ```csharp
     string a = "test";
     string b = "test";
-    Console.Write (a == b); // True
+    Console.Write(a == b); // True
     ```
 
 - C# allows **verbatim string literals**. A verbatim string literal is prefixed with `@` and does not support escape sequences. A verbatim string literal can also span multiple lines.
 
-    ```c#
+    ```csharp
     string path = @ "\\server\fileshare\helloworld.cs";
 
     string escaped = "First Line\r\nSecond Line";
@@ -177,7 +177,7 @@
     Second Line";
 
     // True if your IDE uses CR-LF line separators:
-    Console.WriteLine (escaped == verbatim);
+    Console.WriteLine(escaped == verbatim);
 
     /* You can include the double-quote character
     in a verbatim literal by writing it twice */
@@ -186,7 +186,7 @@
 
 - Uma seqüência de caracteres precedida com o caractere `$` é chamada de **interpolated string**. As strings interpoladas podem incluir expressões dentro das chaves. Qualquer expressão `C#` válida de qualquer tipo pode aparecer nas chaves que converterá a expressão para uma string chamando seu método `ToString` ou equivalente.
 
-    ```c#
+    ```csharp
     int x = 4;
     Console.Write($"A square has {x} sides");
 
@@ -195,12 +195,12 @@
     x} lines";
     ```
 
-- Um **array** representa um número fixo de variáveis (chamados elementos) de um tipo específico. Os elementos em uma matriz são sempre armazenados em um bloco contíguo de memória, proporcionando acesso altamente eficiente.
+- Um **array** representa um número fixo de variáveis(chamados elementos) de um tipo específico. Os elementos em uma matriz são sempre armazenados em um bloco contíguo de memória, proporcionando acesso altamente eficiente.
     - Uma matriz é indicada com colchetes após o tipo de elemento.
     - Os colchetes também indexam a matriz, acessando um determinado elemento por posição.
     - Uma vez que uma matriz foi criada seu comprimento não pode ser alterado.
 
-    ```c#
+    ```csharp
     char[] vowels = new char[5]; // Declare an array of 5 characters
 
     vowels[0] = 'a';
@@ -209,12 +209,12 @@
     vowels[3] = 'o';
     vowels[4] = 'u';
 
-    Console.WriteLine (vowels[1]); // e
+    Console.WriteLine(vowels[1]); // e
     ```
 
-    - Uma **initialization expression** de matriz permite que você declare e preencha uma matriz em uma única etapa. Para que isso funcione, os elementos devem ser completamente convertidos em um único tipo (e pelo menos um dos elementos deve ser desse tipo e deve haver exatamente um melhor tipo).
+    - Uma **initialization expression** de matriz permite que você declare e preencha uma matriz em uma única etapa. Para que isso funcione, os elementos devem ser completamente convertidos em um único tipo(e pelo menos um dos elementos deve ser desse tipo e deve haver exatamente um melhor tipo).
 
-    ```c#
+    ```csharp
     char[] vowels = new char[] {'a', 'e', 'i', 'o', 'u'};
 
     // or
@@ -224,44 +224,44 @@
 
     - Uma matriz em si é sempre um objeto de tipo de referência, independentemente do tipo de elemento.  Por exemplo, o seguinte é legal:
 
-    ```c#
+    ```csharp
     int[] a = null;
     ```
 
 - A **stack**(Pilha) é um bloco de memória para armazenar variáveis e parâmetros locais. A pilha cresce logicamente e diminui quando uma função é inserida e encerrada.
 
-- O **Heap** é um bloco de memória em que os objetos (ou seja, exemplos de tipo de referência) residem. Sempre que um novo objeto é criado, ele é alocado no heap e uma referência a esse objeto é retornada. Durante a execução de um programa, o heap começa a se preencher à medida que novos objetos são criados. O tempo de execução tem um coletor de lixo que periodicamente localiza objetos do heap, então seu programa não fica sem memória. Um objeto é elegível para desalocação, logo que não seja referenciado por qualquer coisa que esteja "alive".
+- O **Heap** é um bloco de memória em que os objetos(ou seja, exemplos de tipo de referência) residem. Sempre que um novo objeto é criado, ele é alocado no heap e uma referência a esse objeto é retornada. Durante a execução de um programa, o heap começa a se preencher à medida que novos objetos são criados. O tempo de execução tem um coletor de lixo que periodicamente localiza objetos do heap, então seu programa não fica sem memória. Um objeto é elegível para desalocação, logo que não seja referenciado por qualquer coisa que esteja "alive".
 
-- O Heap também armazena campos estáticos. Ao contrário dos objetos alocados no heap (que podem ser coletados), estes vivem até que o domínio do aplicativo seja derrubado.
+- O Heap também armazena campos estáticos. Ao contrário dos objetos alocados no heap(que podem ser coletados), estes vivem até que o domínio do aplicativo seja derrubado.
 
 - **Definite Assignment**.
     - As variáveis locais devem ter um valor antes de serem lidas.
-    - Os argumentos de função devem ser fornecidos quando um método é chamado (a menos que seja marcado como opcional).
-    - Todas as outras variáveis (como campos e elementos de matriz) são automaticamente inicializadas em tempo de execução.
+    - Os argumentos de função devem ser fornecidos quando um método é chamado(a menos que seja marcado como opcional).
+    - Todas as outras variáveis(como campos e elementos de matriz) são automaticamente inicializadas em tempo de execução.
 
 - Todas as instâncias de tipo têm um valor padrão. O valor padrão para os tipos predefinidos é o resultado de uma redução zero na hora da memória:
     - You can obtain the default value for any type with the `default` keyword.
 
-    | **Type** | **Default value** |
-    | --- | :---: |
-    | All *reference* types | _null_ |
-    | All *numeric* and *enum* types | 0 |
-    | *char* type | '\0' |
-    | *bool* type | false |
+    | **Type**                       | **Default value** |
+    | ------------------------------ | :---------------: |
+    | All *reference* types          | _null_            |
+    | All *numeric* and *enum* types | 0                 |
+    | *char* type                    | '\0'              |
+    | *bool* type                    | false             |
 
 - Você pode controlar como os parâmetros são passados com os modificadores de `ref` e `out`:
 
     | Parameter modifier | Passed by | Variable must be definitely assigned |
-    | --- | --- | --- |
-    | (None) | Value | Going in |
-    | **ref** | Reference | Going in |
-    | **out** | Reference | Going out |
+    | ------------------ | --------- | ------------------------------------ |
+    | (None)             | Value     | Going in                             |
+    | **ref**            | Reference | Going in                             |
+    | **out**            | Reference | Going out                            |
 
 - Por padrão, os argumentos em `C#` são passados ​​por valor. Isso significa que uma **cópia do valor é criada** quando passou para o método.
     - Residem em diferentes locais da memória.
     - Passar um argumento de tipo de referência por valor copia a referência, mas não o objeto.
 
-    ```c#
+    ```csharp
     class Test
     {
         static void Foo(StringBuilder fooSB)
@@ -296,13 +296,13 @@
     - Um parâmetro é opcional se especifica um valor padrão em sua declaração.
     - Podem ser omitidos ao chamar o método.
     - Não podem ser marcados por argumentos de referência(`ref` ou `out`).
-    - Os *parâmetros obrigatórios devem ocorrer antes dos parâmetros opcionais*, tanto na declaração do método como na chamada do método (a exceção é com os argumentos `params`, que sempre são os últimos).
+    - Os *parâmetros obrigatórios devem ocorrer antes dos parâmetros opcionais*, tanto na declaração do método como na chamada do método(a exceção é com os argumentos `params`, que sempre são os últimos).
 
-- Em vez de identificar um argumento por posição, você pode identificar um argumento por nome (Named arguments).
+- Em vez de identificar um argumento por posição, você pode identificar um argumento por nome(Named arguments).
     - Argumentos nomeados podem ocorrer em qualquer ordem.
     - Pode misturar argumentos nomeados e posicionais com uma restrição: Os argumentos posicionais devem vir antes dos argumentos nomeados.
 
-- `var` - Implicitly Typed Local Variables - Se o compilador for capaz de inferir o tipo da expressão de inicialização, você pode usar a palavra-chave `var` (introduzida em `C#` 3.0) no lugar da declaração de tipo.
+- `var` - Implicitly Typed Local Variables - Se o compilador for capaz de inferir o tipo da expressão de inicialização, você pode usar a palavra-chave `var`(introduzida em `C#` 3.0) no lugar da declaração de tipo.
 
 - Uma `expression` essencialmente denota um valor. Os tipos mais simples de expressões são constantes e variáveis. As expressões podem ser transformadas e combinadas usando operadores. Um `operator` leva um ou mais operandos de entrada para produzir uma nova expressão.
 
@@ -312,34 +312,34 @@
 
 - O `??` operador é o *null-coalescing operator*. Diz "Se o operando não é null, dê-me; Caso contrário, me dê um valor padrão. ". Se a expressão esquerda não for nula, a expressão à direita nunca será avaliada.
 
-    ```c#
+    ```csharp
     string x = null;
     string y = x ?? "nothing"; // y evaluates to "nothing"
     ```
 
 - O `?.` O operador é o operador null-conditional e é novo no `C#` 6. Ele permite chamar métodos e acessar membros exatamente como o operador de ponto padrão, exceto que, se o operando à esquerda for null, a expressão é avaliada para `null` em vez de jogar uma `NullReferenceException`:
 
-    ```c#
+    ```csharp
     System.Text.StringBuilder sb = null;
     string s = sb?.ToString(); // No error; s instead evaluates to null
     ```
 
     The last line is equivalent to:
 
-    ```c#
+    ```csharp
     string s = (sb == null ? null : sb.ToString());
     ```
 
     Ao encontrar um null, o operador interrompe o restante da expressão:
 
-    ```c#
+    ```csharp
     System.Text.StringBuilder sb = null;
     string s = sb?.ToString().ToUpper(); // s evaluates to null without error
     ```
 
     O uso repetido do operador é necessário somente se o operando imediatamente a sua esquerda pode ser null. A seguinte expressão é robusta, sendo x null e x.y sendo null:
 
-    ```
+    ```csharp
     x?.y?.z
 
     // and is equivalent to the following
@@ -350,14 +350,14 @@
 
     Com tipos *nullable*(anuláveis) e com null-coalescing operator:
 
-    ```c#
+    ```csharp
     System.Text.StringBuilder sb = null;
     int length = sb?.ToString().Length; // Illegal : int cannot be null
 
     int? length = sb?.ToString().Length; // OK : int? can be null
     ```
 
-    ```c#
+    ```csharp
     System.Text.StringBuilder sb = null;
     string s = sb?.ToString() ?? "nothing"; // s evaluates to "nothing"
 
@@ -374,7 +374,7 @@
 
 - From C# 6, you can import not just a namespace, but a specific type, with the using static directive. All static members of that type can then be used without being qualified with the type name.
 
-    ```c#
+    ```csharp
     using PropertyInfo2 = System.Reflection.PropertyInfo;
     class Program { PropertyInfo2 p; }
 
