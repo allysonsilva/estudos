@@ -2,8 +2,8 @@
 
 **As a guideline**:
 
-* Use classes and subclasses for types that naturally share an implementation.
-* Use interfaces for types that have independent implementations.
+-   Use classes and subclasses for types that naturally share an implementation.
+-   Use interfaces for types that have independent implementations.
 
 Consider the following classes:
 
