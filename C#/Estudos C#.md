@@ -2,7 +2,7 @@
 
 ## Compilation
 
-The C# compiler compiles source code, specified as a set of files with the `.cs` extension, into an *assembly*. An *assembly* is the unit of packaging and deployment in `.NET`. An assembly can be either an application or a library. A normal console or Windows application has a Main method and is an .exe file. A library is a .dll and is equivalent to an .exe without an entry point. Its purpose is to be called upon (referenced) by an application or by other libraries. The .NET Framework is a set of libraries.
+The C# compiler compiles source code, specified as a set of files with the `.cs` extension, into an *assembly*. An *assembly* is the unit of packaging and deployment in `.NET`. An assembly can be either an application or a library. A normal console or Windows application has a Main method and is an .exe file. A library is a .dll and is equivalent to an .exe without an entry point. Its purpose is to be called upon(referenced) by an application or by other libraries. The .NET Framework is a set of libraries.
 
 ## Syntax
 
@@ -12,30 +12,30 @@ The C# compiler compiles source code, specified as a set of files with the `.cs`
 
 *Identificadores são os nomes utilizados para distinguir os elementos nos seus programas, como namespaces, classes, métodos e variáveis.*
 
-An identifier must be a whole word, essentially made up of Unicode characters starting with a letter or underscore. **C# identifiers are case-sensitive**. By convention, parameters, local variables, and private fields should be in camel case (e.g., `myVariable`), and all other identifiers should be in Pascal case (e.g., `MyMethod`).
+An identifier must be a whole word, essentially made up of Unicode characters starting with a letter or underscore. **C# identifiers are case-sensitive**. By convention, parameters, local variables, and private fields should be in camel case(e.g., `myVariable`), and all other identifiers should be in Pascal case(e.g., `MyMethod`).
 
 *Keywords are names that mean something special to the compiler.*
 
 Most keywords are *reserved*, which means that you can’t use them as identifiers. Here is the full list of C# reserved keywords:
 
-|   |   |   |   |   |
-|---|---|---|---|---|
-| abstract   | do        | in         | protected  | true      |
-| as         | double    | int        | public     | try       |
-| base       | else      | interface  | readonly   | typeof    |
-| bool       | enum      | internal   | ref        | uint      |
-| break      | event     | is         | return     | ulong     |
-| byte       | explicit  | lock       | sbyte      | unchecked |
-| case       | extern    | long       | sealed     | unsafe    |
-| catch      | false     | namespace  | short      | ushort    |
-| char       | finally    | new        | sizeof     | using     |
-| checked    | fixed      | null       | stackalloc | virtual   |
-| class      | float      | object     | static     | void      |
-| const      | for       | operator   | string     | volatile  |
-| continue   | foreach   | out        | struct     | while     |
-| decimal    | goto      | override   | switch     |   |
-| default    | if        | params     | this       |   |
-| delegate   | implicit  | private    | throw      |   |
+|          |          |           |            |           |
+| -------- | -------- | --------- | ---------- | --------- |
+| abstract | do       | in        | protected  | true      |
+| as       | double   | int       | public     | try       |
+| base     | else     | interface | readonly   | typeof    |
+| bool     | enum     | internal  | ref        | uint      |
+| break    | event    | is        | return     | ulong     |
+| byte     | explicit | lock      | sbyte      | unchecked |
+| case     | extern   | long      | sealed     | unsafe    |
+| catch    | false    | namespace | short      | ushort    |
+| char     | finally  | new       | sizeof     | using     |
+| checked  | fixed    | null      | stackalloc | virtual   |
+| class    | float    | object    | static     | void      |
+| const    | for      | operator  | string     | volatile  |
+| continue | foreach  | out       | struct     | while     |
+| decimal  | goto     | override  | switch     |           |
+| default  | if       | params    | this       |           |
+| delegate | implicit | private   | throw      |           |
 
 ### Literals, Punctuators, and Operators
 
@@ -61,7 +61,7 @@ An *operator* transforms and combines expressions. Most operators in `C#` are de
 .  ()  *   =
 ```
 
-A period denotes a member of something (or a decimal point with numeric literals). Parentheses are used when declaring or calling a method; empty parentheses are used when the method accepts no arguments. (Parentheses also have other purposes that we’ll see later in this chapter.) An equals sign performs *assignment*. (The double equals sign, ==, performs equality comparison, as we’ll see later.)
+A period denotes a member of something(or a decimal point with numeric literals). Parentheses are used when declaring or calling a method; empty parentheses are used when the method accepts no arguments. (Parentheses also have other purposes that we’ll see later in this chapter.) An equals sign performs *assignment*. (The double equals sign, ==, performs equality comparison, as we’ll see later.)
 
 ## Type Basics
 
@@ -75,7 +75,7 @@ static void Main()
 }
 ```
 
-A *variable* denotes a storage location that can contain different values over time. In contrast, a *constant* always represents the same value (more on this later):
+A *variable* denotes a storage location that can contain different values over time. In contrast, a *constant* always represents the same value(more on this later):
 
 ```csharp
 const int y = 360;
@@ -92,7 +92,7 @@ All C# types fall into the following categories:
 * Generic type parameters
 * Pointer types
 
-*Value types* comprise most built-in types (specifically, all numeric types, the `char` type, and the `bool` type) as well as custom struct and `enum` types.
+*Value types* comprise most built-in types(specifically, all numeric types, the `char` type, and the `bool` type) as well as custom struct and `enum` types.
 
 *Reference types* comprise all class, array, delegate, and interface types. (This includes the predefined string type.)
 
@@ -205,20 +205,20 @@ The predefined types in C# are:
 **Value types**
 
 * Numeric
-    - Signed integer (`sbyte`, `short`, `int`, `long`)
-    - Unsigned integer (`byte`, `ushort`, `uint`, `ulong`)
-    - Real number (`float`, `double`, `decimal`)
-* Logical (`bool`)
-* Character (`char`)
+    - Signed integer(`sbyte`, `short`, `int`, `long`)
+    - Unsigned integer(`byte`, `ushort`, `uint`, `ulong`)
+    - Real number(`float`, `double`, `decimal`)
+* Logical(`bool`)
+* Character(`char`)
 
 **Reference types**
 
-* String (`string`)
-* Object (`object`)
+* String(`string`)
+* Object(`object`)
 
 ## Arrays
 
-An array represents a fixed number of variables (called *elements*) of a particular type. The elements in an array are always stored in a contiguous block of memory, providing highly efficient access.
+An array represents a fixed number of variables(called *elements*) of a particular type. The elements in an array are always stored in a contiguous block of memory, providing highly efficient access.
 
 The `System.Collection` namespace and subnamespaces provide higher-level data structures, such as dynamically sized arrays and dictionaries.
 
@@ -288,7 +288,7 @@ Rectangular arrays are declared using commas to separate each dimension. The fol
 int[,] matrix = new int[3,3];
 ```
 
-The GetLength method of an array returns the length for a given dimension (starting at 0):
+The GetLength method of an array returns the length for a given dimension(starting at 0):
 
 ```csharp
 for (int i = 0; i < matrix.GetLength(0); i++)
@@ -296,7 +296,7 @@ for (int i = 0; i < matrix.GetLength(0); i++)
         matrix[i,j] = i * 3 + j;
 ```
 
-A rectangular array can be initialized as follows (to create an array identical to the previous example):
+A rectangular array can be initialized as follows(to create an array identical to the previous example):
 
 ```csharp
 int[,] matrix = new int[,]
@@ -326,7 +326,7 @@ for (int i = 0; i < matrix.Length; i++)
 }
 ```
 
-A jagged array can be initialized as follows (to create an array identical to the previous example with an additional element at the end):
+A jagged array can be initialized as follows(to create an array identical to the previous example with an additional element at the end):
 
 ```csharp
 int[][] matrix = new int[][]
@@ -391,7 +391,7 @@ Implicit typing can be taken one stage further with arrays: you can omit the typ
 var vowels = new[] {'a','e','i','o','u'}; // Compiler infers char[]
 ```
 
-For this to work, the elements must all be implicitly convertible to a single type (and at least one of the elements must be of that type, and there must be exactly one best type). For example:
+For this to work, the elements must all be implicitly convertible to a single type(and at least one of the elements must be of that type, and there must be exactly one best type). For example:
 
 ```csharp
 var x = new[] {1,10000000000}; // all convertible to long
@@ -408,7 +408,7 @@ arr[3] = 1; // IndexOutOfRangeException thrown
 
 ## Variables and Parameters
 
-A variable represents a storage location that has a modifiable value. A variable can be a *local variable*, *parameter* (*value*, *ref*, or *out*), field (*instance* or *static*), or *array element*.
+A variable represents a storage location that has a modifiable value. A variable can be a *local variable*, *parameter*(*value*, *ref*, or *out*), field(*instance* or *static*), or *array element*.
 
 ### The Stack and the Heap
 
@@ -416,7 +416,7 @@ The stack and the heap are the places where variables and constants reside. Each
 
 #### Stack
 
-The stack is a block of memory for storing local variables and parameters. The stack logically grows and shrinks as a function is entered and exited. Consider the following method (to avoid distraction, input argument checking is ignored):
+The stack is a block of memory for storing local variables and parameters. The stack logically grows and shrinks as a function is entered and exited. Consider the following method(to avoid distraction, input argument checking is ignored):
 
 ```csharp
 static int Factorial(int x)
@@ -432,7 +432,7 @@ This method is recursive, meaning that it calls itself. Each time the method is 
 
 #### Heap
 
-The heap is a block of memory in which objects (i.e., reference-type instances) reside. Whenever a new object is created, it is allocated on the heap, and a reference to that object is returned. During a program’s execution, the heap starts filling up as new objects are created. The runtime has a garbage collector that periodically deallocates objects from the heap, so your program does not run out of memory. An object is eligible for deallocation as soon as it’s not referenced by anything that’s itself "alive."
+The heap is a block of memory in which objects(i.e., reference-type instances) reside. Whenever a new object is created, it is allocated on the heap, and a reference to that object is returned. During a program’s execution, the heap starts filling up as new objects are created. The runtime has a garbage collector that periodically deallocates objects from the heap, so your program does not run out of memory. An object is eligible for deallocation as soon as it’s not referenced by anything that’s itself "alive."
 
 In the following example, we start by creating a `StringBuilder` object referenced by the variable `ref1`, and then write out its content. That `StringBuilder` object is then immediately eligible for garbage collection, because nothing subsequently uses it.
 
@@ -459,11 +459,11 @@ class Test
 }
 ```
 
-Value-type instances (and object references) live wherever the variable was declared. If the instance was declared as a field within a class type, or as an array element, that instance lives on the heap.
+Value-type instances(and object references) live wherever the variable was declared. If the instance was declared as a field within a class type, or as an array element, that instance lives on the heap.
 
 *You can’t explicitly delete objects in C#, as you can in C++. An unreferenced object is eventually collected by the garbage collector.*
 
-The heap also stores static fields. Unlike objects allocated on the heap (which can get garbage-collected), these live until the application domain is torn down.
+The heap also stores static fields. Unlike objects allocated on the heap(which can get garbage-collected), these live until the application domain is torn down.
 
 ### Definite Assignment
 
@@ -471,7 +471,7 @@ C# enforces a definite assignment policy. In practice, this means that outside o
 
 * Local variables must be assigned a value before they can be read.
 * Function arguments must be supplied when a method is called.
-* All other variables (such as fields and array elements) are automatically initialized by the runtime.
+* All other variables(such as fields and array elements) are automatically initialized by the runtime.
 
 For example, the following code results in a compile-time error:
 
@@ -522,7 +522,7 @@ You can obtain the default value for any type with the `default` keyword:
 decimal d = default(decimal);
 ```
 
-The *default* value in a custom value type (i.e., `struct`) is the same as the default value for each field defined by the custom type.
+The *default* value in a custom value type(i.e., `struct`) is the same as the default value for each field defined by the custom type.
 
 ### Parameters
 
@@ -544,10 +544,10 @@ static void Main()
 You can control how parameters are passed with the `ref` and `out` modifiers:
 
 | Parameter modifier | Passed by | Variable must be definitely assigned |
-|--------------------|-----------|------------------------------------|
-| (None)             | Value     | Going *in*                         |
-| `ref`              | Reference | Going *in*                         |
-| `out`              | Reference | Going *out*                        |
+| ------------------ | --------- | ------------------------------------ |
+| (None)             | Value     | Going *in*                           |
+| `ref`              | Reference | Going *in*                           |
+| `out`              | Reference | Going *out*                          |
 
 #### Passing arguments by value
 
@@ -679,7 +679,7 @@ For backward compatibility, this language feature will not take effect if a real
 
 ```csharp
 string _;
-Split ("Allyson Silva", out string a, _); // Will not compile
+Split("Allyson Silva", out string a, _); // Will not compile
 ```
 
 #### Implications of passing by reference
@@ -723,7 +723,7 @@ class Test
 
     static void Main()
     {
-        int total = Sum (1, 2, 3, 4);
+        int total = Sum(1, 2, 3, 4);
         Console.WriteLine(total);   // 10
     }
 }
@@ -760,7 +760,7 @@ because the compiler simply substitutes the default value of an optional paramet
 
 The default value of an optional parameter must be specified by a constant expression, or a parameterless constructor of a value type. Optional parameters cannot be marked with `ref` or `out`.
 
-Mandatory parameters must occur before optional parameters in both the method declaration and the method call (the exception is with params arguments, which still always come last). In the following example, the explicit value of 1 is passed to x, and the default value of 0 is passed to `y`:
+Mandatory parameters must occur before optional parameters in both the method declaration and the method call(the exception is with params arguments, which still always come last). In the following example, the explicit value of 1 is passed to x, and the default value of 0 is passed to `y`:
 
 ```csharp
 void Foo(int x = 0, int y = 0)
@@ -774,7 +774,7 @@ void Test()
 }
 ```
 
-To do the converse (pass a default value to `x` and an explicit value to `y`) you must combine optional parameters with *named arguments*.
+To do the converse(pass a default value to `x` and an explicit value to `y`) you must combine optional parameters with *named arguments*.
 
 #### Named arguments
 
@@ -795,14 +795,14 @@ void Test()
 Named arguments can occur in any order. The following calls to Foo are semantically identical:
 
 ```csharp
-Foo (x:1, y:2);
-Foo (y:2, x:1);
+Foo(x:1, y:2);
+Foo(y:2, x:1);
 ```
 
 You can mix named and positional arguments:
 
 ```csharp
-Foo (x:1, y:2);
+Foo(x:1, y:2);
 ```
 
 However, there is a restriction: positional arguments must come before named arguments. So we couldn’t call Foo like this:
@@ -898,7 +898,7 @@ Repeated use of Elvis is necessary only if the operand immediately to its left m
 x?.y?.z
 ```
 
-and is equivalent to the following (except that x.y is evaluated only once):
+and is equivalent to the following(except that x.y is evaluated only once):
 
 ```csharp
 x == null ? null : (x.y == null ? null : x.y.z)
@@ -934,7 +934,7 @@ string s = sb?.ToString() ?? "nothing"; // s evaluates to "nothing"
 
 ## Statements
 
-Functions comprise statements that execute sequentially in the textual order in which they appear. A statement block is a series of statements appearing between braces (the {} tokens).
+Functions comprise statements that execute sequentially in the textual order in which they appear. A statement block is a series of statements appearing between braces(the {} tokens).
 
 ### Declaration Statements
 
@@ -1047,7 +1047,7 @@ class Test
 {
     static void Main()
     {
-        WriteLine ("Hello");
+        WriteLine("Hello");
     }
 }
 ```
@@ -1122,7 +1122,7 @@ namespace Outer
 }
 ```
 
-*All type names are converted to fully qualified names at compile time. Intermediate Language (IL) code contains no unqualified or partially qualified names.*
+*All type names are converted to fully qualified names at compile time. Intermediate Language(IL) code contains no unqualified or partially qualified names.*
 
 #### Repeated namespaces
 
@@ -1200,14 +1200,55 @@ class Program { R.PropertyInfo p; }
 
 # Creating Types in C#
 
+> - Todas as variáveis e constantes têm um tipo.
+> - Um tipo descreve a organização e o formato das informações para a linguagem.
+> - O compilador usa as informações de tipo para garantir que todas as operações que são realizadas no código sejam fortemente tipadas.
+> - O compilador insere as informações de tipo no arquivo executável como metadados. O *CLR*(*Common Language Runtime*) usa metadados em tempo de execução para garantir mais segurança de tipos quando aloca e recupera a memória.
+
 ## Classes
+
+- É o tipo mais comum de referência.
+- São tipos de dados definidos pelo usuário que representa o _estado_ e o _comportamento_ de um objeto.
+- Representa um modelo para um determinado tipo de dado.
+- Quando um objeto da classe é criado, a variável à qual o objeto é atribuído armazena apenas uma referência na memória. Quando a referência do objeto é atribuída a uma nova variável, a nova variável refere-se ao objeto original. As alterações feitas por meio de uma variável são refletidas na outra variável porque ambas se referem aos mesmos dados.
+- São usadas para modelar o comportamento mais complexo ou dados que serão modificados depois que um objeto da classe for criado.
+- Ao contrário do `C++`, uma classe no `C#` só pode herdar diretamente de uma classe base. No entanto, como uma classe base pode herdar de outra classe, uma classe pode herdar indiretamente várias classes base. Além disso, uma classe pode implementar diretamente mais de uma interface.
+- Classes que você declara diretamente dentro de um *namespace*, não aninhadas em outras classes, podem ser `public` ou `internal`.
+- **As classes são `internal` por padrão**.
+- **Os membros da classe são `private`(privados) por padrão**.
 
 A more complex class optionally has the following:
 
 *Preceding the keyword class*: **Attributes and class modifiers. The non-nested class modifiers are `public`, `internal`, `abstract`, `sealed`, `static`, `unsafe`, and `partial`**
-*Within the braces*: **Class members (these are methods, properties, indexers, events, fields, constructors, overloaded operators, nested types, and a finalizer)**
+*Within the braces*: **Class members(these are methods, properties, indexers, events, fields, constructors, overloaded operators, nested types, and a finalizer)**
+
+### Uma classe pode conter declarações dos seguintes membros:
+
+**[Constructors]**, **[Constants]**, **[Fields]**, **[Finalizers]**, **[Methods]**, **[Properties]**, **[Indexers]**, **[Operators]**, **[Events]**,  **[Delegates]**, **[Classes]**,  **[Interfaces]**, **[Structs]**.
+
+[Constructors]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/constructors
+[Constants]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/constants
+[Fields]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/fields
+[Finalizers]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/destructors
+[Methods]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/methods
+[Properties]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/properties
+[Indexers]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/indexers/index
+[Operators]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/statements-expressions-operators/operators
+[Events]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/events/index
+[Delegates]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/delegates/index
+[Classes]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/classes
+[Interfaces]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/interfaces/index
+[Structs]: https://docs.microsoft.com/pt-br/dotnet/csharp/programming-guide/classes-and-structs/structs
 
 ### Fields
+
+- Deve ser declarado dentro de um tipo(Classe ou Estrutura).
+- São usados para armazenar dados que devem ser acessíveis a vários métodos de um tipo e disponível durante todo o tempo de vida do objeto.
+- Um campo pode ser do tipo estático ou da instância. A informação de um campo estático é compartilhada entre todas as instâncias do tipo, o campo pertence a classe. Já um campo de instância, sua informação está associado aquele determinado objeto, determinada instância, não sendo visível por nenhuma outra instância ou tipo, realizando assim o encapsulamento das informações.
+- Um campo armazena dados que devem ser acessíveis a vários métodos de uma classe e disponível durante todo o tempo de vida de um objeto.
+- Um campo não inicializado tem um valor padrão para(*0*, *\0*, *null*, *false*) e sua atribuição pode ocorrer no momento da declaração.
+- Pode ser declarado vários campos do mesmo tipo em uma única declaração sendo separados por vírgula. Uma maneira conveniente por todos os campos de compartilhar os mesmos atributos e modificadores.
+- Em geral, um campo é usado para definir uma variável em uma classe com acessibilidade como privada ou protegida. Um campo que precisa ser exposto em qualquer lugar fora da classe pode ser encapsulado como um método público, propriedade ou indexador.
 
 > A field is a variable that is a member of a class or struct.
 
@@ -1215,8 +1256,8 @@ A more complex class optionally has the following:
 
 Fields allow the following modifiers:
 
-|                      |                                           |
-|----------------------|-------------------------------------------|
+| **Modifiers**        | **Allow**                                 |
+| -------------------- | ----------------------------------------- |
 | Static modifier      | `static`                                  |
 | Access modifiers     | `public` `internal` `private` `protected` |
 | Inheritance modifier | `new`                                     |
@@ -1228,9 +1269,18 @@ Fields allow the following modifiers:
 
 The readonly modifier prevents a field from being modified after construction. A read-only field can be assigned only in its declaration or within the enclosing type’s constructor.
 
+- O modificador [`readonly`] impede que um campo seja modificado após sua construção.
+- Um campo de *somente leitura* pode ser atribuído apenas na sua declaração(inicialização) ou em um construtor.
+- Um campo `static readonly` é muito semelhante a uma constante, exceto que o compilador `C#` não tem acesso ao valor de um campo somente leitura estático em tempo de compilação, mas somente em tempo de execução.
+
+> A palavra-chave `readonly` é diferente da palavra-chave [`const`]. O campo `const` pode ser inicializado apenas na declaração do campo. Um campo `readonly` pode ser inicializado na declaração ou em um construtor. Portanto, campos `readonly` podem ter valores diferentes dependendo do construtor usado. Além disso, enquanto um campo `const` é uma constante em tempo de compilação, o campo `readonly` pode ser usado para constantes de tempo de execução.
+
+[readonly]: https://docs.microsoft.com/pt-br/dotnet/csharp/language-reference/keywords/readonly
+[const]: https://docs.microsoft.com/pt-br/dotnet/csharp/language-reference/keywords/const
+
 #### Field initialization
 
-Field initialization is optional. An uninitialized field has a default value (0, \0, null, false). Field initializers run before constructors.
+Field initialization is optional. An uninitialized field has a default value(0, \0, null, false). Field initializers run before constructors.
 
 ```csharp
 public int Age = 10;
@@ -1253,12 +1303,12 @@ static readonly int foo = 8,
 
 **Modifiers**: `static`, `public`, `internal`, `private`, `protected`, `new`, `virtual`, `abstract`, `override`, `sealed`, `partial`, `unsafe`, `extern`, `async`
 
-A method’s *signature* must be unique within the type. A method’s signature comprises its *name* and *parameter types* (but not the parameter *names*, nor the return type).
+A method’s *signature* must be unique within the type. A method’s signature comprises its *name* and *parameter types*(but not the parameter *names*, nor the return type).
 
 Methods allow the following modifiers:
 
-|                            |                                                |
-|----------------------------|------------------------------------------------|
+| **Modifiers**              | **Allow**                                      |
+| -------------------------- | ---------------------------------------------- |
 | Static modifier            | `static`                                       |
 | Access modifiers           | `public` `internal` `private` `protected`      |
 | Inheritance modifiers      | `new` `virtual` `abstract` `override` `sealed` |
@@ -1286,9 +1336,12 @@ Expression-bodied functions can also have a void return type:
 void Foo(int x) => Console.WriteLine(x);
 ```
 
-#### Overloading methods
+#### Overloading methods (Sobrecarga de métodos)
 
-A type may overload methods (have multiple methods with the same name), as long as the signatures are different. For example, the following methods can all coexist in the same type:
+- Uma método pode ser sobrecarregado(ter vários métodos com o mesmo nome), re-implementado, desde que suas assinaturas sejam diferentes.
+- *O tipo de retorno, o nome do parâmetro e o modificador `params` não fazem parte da assinatura do método.*
+
+A type may overload methods(have multiple methods with the same name), as long as the signatures are different. For example, the following methods can all coexist in the same type:
 
 ```csharp
 void Foo(int x) {...}
@@ -1312,9 +1365,9 @@ void Goo(params int[] x) {...} // Compile-time error
 Whether a parameter is pass-by-value or pass-by-reference is also part of the signature. For example, `Foo(int)` can coexist with either `Foo(ref int)` or `Foo(out int)`. However, `Foo(ref int)` and `Foo(out int)` cannot coexist:
 
 ```csharp
-void Foo (int x) {...}
-void Foo (ref int x) {...} // OK so far
-void Foo (out int x) {...} // Compile-time error
+void Foo(int x) {...}
+void Foo(ref int x) {...} // OK so far
+void Foo(out int x) {...} // Compile-time error
 ```
 
 #### Local methods (C# 7)
@@ -1332,7 +1385,7 @@ void WriteCubes()
 }
 ```
 
-The local method (`Cube`, in this case) is visible only to the enclosing method (Write Cubes). This simplifies the containing type and instantly signals to anyone looking at the code that Cube is used nowhere else. Another benefit of local methods is that they can access the local variables and parameters of the enclosing method.
+The local method(`Cube`, in this case) is visible only to the enclosing method(Write Cubes). This simplifies the containing type and instantly signals to anyone looking at the code that Cube is used nowhere else. Another benefit of local methods is that they can access the local variables and parameters of the enclosing method.
 
 Local methods can appear inside other function kinds, such as property accessors, constructors, and so on. You can even put local methods inside other local methods, and inside lambda expressions that use a statement block. Local methods can be iterators or asynchronous.
 
@@ -1358,10 +1411,10 @@ Panda p = new Panda("Petey");   // Call constructor
 
 **Modifiers**: `public` `internal` `private` `protected` `unsafe` `extern`
 
-|                            |                                                |
-|----------------------------|------------------------------------------------|
-| Access modifiers           | `public` `internal` `private` `protected`      |
-| Unmanaged code modifiers   | `unsafe` `extern`                              |
+|                          |                                           |
+| ------------------------ | ----------------------------------------- |
+| Access modifiers         | `public` `internal` `private` `protected` |
+| Unmanaged code modifiers | `unsafe` `extern`                         |
 
 From C# 7, single-statement constructors can also be written as *expression-bodied* members:
 
@@ -1370,6 +1423,12 @@ public Panda(string n) => name = n;
 ```
 
 #### Overloading constructors
+
+- Uma classe ou estrutura pode sobrecarregar seus construtores.
+- Para evitar a duplicação de código, um construtor pode chamar outro usando a palavra chave `this`.
+- Quando um construtor chama outro, o construtor chamado executa primeiro.
+- *A partir do momento que se cria algum construtor com parâmetros, o compilador não gera mais automaticamente um construtor padrão, sem parâmetros, sendo necessário assim informar a classe explicitamente um construtor sem parâmetros, para instâncias que não seja necessário nenhum parâmetro.*
+- *As inicializações de campo ocorrem antes que o construtor seja executado e na ordem de declaração dos campos.*
 
 A class or struct may overload constructors. To avoid code duplication, one constructor may call another, using the `this` keyword.
 
@@ -1494,6 +1553,15 @@ public class Test
 
 ### Properties
 
+- *Parecem com campos, mais internamente contêm lógica assim como os métodos.*
+- Uma propriedade é declarado como um campo, mais com um bloco `get`/`set` adicionado.
+- O accessor **get** é executado quando a propriedade é lida, assim, deve retornar o valor do tipo da propriedade.
+- O  accessor **set** é executado quando a propriedade é atribuída algum valor a ela. Possui um parâmetro implícito denominado `value` que contêm o valor configurado pelo usuário para atribuir um novo valor, ou atualizar a propriedade.
+- *Embora as propriedades sejam acessadas como os campos, eles diferem no sentido de controle e manipulação da informação. A propriedade possui um controle completo sobre a lógica de obter e atribuir valores a ela. Este controle permite ao implementador de definir como a lógica será processada internamente, sem expor os detalhes para o usuário.*
+- *Um propriedade é somente leitura se especificada apenas com o accessor `get` e somente gravação se especificada apenas com o accessor `set`*.
+- A partir do C# 6 uma propriedade somente leitura pode ser declarada de forma mais tersa como uma propriedade de corpo de expressão. (Expression-bodied properties (C# 6)).
+- Os acessadores *get* e *set* podem ter diferentes níveis de acesso. Tendo em vista que o modificador de acesso deve ter um nível menor que a própria propriedade em si.
+
 > Properties look like fields from the outside, but internally they contain logic, like methods do.
 
 For example, you can’t tell by looking at the following code whether CurrentPrice is a field or a property:
@@ -1520,24 +1588,24 @@ public class Stock
 }
 ```
 
-`get` and `set` denote property *accessors*. The `get` accessor runs when the property is read. It must return a value of the property’s type. The `set` accessor runs when the property is assigned. It has an implicit parameter named `value` of the property’s type that you typically assign to a private field (in this case, `currentPrice`).
+`get` and `set` denote property *accessors*. The `get` accessor runs when the property is read. It must return a value of the property’s type. The `set` accessor runs when the property is assigned. It has an implicit parameter named `value` of the property’s type that you typically assign to a private field(in this case, `currentPrice`).
 
 Although properties are accessed in the same way as fields, they differ in that they give the implementer complete control over getting and setting its value. This con‐ trol enables the implementer to choose whatever internal representation is needed, without exposing the internal details to the user of the property.
 
 **Modifiers**: `static`, `public`, `internal`, `private`, `protected`, `new`, `virtual`, `abstract`, `override`, `sealed`, `unsafe`, `extern`
 
-|                            |                                                |
-|----------------------------|------------------------------------------------|
-| Static modifier            | `static`                                       |
-| Access modifiers           | `public` `internal` `private` `protected`      |
-| Inheritance modifiers      | `new` `virtual` `abstract` `override` `sealed` |
-| Unmanaged code modifiers   | `unsafe` `extern`                              |
+| **Modifiers**            | **Allow**                                      |
+| ------------------------ | ---------------------------------------------- |
+| Static modifier          | `static`                                       |
+| Access modifiers         | `public` `internal` `private` `protected`      |
+| Inheritance modifiers    | `new` `virtual` `abstract` `override` `sealed` |
+| Unmanaged code modifiers | `unsafe` `extern`                              |
 
 #### Read-only and calculated properties
 
 A property is read-only if it specifies only a `get` accessor, and it is write-only if it specifies only a `set` accessor. Write-only properties are rarely used.
 
-Just as with read-only fields, read-only automatic properties can also be assigned in the type’s constructor. This is useful in creating immutable (read-only) types.
+Just as with read-only fields, read-only automatic properties can also be assigned in the type’s constructor. This is useful in creating immutable(read-only) types.
 
 A property typically has a dedicated backing field to store the underlying data. However, a property can also be computed from other data. For example:
 
@@ -1549,6 +1617,9 @@ public decimal Worth
     get { return currentPrice * sharesOwned; }
 }
 ```
+
+- O compilador gera automaticamente um campo com suporte privado de um nome gerado pelo compilador que não pode ser referenciado explicitamente pelo programador.
+- O accessor `set` pode ser marcado com o modificador de acesso privado ou protegido caso a propriedade esteja como somente leitura.
 
 #### Expression-bodied properties (C# 6, C# 7)
 
@@ -1569,6 +1640,8 @@ public decimal Worth
 ```
 
 #### Property initializers (C# 6)
+
+- As propriedades com um inicializador pode ser somente leitura(marcado apenas com o accessor `get`) sendo possível sua atribuição no momento da declaração ou no construtor da classe. Isso se torna útil na criação de tipos imutáveis(somente leitura).
 
 From C# 6, you can add a property *initializer* to automatic properties, just as with fields:
 
@@ -1593,12 +1666,12 @@ public class Foo
     public decimal X
     {
         get { return x; }
-        private set { x = Math.Round (value, 2); }
+        private set { x = Math.Round(value, 2); }
     }
 }
 ```
 
-Notice that you declare the property itself with the more permissive access level (`public`, in this case), and add the modifier to the accessor you want to be less accessible.
+Notice that you declare the property itself with the more permissive access level(`public`, in this case), and add the modifier to the accessor you want to be less accessible.
 
 #### CLR property implementation
 
@@ -1606,10 +1679,10 @@ C# property accessors internally compile to methods called get_XXX and set_XXX:
 
 ```csharp
 public decimal get_CurrentPrice {...}
-public void set_CurrentPrice (decimal value) {...}
+public void set_CurrentPrice(decimal value) {...}
 ```
 
-Simple nonvirtual property accessors are *inlined* by the JIT (Just-In-Time) compiler, eliminating any performance difference between accessing a property and a field. Inlining is an optimization in which a method call is replaced with the body of that method.
+Simple nonvirtual property accessors are *inlined* by the JIT(Just-In-Time) compiler, eliminating any performance difference between accessing a property and a field. Inlining is an optimization in which a method call is replaced with the body of that method.
 
 ### Indexers
 
@@ -1675,7 +1748,13 @@ public string this[int wordNum] => words[wordNum];
 
 ### Constants
 
-> A constant is a static field whose value can never change. A constant is evaluated statically at compile time, and the compiler literally substitutes its value whenever used (rather like a macro in C++). A constant can be any of the built-in numeric types, bool, char, string, or an enum type.
+- Campo estático cujo valor nunca vai mudar.
+- Avaliada estaticamente em tempo de compilação.
+- É declarada utilizando a palavra chave `const` e deve ser sempre inicializada com um valor.
+- Qualquer valor que possa mudar no futuro não é uma constante por definição, e portanto, não deve ser representado como uma.
+- Constantes também pode ser declaradas locais, constantes locais para um método.
+
+> A constant is a static field whose value can never change. A constant is evaluated statically at compile time, and the compiler literally substitutes its value whenever used(rather like a macro in C++). A constant can be any of the built-in numeric types, bool, char, string, or an enum type.
 
 **A constant is declared with the const keyword and must be initialized with a value.**
 
@@ -1734,14 +1813,28 @@ Nonlocal constants allow the following modifiers:
 
 **Modifiers**: `public`, `internal`, `private`, `protected`, `new`
 
-|                      |                                          |
-|----------------------|------------------------------------------|
+|                      |                                           |
+| -------------------- | ----------------------------------------- |
 | Access modifiers     | `public` `internal` `private` `protected` |
 | Inheritance modifier | `new`                                     |
+
+### Static Constructors
+
+- Executa uma vez por tipo em vez de uma vez por instância.
+- Um tipo pode definir apenas um construtor estático e não deve conter nenhum parâmetro.
+- Um construtor só pode ser chamado de duas formas:
+    - Instanciando o tipo.
+    - Acessando um membro estático do tipo.
+- *Os inicializadores dos campos estáticos são executados antes do chamado do construtor estático.*
+- *Os inicializadores de campos estáticos são executados na ordem em que foram declarados.*
 
 ### Static Classes
 
 A class can be marked `static`, indicating that it must be composed solely of static members and cannot be subclassed. The `System.Console` and `System.Math` classes are good examples of static classes.
+
+- Uma classe pode ser marcada como `static`, indicando que deve ser composta unicamente por membros estáticos.
+- Uma class estática não pode servir como class base e nem servir como classe filha, não sendo possível assim herança para classes estáticas.
+- As classes `System.Console` e `System.Math` são bons exemplos de classes estáticas.
 
 ### Finalizers
 
@@ -1777,11 +1870,23 @@ From C# 7, single-statement finalizers can be written with expression-bodied syn
 
 ### Partial Types and Methods
 
-Partial types allow a type definition to be split—typically across multiple files. A common scenario is for a partial class to be auto-generated from some other source (such as a Visual Studio template or designer) and for that class to be augmented with additional hand-authored methods.
+- Tipos parciais permite que uma definição de tipo seja dividida em vários arquivos.
+- Cada tipo deve ter incluir na declaração a palavra `partial` indicando que o tipo é parcial.
+- *Tipos parciais não podem ter membros conflitantes, como um construtor com os mesmos parâmetros, métodos com a mesma assinatura, mesmas propriedades por exemplo.*
+- Tipos parciais são resolvido inteiramente pelo compilador, o que significa que cada tipo parcial deve estar disponível em tempo de compilação e deve residir no mesmo `assembly`.
+- O compilador não tem nenhuma garantia na ordem de inicialização dos campos entre declarações de tipos parciais.
+
+Partial types allow a type definition to be split—typically across multiple files. A common scenario is for a partial class to be auto-generated from some other source(such as a Visual Studio template or designer) and for that class to be augmented with additional hand-authored methods.
 
 *A constructor with the same parameters, for instance, cannot be repeated*. Partial types are resolved entirely by the compiler, which means that each participant must be available at compile time and must reside in the same assembly.
 
 #### Partial methods
+
+- Tipos parciais podem conter métodos parciais. Para um método ser parcial o tipo deve ser parcial.
+- Um método parcial consiste em duas partes:
+    - Uma definição.
+    - Uma implementação.
+- *Os métodos parciais são sempre `void` e são implicitamente privados.*
 
 A partial type may contain *partial methods*. These let an auto-generated partial type provide customizable hooks for manual authoring.
 
@@ -1789,13 +1894,13 @@ A partial type may contain *partial methods*. These let an auto-generated partia
 partial class PaymentForm   // In auto-generated file
 {
     ...
-    partial void ValidatePayment (decimal amount);
+    partial void ValidatePayment(decimal amount);
 }
 
 partial class PaymentForm   // In hand-authored file
 {
     ...
-    partial void ValidatePayment (decimal amount)
+    partial void ValidatePayment(decimal amount)
     {
         if (amount > 100)
             ...
@@ -1803,11 +1908,11 @@ partial class PaymentForm   // In hand-authored file
 }
 ```
 
-A partial method consists of two parts: a definition and an implementation. The definition is typically written by a code generator, and the implementation is typically manually authored. If an implementation is not provided, the definition of the partial method is compiled away (as is the code that calls it). This allows auto-generated code to be liberal in providing hooks, without having to worry about bloat. Partial methods must be void and are implicitly private.
+A partial method consists of two parts: a definition and an implementation. The definition is typically written by a code generator, and the implementation is typically manually authored. If an implementation is not provided, the definition of the partial method is compiled away(as is the code that calls it). This allows auto-generated code to be liberal in providing hooks, without having to worry about bloat. Partial methods must be void and are implicitly private.
 
 ### The nameof operator (C# 6)
 
-The `nameof` operator returns the name of any symbol (type, member, variable, and so on) as a string:
+The `nameof` operator returns the name of any symbol(type, member, variable, and so on) as a string:
 
 ```csharp
 int count = 123;
@@ -1817,6 +1922,12 @@ string name = nameof(count); // name is "count"
 Its advantage over simply specifying a string is that of static type checking. Tools such as Visual Studio can understand the symbol reference, so if you rename the symbol in question, all its references will be renamed, too.
 
 ## Inheritance
+
+- Uma classe pode herdar de outra classe para extender ou personalizar a classe original.
+- Herança permite reutilizar as funcionalidades da **superclass** na **subclass**.
+- Uma classe pode herdar de apenas uma única classe, mais pode ser herdada de muitas classes, formando assim uma hierarquia de classes.
+- **A derived class is also called a subclass. A base class is also called a superclass**.
+- O Polimorfismo funciona em que *subclasses* possuem todas as características da classe base. O inverso, no entanto não é verdade.
 
 A class can inherit from another class to extend or customize the original class. Inheriting from a class lets you reuse the functionality in that class instead of building it from scratch. A class can inherit from only a single class, but can itself be inherited by many classes, thus forming a class hierarchy. In this example, we start by defining a class called `Asset`:
 
@@ -1862,16 +1973,26 @@ The derived classes, Stock and House, inherit the Name property from the *base c
 
 ### Casting and Reference Conversions
 
+- Uma referência de objeto pode ser:
+    - Implicitamente modificado para uma referência de classe base(**upcast**).
+    - Explicitamente reduzido para uma referência de subclasse(**downcast**).
+- O *Upcasting* e o *Downcasting* entre tipos de referência compatíveis executam conversões de referência: uma nova referência é(logicamente) criada apontando para o mesmo objeto.
+- Um *Upcast* é sempre bem sucedido; um *Downcast* só é bem sucedido se o objeto for adequadamente do tipo a ser convertido.
+
 An object reference can be:
 
 * **Implicitly `upcast` to a base class reference**
 * **Explicitly `downcast` to a subclass reference**
 
-O **upcasting** e o **downcasting** entre tipos de referência compatíveis executam conversões de referência: uma nova referência é (logicamente) criada que aponta para o mesmo objeto. Um upcast sempre é bem sucedido; um downcast só é bem sucedido se o objeto for apropriadamente typed.
+O **upcasting** e o **downcasting** entre tipos de referência compatíveis executam conversões de referência: uma nova referência é(logicamente) criada que aponta para o mesmo objeto. Um upcast sempre é bem sucedido; um downcast só é bem sucedido se o objeto for apropriadamente typed.
 
 #### Upcasting
 
 Uma operação de upcast cria uma referência de classe base a partir de uma referência de subclasse. Cria uma nova referência para a superclasse(classe pai) a partir de um objeto subclasse, herdado da mesma subclasse.
+
+- Uma operação de *upcast* cria uma referência de classe base a partir de uma referência de subclasse.
+- Após o *upcast*, uma variável `x` ainda referência o mesmo objeto da variável `y`. O objeto a ser referenciado não é alterado ou convertido.
+- Embora `x` e `y` se referem aos mesmo objeto idêntico, porque possuem a mesma referência, `y` tem uma visão mais restritiva sobre o objeto.
 
 ```csharp
 Subclass sub = new Subclass();
@@ -1905,6 +2026,10 @@ The last line generates a compile-time error because the variable a is of type A
 
 Uma operação de downcast cria uma referência de subclasse a partir de uma referência de classe base. Processo inverso do upcast, ou seja, quando uma nova referência é criada da classe base para a classe herdade, quando a subclasse cria uma nova referência a partir de um objeto que é sua superclasse, sua classe base.
 
+- Uma operação de *downcast* cria uma referência de subclasse a partir de uma referência de classe base.
+- Um *downcast* requer uma conversão explícita porque pode potencialmente falhar no tempo de execução.
+- Se um *downcast* falhar, uma `InvalidCastException` é lançada.
+
 ```csharp
 Subclass a = new Subclass();
 BaseClass b = a; // Upcast always succeeds
@@ -1936,7 +2061,10 @@ If a downcast fails, an InvalidCastException is thrown.
 
 #### The `as` operator
 
-The `as` operator performs a downcast that evaluates to `null` (rather than throwing an exception) if the downcast fails.
+The `as` operator performs a downcast that evaluates to `null`(rather than throwing an exception) if the downcast fails.
+
+- O operador `as` avalia se é seguro realizar um *downcast*, não lança uma excessão se a conversar não for bem sucedida, em vez disso, é avaliado como `null`.
+- Útil quando quiser testar o resultado da conversão `x != null`.
 
 ```csharp
 Asset a = new Asset();
@@ -1967,7 +2095,12 @@ Another way of looking at it is that with the cast operator, you’re saying to 
 
 #### The `is` operator
 
-The `is` operator tests whether a reference conversion would succeed; in other words, whether an object derives from a specified class (or implements an interface). It is often used to test before downcasting.
+The `is` operator tests whether a reference conversion would succeed; in other words, whether an object derives from a specified class(or implements an interface). It is often used to test before downcasting.
+
+- Testa se uma conversão de referência seria bem sucedida.
+- Testa se um objeto deriva de uma classe específica ou implementa determinada interface.
+- Utilizado muitas vezes para testes antes de realizar *downcasting*.
+- Avalia também se uma conversão *unboxing* seria bem sucedida.
 
 ```csharp
 if (a is Stock)
@@ -1979,6 +2112,11 @@ The is operator also evaluates to true if an unboxing conversion would succeed. 
 ### Virtual Function Members
 
 A function marked as `virtual` can be overridden by subclasses wanting to provide a specialized implementation. Methods, properties, indexers, and events can all be declared virtual.
+
+- Uma função marcada como `virtual` pode ser substituída por subclasses que desejam fornecer uma implementação especializada.
+- Métodos, propriedades, indexadores e eventos podem ser todos declarados como `virtual`.
+- Uma subclasse substitui um método virtual aplicando o modificador `override`.
+- As assinaturas, tipos de retornos e a acessibilidade dos métodos virtuais e substituídos devem ser idênticos.
 
 ```csharp
 public class Asset
@@ -2020,6 +2158,16 @@ The signatures, return types, and accessibility of the virtual and overridden me
 
 ### Abstract Classes and Abstract Members
 
+- As classes podem ser declaradas como abstratas, colocando a palavra-chave `abstract` antes da definição de classe.
+- Não pode ser criado um objeto, uma instância de classes abstratas.
+- A finalidade de uma classe abstrata é fornecer uma definição comum de uma classe base que pode ser compartilhada por várias classes derivadas.
+- Uma classe abstrata contém métodos abstratos que têm uma definição de assinatura, mas não têm implementação.
+- Se houver pelo menos um método abstrato a classe deve ser abstrata.
+
+- Uma classe declarada como abstrata nunca pode ser instanciada. Em vez disso, apenas suas subclasses concretas podem ser instanciadas.
+- Classes abstratas são capazes de definir membros abstratos.
+- Membros abstratos são como os membros virtuais, exceto que eles não fornecem uma implementação padrão. A implementação deve ser feito por uma classe não abstrata, uma subclasse, a menos que a subclasse também seja declarada como abstract.
+
 A class declared as `abstract` can never be instantiated. Instead, only its concrete subclasses can be instantiated.
 
 Abstract classes are able to define `abstract` members. Abstract members are like `virtual` members, except they don’t provide a default implementation. That implementation must be provided by the subclass, unless that subclass is also declared abstract.
@@ -2043,6 +2191,10 @@ public class Stock : Asset
 
 ### Hiding Inherited Members
 
+- Uma classe base e uma subclasse podem definir membros idênticos.
+- Você pode ocultar um membro na classe base dizendo ao compilador que o membro na subclasse não é um erro mais sim um nova implementação. Por meio do modificador `new` aplicado ao membro da subclasse.
+- O modificador `new` tem a finalidade de suprimir o aviso do compilador informando que existe dois membros idênticos.
+
 A base class and a subclass may define identical members.
 
 ```csharp
@@ -2052,8 +2204,8 @@ public class B : A { public int Counter = 2; }
 
 The `Counter` field in class `B` is said to hide the Counter field in class `A`. Usually, this happens by accident, when a member is added to the base type after an identical member was added to the subtype. For this reason, the compiler generates a warning, and then resolves the ambiguity as follows:
 
-* References to A (at compile time) bind to `A.Counter`.
-* References to B (at compile time) bind to `B.Counter`.
+* References to A(at compile time) bind to `A.Counter`.
+* References to B(at compile time) bind to `B.Counter`.
 
 Occasionally, you want to hide a member deliberately, in which case you can apply the new modifier to the member in the subclass. The `new` modifier does nothing more than suppress the compiler warning that would otherwise result:
 
@@ -2112,6 +2264,10 @@ b2.Foo();   // BaseClass.Foo
 
 ### Sealing Functions and Classes
 
+- Um função substituída pode ser *selada* evitando que ela seja substituída por outras subclasses.
+- Uma classe também pode ser *selada*, indicando assim, que não pode servir de classe base e seus membros virtuais são implicitamente selados.
+- Embora você possa selar contra a substituição, você não pode selar um membro contra oculto.
+
 > An overridden function member may seal its implementation with the `sealed` keyword to prevent it from being overridden by further subclasses.
 
 In our earlier virtual function member example, we could have sealed House’s implementation of `Liability`, preventing a class that derives from House from overriding `Liability`, as follows:
@@ -2146,6 +2302,13 @@ With the base keyword, we access Asset’s `Liability` property *nonvirtually*. 
 The same approach works if `Liability` is *hidden* rather than overridden. (You can also access hidden members by casting to the base class before invoking the function.)
 
 ### Constructors and Inheritance
+
+- Uma subclasse deve declarar seus próprios construtores. Construtores da classe base são acessíveis para a classe derivada, mas nunca são automaticamente herdados.
+- A subclasse deve redefinir todos os construtores que deseja expor para o programa.
+- A palavra chave `base` funciona semelhando ao `this` no construtor, exceto que `base` acesso ao construtor da superclasse.
+- Os construtores da classe base sempre executam primeiro; Isso garante que a inicialização da classe base ocorra antes da inicialização da especializada.
+- Se um construtor em uma subclasse omite a palavra-chave `base`, o construtor sem parâmetros da classe base é chamado de forma implícita.
+- Se a classe base não possui um construtor sem parâmetros acessível(padrão), as subclasses são obrigadas a usar a palavra-chave `base` em seus construtores.
 
 A subclass must declare its own constructors. The base class’s constructors are accessible to the derived class but are never automatically *inherited*.
 
@@ -2238,7 +2401,9 @@ public class D : B
 
 ### Overloading and Resolution
 
-nheritance has an interesting impact on method overloading. Consider the following two overloads:
+> Quando uma sobrecarga é chamada, o tipo mais específico tem precedência.
+
+Inheritance has an interesting impact on method overloading. Consider the following two overloads:
 
 ```csharp
 static void Foo(Asset a) { }
@@ -2252,7 +2417,7 @@ House h = new House(...);
 Foo(h); // Calls Foo(House)
 ```
 
-The particular overload to call is determined statically (at compile time) rather than at runtime. The following code calls Foo(Asset), even though the runtime type of a is House:
+The particular overload to call is determined statically(at compile time) rather than at runtime. The following code calls Foo(Asset), even though the runtime type of a is House:
 
 ```csharp
 Asset a = new House(...);
@@ -2261,13 +2426,17 @@ Foo(a); // Calls Foo(Asset)
 
 ## The object Type
 
-> `object` (`System.Object`) is the ultimate base class for all types. Any type can be *upcast* to object.
+> `object`(`System.Object`) is the ultimate base class for all types. Any type can be *upcast* to object.
 
 **object is a reference type**, by virtue of being a class. Despite this, value types, such as int, can also be cast to and from object.
 
 When you cast between a value type and object, the CLR must perform some special work to bridge the difference in semantics between value and reference types. This process is called **boxing** and **unboxing**.
 
 ### Boxing and Unboxing
+
+- **Boxing**: É o ato de converter uma instância do tipo valor em uma instância do tipo de referência. O tipo de referencia pode ser a classe de `object` ou uma *interface*.
+- **Unboxing**: Inverte a operação ao converter o objeto de volta para o tipo original. *Unboxing* requer um *cast* explícito. Em tempo de execução verifica-se se o tipo de valor indicado a ser convertido é correspondente ao tipo de objeto original e lança uma excessão `InvalidCastException` se a verificação falhar.
+- ***Boxing* copia a instância do tipo de valor no novo objeto, e o *Unboxing* copia o conteúdo do objeto de volta para uma instância do tipo de valor.**
 
 > Boxing is the act of converting a **value-type instance to a reference-type** instance. The reference type may be either the `object` class or an interface.
 
@@ -2304,7 +2473,7 @@ object obj = 3.5;           // 3.5 is inferred to be of type double
 int x = (int) (double) obj; // x is now 3
 ```
 
-In the last example, (`double`) performs an *unboxing* and then (`int`) performs a numeric conversion.
+In the last example, (`double`) performs an *unboxing* and then(`int`) performs a numeric conversion.
 
 #### Copying semantics of boxing and unboxing
 
@@ -2319,7 +2488,7 @@ Console.WriteLine(boxed); // 3
 
 ### Static and Runtime Type Checking
 
-C# programs are type-checked both statically (at compile time) and at runtime (by the CLR).
+C# programs are type-checked both statically(at compile time) and at runtime(by the CLR).
 
 Static type checking enables the compiler to verify the correctness of your program without running it. The following code will fail because the compiler enforces static typing:
 
@@ -2343,7 +2512,7 @@ All types in C# are represented at runtime with an instance of `System.Type`. Th
 * Call `GetType` on the instance.
 * Use the `typeof` operator on a type name.
 
-`GetType` is evaluated at runtime; `typeof` is evaluated statically at compile time (when generic type parameters are involved, it’s resolved by the just-in-time compiler).
+`GetType` is evaluated at runtime; `typeof` is evaluated statically at compile time(when generic type parameters are involved, it’s resolved by the just-in-time compiler).
 
 System.Type has properties for such things as the type’s name, assembly, base type, and so on. For example:
 
@@ -2371,10 +2540,20 @@ class Test
 
 ## Structs
 
+- Uma estrutura é semelhante a uma classe, com as seguintes diferenças principais:
+    - Uma estrutura é um tipo de valor, enquanto uma classe é um tipo de referência.
+    - Uma estrutura não suporta herança.
+- Uma estrutura pode ter todos os membros que uma classe pode, exceto o seguinte:
+    - Um construtor sem parâmetros.
+    - Inicializadores de campo.
+    - Um finalizador.
+    - Membros virtuais ou protegidos.
+- Quando você define um construtor de estrutura, você deve atribuir explicitamente todos os campos.
+
 A `struct` is similar to a class, with the following key differences:
 
 * A struct is a value type, whereas a class is a reference type.
-* A struct does not support inheritance (other than implicitly deriving from object, or more precisely, `System.ValueType`).
+* A struct does not support inheritance(other than implicitly deriving from object, or more precisely, `System.ValueType`).
 
 A struct can have all the members a class can, except the following:
 
@@ -2440,6 +2619,25 @@ To promote encapsulation, a type or type member may limit its accessibility to o
 **protected internal**
 > The union of protected and internal accessibility. Eric Lippert explains it as follows: Everything is as private as possible by default, and each modifier makes the thing more accessible. So something that is protected internal is made more accessible in two ways.
 
+---------------
+
+> Para promover o encapsulamento, um tipo ou tipo de membro pode limitar a sua acessibilidade a outros tipos e outras assemblies adicionando um dos cinco modificadores de acesso à declaração:
+
+1. **Public(Público)**
+*Totalmente visível, Esta é a acessibilidade implícita para membros de enums e interfaces.*
+
+2. **Internal(Interno)**
+*Acesso apenas dentro das Assemblies ou para "Friend Assemblies". Está é a acessibilidade padrão para tipos não aninhados.*
+
+3. **Private(Privado)**
+*Acesso apenas dentro do tipo. Está é a acessibilidade padrão para membros de classes ou estrutura.*
+
+4. **Protected(Protegido)**
+*Acessibilidade apenas dentro do tipo ou de suas subclasses.*
+
+5. **Protected Internal**
+*União de acessibilidade entre protegido e interno. Tudo é o mais privado possível por padrão, e cada modificador torna as coisas mais acessíveis. Então, algo protegido interno é tornado mais acessível das duas maneiras.*
+
 ### Examples
 
 `Class2` is accessible from outside its assembly; `Class1` is not:
@@ -2503,12 +2701,21 @@ public class B : A {}   // Error
 
 ## Interfaces
 
+- Uma interface é semelhante a uma classe, mas fornece uma especificação em vez de uma implementação para os seus membros. Uma interface é especial nas seguintes formas:
+    - Os membros da interface são todos implicitamente abstratos. Em contrapartida, uma classe pode fornecer membros abstratos e membros concretos com implementações.
+    - Uma classe(ou estrutura) pode implementar várias interfaces. Em contraste, uma classe pode herdar de apenas uma única classe, e uma estrutura não pode herdar de nada(além de derivar de `System.ValueType`)
+- Os membros da interfaces que são implicitamente abstrato serão implementados pelas classes e estruturas que implementam a interface.
+- **Uma interface pode conter apenas métodos, propriedades, eventos e indexadores.**
+- *Membros de uma interface são implicitamente públicos e não podem declarar algum modificador de acesso.*
+- **Interfaces podem derivar de outras interfaces.**
+- Um membro de interface implicitamente implementado é, por padrão, *sealed*. Ele deve ser marcado como virtual ou abstrato na classe base para ser substituído.
+
 > An interface is similar to a class, but it provides a specification rather than an implementation for its members.
 
 An interface is special in the following ways:
 
 * Interface members are all *implicitly abstract*. In contrast, a class can provide both abstract members and concrete members with implementations.
-* A class (or struct) can implement multiple interfaces. In contrast, a class can inherit from only a single class, and a struct cannot inherit at all (aside from deriving from `System.ValueType`).
+* A class(or struct) can implement multiple interfaces. In contrast, a class can inherit from only a single class, and a struct cannot inherit at all(aside from deriving from `System.ValueType`).
 
 An interface declaration is like a class declaration, but it provides no implementation for its members, since all its members are implicitly abstract. These members will be implemented by the classes and structs that implement the interface. An interface can contain only methods, properties, events, and indexers, which non‐ coincidentally are precisely the members of a class that can be abstract.
 
@@ -2612,6 +2819,9 @@ Another reason to explicitly implement interface members is to hide members that
 
 ### Implementing Interface Members Virtually
 
+- Um membro de interface implicitamente implementado é, por padrão, *selado*. Ele deve ser marcado como virtual ou abstrato na classe base para ser substituído.
+- Um membro de interface explicitamente implementado não pode ser marcado como virtual, nem pode ser substituído da maneira usual. Pode, contudo, ser re-implementado.
+
 **An implicitly implemented interface member is, by default, sealed. It must be marked virtual or abstract in the base class in order to be overridden**.
 
 ```csharp
@@ -2641,7 +2851,7 @@ r.Undo();               // RichTextBox.Undo
 
 ### Reimplementing an Interface in a Subclass
 
-A subclass can reimplement any interface member already implemented by a base class. Reimplementation hijacks a member implementation (when called through the interface) and works whether or not the member is virtual in the base class. It also works whether a member is implemented implicitly or explicitly—although it works best in the latter case, as we will demonstrate.
+A subclass can reimplement any interface member already implemented by a base class. Reimplementation hijacks a member implementation(when called through the interface) and works whether or not the member is virtual in the base class. It also works whether a member is implemented implicitly or explicitly—although it works best in the latter case, as we will demonstrate.
 
 In the following example, `TextBox` implements `IUndoable.Undo` explicitly, and so it cannot be marked as virtual. In order to “override” it, `RichTextBox` must reimplement IUndoable’s Undo method:
 
@@ -2732,6 +2942,12 @@ i.Foo();
 [Writing a Class Versus an Interface](Writing%20a%20Class%20Versus%20an%20Interface.md)
 
 ## Enums
+
+- Uma enumeração é um tipo especial de valor que permite que você especifique um grupo de constantes numéricas nomeadas.
+- Cada item do enum tem um valor integral subjacente. Por padrão:
+    - Os valores subjacentes são do tipo `int`.
+    - As constantes 0, 1 ,2 ... são automaticamente atribuídas, na ordem de declaração dos itens do enum.
+    - Você também pode especificar um valor subjacente explícito para cada membro enum.
 
 > An enum is a special value type that lets you specify a group of named numeric constants.
 
@@ -2850,7 +3066,7 @@ b++;    // No errors
 An invalid BorderSide would break the following code:
 
 ```csharp
-void Draw (BorderSide side)
+void Draw(BorderSide side)
 {
     if (side == BorderSide.Left) {...}
     else if (side == BorderSide.Right) {...}
@@ -2864,7 +3080,7 @@ One solution is to add another else clause:
 ```csharp
 ...
 else if (side == BorderSide.Bottom) ...
-else throw new ArgumentException ("Invalid BorderSide: " + side, "side");
+else throw new ArgumentException("Invalid BorderSide: " + side, "side");
 ```
 
 Another workaround is to explicitly check an enum value for validity. The static `Enum.IsDefined` method does this job:
@@ -2874,7 +3090,7 @@ BorderSide side = (BorderSide) 12345;
 Console.WriteLine(Enum.IsDefined(typeof(BorderSide), side)); // False
 ```
 
-Unfortunately, `Enum.IsDefined` does not work for flagged enums. However, the following helper method (a trick dependent on the behavior of `Enum.ToString()`) returns true if a given flagged enum is valid:
+Unfortunately, `Enum.IsDefined` does not work for flagged enums. However, the following helper method(a trick dependent on the behavior of `Enum.ToString()`) returns true if a given flagged enum is valid:
 
 ```csharp
 static bool IsFlagDefined(Enum e)
@@ -2913,9 +3129,9 @@ A nested type has the following features:
 * It can access the enclosing type’s private members and everything else the enclosing type can access.
 * It can be declared with the full range of access modifiers, rather than just public and `internal`.
 * The default accessibility for a nested type is `private` rather than `internal`.
-* Accessing a nested type from outside the enclosing type requires qualification with the enclosing type’s name (like when accessing static members).
+* Accessing a nested type from outside the enclosing type requires qualification with the enclosing type’s name(like when accessing static members).
 
-All types (classes, structs, interfaces, delegates and enums) can be nested inside either a class or a struct.
+All types(classes, structs, interfaces, delegates and enums) can be nested inside either a class or a struct.
 
 Here is an example of accessing a private member of a type from a nested type:
 
@@ -2998,7 +3214,7 @@ int x = stack.Pop(); // x is 10
 int y = stack.Pop(); // y is 5
 ```
 
-`Stack<int>` fills in the type parameter `T` with the type argument int, implicitly creating a type on the fly (the synthesis occurs at runtime). Attempting to push a string onto our `Stack<int>` would, however, produce a compile-time error. `Stack<int>` effectively has the following definition (substitutions appear in bold, with the class name hashed out to avoid confusion):
+`Stack<int>` fills in the type parameter `T` with the type argument int, implicitly creating a type on the fly(the synthesis occurs at runtime). Attempting to push a string onto our `Stack<int>` would, however, produce a compile-time error. `Stack<int>` effectively has the following definition(substitutions appear in bold, with the class name hashed out to avoid confusion):
 
 ```csharp
 public class Stack<T>
@@ -3034,7 +3250,7 @@ public class Stack<T>
 
 ### Why Generics Exist
 
-**Generics exist to write code that is reusable across different types.** Suppose we needed a stack of integers, but we didn’t have generic types. One solution would be to hardcode a separate version of the class for every required element type (e.g., `IntStack`, `StringStack`, etc.). Clearly, this would cause considerable code duplication. Another solution would be to write a stack that is generalized by using object as the element type:
+**Generics exist to write code that is reusable across different types.** Suppose we needed a stack of integers, but we didn’t have generic types. One solution would be to hardcode a separate version of the class for every required element type(e.g., `IntStack`, `StringStack`, etc.). Clearly, this would cause considerable code duplication. Another solution would be to write a stack that is generalized by using object as the element type:
 
 ```csharp
 public class ObjectStack
@@ -3091,7 +3307,7 @@ Generally, there is no need to supply type arguments to a generic method, becaus
 Swap<int>(ref x, ref y);
 ```
 
-**Within a generic *type*, a method is not classed as generic unless it *introduces* type parameters (with the angle bracket syntax)**. The `Pop` method in our generic stack merely uses the type’s existing type parameter, `T`, and is not classed as a generic method.
+**Within a generic *type*, a method is not classed as generic unless it *introduces* type parameters(with the angle bracket syntax)**. The `Pop` method in our generic stack merely uses the type’s existing type parameter, `T`, and is not classed as a generic method.
 
 Methods and types are the only constructs that can introduce type parameters. Properties, indexers, events, fields, constructors, operators, and so on cannot declare type parameters, although they can partake in any type parameters already declared by their enclosing type. In our generic stack example, for instance, we could write an indexer that returns a generic item:
 
@@ -3163,7 +3379,7 @@ You can also use the typeof operator to specify a closed type:
 Type a3 = typeof(A<int,int>);
 ```
 
-or an open type (which is closed at runtime):
+or an open type(which is closed at runtime):
 
 ```csharp
 class B<T>
@@ -3190,7 +3406,7 @@ where T : new()         // Parameterless constructor constraint
 where U : T             // Naked type constraint
 ```
 
-In the following example, `GenericClass<T,U>` requires `T` to derive from (or be identical to) `SomeClass` and implement `Interface1`, and requires `U` to provide a parameterless constructor:
+In the following example, `GenericClass<T,U>` requires `T` to derive from(or be identical to) `SomeClass` and implement `Interface1`, and requires `U` to provide a parameterless constructor:
 
 ```csharp
 class SomeClass {}
@@ -3205,7 +3421,7 @@ class GenericClass<T,U> where T : SomeClass, Interface1
 
 **Constraints can be applied wherever type parameters are defined, in both methods and type definitions**.
 
-A *base-class constraint* specifies that the type parameter must subclass (or match) a particular class; an interface constraint specifies that the type parameter must implement that interface. These constraints allow instances of the type parameter to be implicitly converted to that class or interface.
+A *base-class constraint* specifies that the type parameter must subclass(or match) a particular class; an interface constraint specifies that the type parameter must implement that interface. These constraints allow instances of the type parameter to be implicitly converted to that class or interface.
 
 For example, suppose we want to write a generic `Max` method, which returns the maximum of two values. We can take advantage of the generic interface defined in the framework called `IComparable<T>`:
 
@@ -3216,7 +3432,7 @@ public interface IComparable<T> // Simplified version of interface
 }
 ```
 
-`CompareTo` returns a positive number if this is greater than other. Using this interface as a constraint, we can write a `Max` method as follows (to avoid distraction, `null` checking is omitted):
+`CompareTo` returns a positive number if this is greater than other. Using this interface as a constraint, we can write a `Max` method as follows(to avoid distraction, `null` checking is omitted):
 
 ```csharp
 static T Max<T>(T a, T b) where T : IComparable<T>
@@ -3225,14 +3441,14 @@ static T Max<T>(T a, T b) where T : IComparable<T>
 }
 ```
 
-The `Max` method can accept arguments of any type implementing `IComparable<T>` (which includes most built-in types such as `int` and `string`):
+The `Max` method can accept arguments of any type implementing `IComparable<T>`(which includes most built-in types such as `int` and `string`):
 
 ```csharp
 int z = Max(5, 10);                // 10
 string last = Max("ant", "zoo");   // zoo
 ```
 
-The *class constraint* and *struct constraint* specify that `T` must be a reference type or (non-nullable) value type. A great example of the struct constraint is the `System.Nullable<T>` struct:
+The *class constraint* and *struct constraint* specify that `T` must be a reference type or(non-nullable) value type. A great example of the struct constraint is the `System.Nullable<T>` struct:
 
 ```csharp
 struct Nullable<T> where T : struct {...}
@@ -3248,7 +3464,7 @@ static void Initialize<T>(T[] array) where T : new()
 }
 ```
 
-The *naked type constraint* requires one type parameter to derive from (or match) another type parameter. In this example, the method `FilteredStack` returns another Stack, containing only the subset of elements where the type parameter `U` is of the type parameter `T`:
+The *naked type constraint* requires one type parameter to derive from(or match) another type parameter. In this example, the method `FilteredStack` returns another Stack, containing only the subset of elements where the type parameter `U` is of the type parameter `T`:
 
 ```csharp
 class Stack<T>
@@ -3284,7 +3500,7 @@ class KeyedList<T,**TKey**> : List<T> {...}
 
 ------------
 
-*Technically, all type arguments on a subtype are fresh*: you could say that a subtype closes and then reopens the base type arguments. This means that a subclass can give new (and potentially more meaningful) names to the type arguments it reopens:
+*Technically, all type arguments on a subtype are fresh*: you could say that a subtype closes and then reopens the base type arguments. This means that a subclass can give new(and potentially more meaningful) names to the type arguments it reopens:
 
 ```csharp
 class List<T> {...}
@@ -3354,7 +3570,7 @@ The decision as to which kind of conversion will take place happens at compile t
 The most common scenario is when you want to perform a reference conversion:
 
 ```csharp
-StringBuilder Foo<T> (T arg)
+StringBuilder Foo<T>(T arg)
 {
     if (arg is StringBuilder)
         return (StringBuilder) arg; // Will not compile
@@ -3365,7 +3581,7 @@ StringBuilder Foo<T> (T arg)
 Without knowledge of `T`’s actual type, the compiler is concerned that you might have intended this to be a *custom conversion*. The simplest solution is to instead use the as operator, which is unambiguous because it cannot perform custom conversions:
 
 ```csharp
-StringBuilder Foo<T> (T arg)
+StringBuilder Foo<T>(T arg)
 {
     StringBuilder sb = arg as StringBuilder;
     if (sb != null)
@@ -3386,7 +3602,7 @@ Unboxing conversions can also introduce ambiguities. The following could be an u
 int Foo<T>(T x) => (int) x;    // Compile-time error
 ```
 
-The solution, again, is to first cast to object and then to int (which then unambiguously signals an unboxing conversion in this case):
+The solution, again, is to first cast to object and then to int(which then unambiguously signals an unboxing conversion in this case):
 
 ```csharp
 int Foo<T>(T x) => (int) (object) x;
@@ -3402,7 +3618,7 @@ Action<string> y = x;
 
 > Assuming `A` is convertible to `B`, `X` has a covariant type parameter if `X<A>` is convertible to `X<B>`.
 
-*With C#’s notion of covariance (and contravariance), “convertible” means convertible via an implicit reference conversion —such as `A` subclassing `B`, or `A` implementing `B`. Numeric conversions, boxing conversions, and custom conversions are not included.*
+*With C#’s notion of covariance(and contravariance), “convertible” means convertible via an implicit reference conversion —such as `A` subclassing `B`, or `A` implementing `B`. Numeric conversions, boxing conversions, and custom conversions are not included.*
 
 For instance, type `IFoo<T>` has a covariant `T` if the following is legal:
 
@@ -3411,9 +3627,9 @@ IFoo<string> s = ...;
 IFoo<object> b = s;
 ```
 
-From C# 4.0, interfaces permit covariant type parameters (as do delegates), but classes do not. Arrays also allow covariance (`A[]` can be converted to `B[]` if `A` has an implicit reference conversion to `B`), and are discussed here for comparison.
+From C# 4.0, interfaces permit covariant type parameters(as do delegates), but classes do not. Arrays also allow covariance(`A[]` can be converted to `B[]` if `A` has an implicit reference conversion to `B`), and are discussed here for comparison.
 
-*Covariance and contravariance (or simply “variance”) are advanced concepts. The motivation behind introducing and enhancing variance in C# was to allow generic interface and generic types (in particular, those defined in the Framework, such as `IEnumerable<T>`) to work more as you’d expect. You can benefit from this without understanding the details behind covariance and contravariance.*
+*Covariance and contravariance(or simply “variance”) are advanced concepts. The motivation behind introducing and enhancing variance in C# was to allow generic interface and generic types(in particular, those defined in the Framework, such as `IEnumerable<T>`) to work more as you’d expect. You can benefit from this without understanding the details behind covariance and contravariance.*
 
 #### Variance is not automatic
 
@@ -3475,7 +3691,7 @@ Another solution is to have `Stack<T>` implement an interface with a covariant t
 
 #### Arrays
 
-For historical reasons, array types support covariance. This means that `B[]` can be cast to A`[]` if `B` subclasses `A` (and both are reference types). For example:
+For historical reasons, array types support covariance. This means that `B[]` can be cast to A`[]` if `B` subclasses `A`(and both are reference types). For example:
 
 ```csharp
 Bear[] bears = new Bear[3];
@@ -3498,11 +3714,11 @@ We can illustrate this with our `Stack<T>` class by having it implement the foll
 public interface IPoppable<out T> { T Pop(); }
 ```
 
-The `out` modifier on `T` indicates that `T` is used only in output positions (e.g., return types for methods). The out modifier flags the type parameter as *covariant* and allows us to do this:
+The `out` modifier on `T` indicates that `T` is used only in output positions(e.g., return types for methods). The out modifier flags the type parameter as *covariant* and allows us to do this:
 
 ```csharp
 var bears = new Stack<Bear>();
-bears.Push (new Bear());
+bears.Push(new Bear());
 // Bears implements IPoppable<Bear>. We can convert to IPoppable<Animal>:
 IPoppable<Animal> animals = bears; // Legal
 Animal a = animals.Pop();
@@ -3510,7 +3726,7 @@ Animal a = animals.Pop();
 
 The conversion from bears to animals is permitted by the compiler—by virtue of the type parameter being covariant. This is type-safe because the case the compiler is trying to avoid—pushing a `Camel` onto the stack—can’t occur as there’s no way to feed a `Camel` into an interface where `T` can appear only in output positions.
 
-*Covariance (and contravariance) in interfaces is something that you typically consume: it’s less common that you need to write variant interfaces.*
+*Covariance(and contravariance) in interfaces is something that you typically consume: it’s less common that you need to write variant interfaces.*
 
 We can leverage the ability to cast covariantly to solve the reusability problem described earlier:
 
@@ -3521,9 +3737,9 @@ public class ZooCleaner
 }
 ```
 
-The compiler will generate an error if you use a covariant type parameter in an input position (e.g., a parameter to a method or a writable property).
+The compiler will generate an error if you use a covariant type parameter in an input position(e.g., a parameter to a method or a writable property).
 
-*Covariance (and contravariance) works only for elements with reference conversions—not boxing conversions. (This applies both to type parameter variance and array variance.) So, if you wrote a method that accepted a parameter of type `IPoppable<object>`, you could call it with `IPoppable<string>`, but not `IPoppable<int>`.*
+*Covariance(and contravariance) works only for elements with reference conversions—not boxing conversions. (This applies both to type parameter variance and array variance.) So, if you wrote a method that accepted a parameter of type `IPoppable<object>`, you could call it with `IPoppable<string>`, but not `IPoppable<int>`.*
 
 ### Contravariance
 
@@ -3550,7 +3766,7 @@ IPushable<Bear> bears = animals; // Legal
 bears.Push(new Bear());
 ```
 
-No member in `IPushable` outputs a `T`, so we can’t get into trouble by casting `animals` to `bears` (there’s no way to `Pop`, for instance, through that interface).
+No member in `IPushable` outputs a `T`, so we can’t get into trouble by casting `animals` to `bears`(there’s no way to `Pop`, for instance, through that interface).
 
 *Our `Stack<T>` class can implement both `IPushable<T>` and `IPoppable<T>`—despite `T` having opposing variance annotations in the two interfaces! This works because you must exercise variance through the interface and not the class; therefore, you must commit to the lens of either `IPoppable` or `IPushable` before performing a variant conversion. This lens then restricts you to the operations that are legal under the appropriate variance rules.*
 
@@ -3562,7 +3778,7 @@ To give another example, consider the following interface, defined as part of th
 public interface IComparer<in T>
 {
     // Returns a value indicating the relative ordering of a and b
-    int Compare (T a, T b);
+    int Compare(T a, T b);
 }
 ```
 
@@ -3575,4 +3791,4 @@ IComparer<string> stringComparer = objectComparer;
 int result = stringComparer.Compare("Brett", "Jemaine");
 ```
 
-Mirroring covariance, the compiler will report an error if you try to use a contravariant type parameter in an output position (e.g., as a return value, or in a readable property).
+Mirroring covariance, the compiler will report an error if you try to use a contravariant type parameter in an output position(e.g., as a return value, or in a readable property).
