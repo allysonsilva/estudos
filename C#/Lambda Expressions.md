@@ -1,18 +1,18 @@
 # Lambda Expressions
 
-- É um método sem nome escrito no lugar de uma instância delegate.
-- O compilador converte imediatamente a expressão lambda para:
-    - Uma instância de delegate.
-    - Uma árvore de expressões, to tipo `Expression<TDelegate>`. Isso permite que a expressão lambda seja interpretada mais tarde no tempo de execução.
-- O código de declaração lambda pode ser um bloco de declaração em vez de uma expressão.
-- Expressões Lambda foram introduzidas no `C# 3.0`.
+-   É um método sem nome escrito no lugar de uma instância delegate.
+-   O compilador converte imediatamente a expressão lambda para:
+    -   Uma instância de delegate.
+    -   Uma árvore de expressões, to tipo `Expression<TDelegate>`. Isso permite que a expressão lambda seja interpretada mais tarde no tempo de execução.
+-   O código de declaração lambda pode ser um bloco de declaração em vez de uma expressão.
+-   Expressões Lambda foram introduzidas no `C# 3.0`.
 
 > A lambda expression is an unnamed method written in place of a delegate instance.
 
 The compiler immediately converts the lambda expression to either:
 
-* A delegate instance.
-* An expression tree, of type `Expression<TDelegate>`, representing the code inside the lambda expression in a traversable object model.
+-   A delegate instance.
+-   An expression tree, of type `Expression<TDelegate>`, representing the code inside the lambda expression in a traversable object model.
 
 Given the following delegate type:
 
@@ -27,11 +27,11 @@ Transformer sqr = x => x * x;
 Console.WriteLine(sqr(3)); // 9
 ```
 
-*Internally, the compiler resolves lambda expressions of this type by writing a private method, and moving the expression’s code into that method.*
+_Internally, the compiler resolves lambda expressions of this type by writing a private method, and moving the expression’s code into that method._
 
 Uma expressão lambda tem a seguinte forma:
 
-***(parameters) => expression-or-statement-block***
+**_(parameters) => expression-or-statement-block_**
 
 Por conveniência, você pode omitir os parênteses se e somente se houver exatamente um parâmetro de um tipo inferível.
 
@@ -41,7 +41,7 @@ No nosso exemplo, existe um único parâmetro, `x` , e a expressão é `x * x`:
 x => x * x;
 ```
 
-Cada parâmetro da expressão lambda corresponde a um parâmetro delegate e o tipo da expressão (que pode ser `void`) corresponde ao tipo de retorno do delegate.
+Cada parâmetro da expressão lambda corresponde a um parâmetro delegate e o tipo da expressão(que pode ser `void`) corresponde ao tipo de retorno do delegate.
 
 No nosso exemplo, `x` corresponde ao parâmetro `i` , e a expressão `x * x` corresponde ao tipo de retorno `int`, portanto, therefore being compatible with the `Transformer` delegate:
 
@@ -98,7 +98,7 @@ Bar<int>(Foo);          // As above, but with method group
 
 ## Capturing Outer Variables
 
-Uma expressão lambda pode fazer referência às variáveis ​​e parâmetros locais do método em que está definido *outer variables*(variáveis ​​externas).
+Uma expressão lambda pode fazer referência às variáveis ​​e parâmetros locais do método em que está definido _outer variables_(variáveis ​​externas).
 
 ```csharp
 static void Main()
@@ -109,11 +109,11 @@ static void Main()
 }
 ```
 
-**Outer variables referenced by a lambda expression are called *captured variables*. A lambda expression that captures variables is called a *closure*.**
+**Outer variables referenced by a lambda expression are called _captured variables_. A lambda expression that captures variables is called a _closure_.**
 
-*Variables can also be captured by anonymous methods and local methods. The rules for captured variables, in these cases, are the same.*
+_Variables can also be captured by anonymous methods and local methods. The rules for captured variables, in these cases, are the same._
 
-Captured variables are evaluated when the delegate is actually *invoked*, not when the variables were *captured*:
+Captured variables are evaluated when the delegate is actually _invoked_, not when the variables were _captured_:
 
 ```csharp
 int factor = 2;
@@ -149,7 +149,7 @@ static void Main()
 }
 ```
 
-Uma variável local instanciada dentro de uma expressão lambda é única por invocação da instância delegate. If we refactor our previous example to instantiate `seed` *within* the lambda expression, we get a different (in this case, undesirable) result:
+Uma variável local instanciada dentro de uma expressão lambda é única por invocação da instância delegate. If we refactor our previous example to instantiate `seed` _within_ the lambda expression, we get a different(in this case, undesirable) result:
 
 ```csharp
 static Func<int> Natural()
@@ -171,7 +171,7 @@ static void Main()
 
 ### Capturing iteration variables
 
-Quando você captura a variável de iteração de um *loop* `for`, C# trata essa variável como se fosse declarada fora do *loop*. Isso significa que a mesma variável é capturada em cada iteração. O seguinte programa grava `333` em vez de escrever `012`:
+Quando você captura a variável de iteração de um _loop_ `for`, C# trata essa variável como se fosse declarada fora do _loop_. Isso significa que a mesma variável é capturada em cada iteração. O seguinte programa grava `333` em vez de escrever `012`:
 
 ```csharp
 Action[] actions = new Action[3];
@@ -183,7 +183,7 @@ foreach (Action a in actions)
     a(); // 333
 ```
 
-Each closure (shown in boldface) captures the same variable, i. (This actually makes sense when you consider that i is a variable whose value persists between loop iterations; you can even explicitly change i within the loop body if you want.) The consequence is that when the delegates are later invoked, each delegate sees i’s value at the time of *invocation—which* is 3. We can illustrate this better by expanding the for loop as follows:
+Each closure(shown in boldface) captures the same variable, i. (This actually makes sense when you consider that i is a variable whose value persists between loop iterations; you can even explicitly change i within the loop body if you want.) The consequence is that when the delegates are later invoked, each delegate sees i’s value at the time of _invocation—which_ is 3. We can illustrate this better by expanding the for loop as follows:
 
 ```csharp
 Action[] actions = new Action[3];
@@ -215,7 +215,7 @@ for (int i = 0; i< 3; i++) {
 foreach (Action a in actions) a(); // 012
 ```
 
-Como a variável `loopScopedi` é criada em cada interação, cada *closure* captura uma variável diferente.
+Como a variável `loopScopedi` é criada em cada interação, cada _closure_ captura uma variável diferente.
 
 Com `foreach` é diferente pois á cada interação é uma nova variável imutável:
 
