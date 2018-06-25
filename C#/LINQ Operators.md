@@ -4,9 +4,9 @@
 
 In this section, we provide an overview of the standard query operators. The standard query operators fall into three categories:
 
-- Sequence in, sequence out (sequence-to-sequence)
+- Sequence in, sequence out(sequence-to-sequence)
 - Sequence in, single element or scalar value out
-- Nothing in, sequence out (generation methods)
+- Nothing in, sequence out(generation methods)
 
 We first present each of the three categories and the query operators they include, and then we take up each individual query operator in detail.
 
@@ -94,7 +94,7 @@ Picks a single element from a sequence:
 
 `IEnumerable<TSource> -> scalar`
 
-Performs a computation across a sequence, returning a scalar value (typically a number):
+Performs a computation across a sequence, returning a scalar value(typically a number):
 
 **`Aggregate`, `Average`, `Count`, `LongCount`, `Sum`, `Max`, `Min`**
 
@@ -221,7 +221,7 @@ For instance, `c.Name.Contains("abc")` translates to `customer.Name LIKE '%abc %
 ... where SqlMethods.Like (c.Description, "%" + c.Name + "%")
 ```
 
-`SqlMethods.Like` also lets you perform more complex comparisons (e.g., `LIKE 'abc%def%'`).
+`SqlMethods.Like` also lets you perform more complex comparisons(e.g., `LIKE 'abc%def%'`).
 
 #### < and > string comparisons in LINQ to SQL and EF
 
@@ -308,7 +308,7 @@ var skipWhileSmall = numbers.SkipWhile(n => n < 100); // { 234, 4, 1 }
 
 ```csharp
 char[] distinctLetters = "HelloWorld".Distinct().ToArray();
-string s = new string (distinctLetters); // HeloWrd
+string s = new string(distinctLetters); // HeloWrd
 ```
 
 We can call LINQ methods directly on a string, because string implements `IEnumerable<char>`.
@@ -351,14 +351,14 @@ public static IEnumerable<TResult> Select<TSource,TResult>(this IEnumerable<TSou
 
 With `Select`, you always get the same number of elements that you started with. Each element, however, can be transformed in any manner by the lambda function.
 
-The following selects the names of all fonts installed on the computer (from `System.Drawing`):
+The following selects the names of all fonts installed on the computer(from `System.Drawing`):
 
 ```csharp
 IEnumerable<string> query = from f in FontFamily.Families
                             select f.Name;
 
 foreach (string name in query)
-    Console.WriteLine (name);
+    Console.WriteLine(name);
 ```
 
 In this example, the select clause converts a `FontFamily` object to its name. Here’s the lambda equivalent:
@@ -405,7 +405,7 @@ IEnumerable<string> query = names.Select((s,i) => i + "=" + s); // { "0=Tom", "1
 You can nest a subquery in a `select` clause to build an object hierarchy. The following example returns a collection describing each directory under `D:\source`, with a subcollection of files under each directory:
 
 ```csharp
-DirectoryInfo[] dirs = new DirectoryInfo (@"d:\source").GetDirectories();
+DirectoryInfo[] dirs = new DirectoryInfo(@"d:\source").GetDirectories();
 
 var query =
             from d in dirs
@@ -459,7 +459,7 @@ foreach (var namePurchases in query)
 
 *This style of query is ideally suited to interpreted queries. The outer query and subquery are processed as a unit, avoiding unnecessary round-tripping. With local queries, however, it’s inefficient because every combination of outer and inner elements must be enumerated to get the few matching combinations. A better choice for local queries is `Join` or `GroupJoin`, described in the following sections.*
 
-This query matches up objects from two disparate collections, and it can be thought of as a “Join.” The difference between this and a conventional database join (or subquery) is that we’re not flattening the output into a single two-dimensional result set. We’re mapping the relational data to hierarchical data, rather than to flat data.
+This query matches up objects from two disparate collections, and it can be thought of as a “Join.” The difference between this and a conventional database join(or subquery) is that we’re not flattening the output into a single two-dimensional result set. We’re mapping the relational data to hierarchical data, rather than to flat data.
 
 Here’s the same query simplified by using the Purchases association property on the `Customer` entity:
 
@@ -487,7 +487,7 @@ where c.Purchases.Any(p => p.Price > 1000)
     };
 ```
 
-This is slightly untidy, however, in that we’ve written the same predicate (`Price > 1000`) twice. We can avoid this duplication with a `let` clause:
+This is slightly untidy, however, in that we’ve written the same predicate(`Price > 1000`) twice. We can avoid this duplication with a `let` clause:
 
 ```csharp
 from c in dataContext.Customers
@@ -507,7 +507,7 @@ where highValueP.Count() >= 2 select new { c.Name, Purchases = highValueP };
 
 #### Projecting into concrete types
 
-Projecting into anonymous types is useful in obtaining intermediate results, but not so useful if you want to send a result set back to a client, for instance, because anonymous types can exist only as local variables within a method. An alternative is to use concrete types for projections, such as DataSets or custom business entity classes. A custom business entity is simply a class that you write with some properties, similar to a LINQ to SQL `[Table]` annotated class or an EF Entity, but designed to hide lower-level (database-related) details. You might exclude foreign key fields from business entity classes, for instance. Assuming we wrote custom entity classes called `CustomerEntity` and `PurchaseEntity`, here’s how we could project into them:
+Projecting into anonymous types is useful in obtaining intermediate results, but not so useful if you want to send a result set back to a client, for instance, because anonymous types can exist only as local variables within a method. An alternative is to use concrete types for projections, such as DataSets or custom business entity classes. A custom business entity is simply a class that you write with some properties, similar to a LINQ to SQL `[Table]` annotated class or an EF Entity, but designed to hide lower-level(database-related) details. You might exclude foreign key fields from business entity classes, for instance. Assuming we wrote custom entity classes called `CustomerEntity` and `PurchaseEntity`, here’s how we could project into them:
 
 ```csharp
 IQueryable<CustomerEntity> query = from c in dataContext.Customers
@@ -556,7 +556,7 @@ from identifier2 in enumerable-expression2
 public static IEnumerable<TResult> SelectMany<TSource,TResult>(IEnumerable<TSource> source, Func <TSource,IEnumerable<TResult>> selector)
 {
     foreach (TSource element in source)
-        foreach (TResult subElement in selector (element))
+        foreach (TResult subElement in selector(element))
             yield return subElement;
 }
 ```
@@ -602,7 +602,7 @@ foreach (string name in query)
 If you replace `SelectMany` with `Select`, you get the same results in hierarchical form. The following emits a sequence of string arrays, requiring nested foreach statements to enumerate:
 
 ```csharp
-IEnumerable<string[]> query = fullNames.Select (name => name.Split());
+IEnumerable<string[]> query = fullNames.Select(name => name.Split());
 
 foreach (string[] stringArray in query)
     foreach (string name in stringArray)
@@ -649,16 +649,16 @@ orderby x.fullName, x.name
 select x.name + " came from " + x.fullName;
 ```
 
-The problem is that `SelectMany` emits a flat sequence of child elements—in our case, a flat collection of words. The original “outer” element from which it came (`fullName`) is lost. The solution is to “carry” the outer element with each child, in a temporary anonymous type:
+The problem is that `SelectMany` emits a flat sequence of child elements—in our case, a flat collection of words. The original “outer” element from which it came(`fullName`) is lost. The solution is to “carry” the outer element with each child, in a temporary anonymous type:
 
 ```csharp
 from fullName in fullNames
-from x in fullName.Split().Select (name => new { name, fullName } )
+from x in fullName.Split().Select(name => new { name, fullName } )
 orderby x.fullName, x.name
 select x.name + " came from " + x.fullName;
 ```
 
-The only change here is that we’re wrapping each child element (`name`) in an anonymous type that also contains its `fullName`. This is similar to how a let clause is resolved. Here’s the final conversion to fluent syntax:
+The only change here is that we’re wrapping each child element(`name`) in an anonymous type that also contains its `fullName`. This is similar to how a let clause is resolved. Here’s the final conversion to fluent syntax:
 
 ```csharp
 IEnumerable<string> query = fullNames
@@ -726,12 +726,12 @@ IEnumerable<string> query = from name1 in players
  "Mary vs Tom", "Mary vs "Jay", "Mary vs Mary" } */
 ```
 
-The query reads: “For every player, reiterate every player, selecting player 1 vs player 2.” Although we got what we asked for (a cross join), the results are not useful until we add a filter:
+The query reads: “For every player, reiterate every player, selecting player 1 vs player 2.” Although we got what we asked for(a cross join), the results are not useful until we add a filter:
 
 ```csharp
 IEnumerable<string> query = from name1 in players
                             from name2 in players
-                            where name1.CompareTo (name2) < 0
+                            where name1.CompareTo(name2) < 0
                             orderby name1, name2
                             select name1 + " vs " + name2;
 
@@ -740,13 +740,13 @@ IEnumerable<string> query = from name1 in players
 
 The filter predicate constitutes the join condition. Our query can be called a nonequi join, because the join condition doesn’t use an equality operator.
 
-We’ll demonstrate the remaining types of joins with LINQ to SQL (they’ll also work with EF except where we explicitly use a foreign key field).
+We’ll demonstrate the remaining types of joins with LINQ to SQL(they’ll also work with EF except where we explicitly use a foreign key field).
 
 #### SelectMany in LINQ to SQL and EF
 
 `SelectMany` in LINQ to SQL and EF can perform cross joins, non-equi joins, inner joins, and left outer joins. You can use `SelectMany` with both predefined associations and ad hoc relationships—just as with `Select`. The difference is that `Select` Many returns a flat rather than a hierarchical result set.
 
-A LINQ-to-db cross join is written just as in the preceding section. The following query matches every customer to every purchase (a cross join):
+A LINQ-to-db cross join is written just as in the preceding section. The following query matches every customer to every purchase(a cross join):
 
 ```csharp
 var query = from c in dataContext.Customers
@@ -787,7 +787,7 @@ You can add `where` clauses to such a query for additional filtering. For instan
 
 ```csharp
 from c in dataContext.Customers
-where c.Name.StartsWith ("T")
+where c.Name.StartsWith("T")
 from p in c.Purchases
 select new { c.Name, p.Description };
 ```
@@ -819,7 +819,7 @@ select new {
  };
 ```
 
-In this example, every outer element (customer) is included, regardless of whether the customer has any purchases. But suppose we rewrite this query with `SelectMany`, so we can obtain a single flat collection rather than a hierarchical result set:
+In this example, every outer element(customer) is included, regardless of whether the customer has any purchases. But suppose we rewrite this query with `SelectMany`, so we can obtain a single flat collection rather than a hierarchical result set:
 
 
 ```csharp
@@ -860,7 +860,7 @@ The correct solution is to splice the `Where` clause *before* `DefaultIfEmpty` w
 
 ```csharp
 from c in dataContext.Customers
-from p in c.Purchases.Where (p => p.Price > 1000).DefaultIfEmpty()
+from p in c.Purchases.Where(p => p.Price > 1000).DefaultIfEmpty()
     select new {
         c.Name,
         Descript = p == null ? null : p.Description,
@@ -921,7 +921,7 @@ join inner-var in inner-enumerable on outer-key-expr equals inner-key-expr
 
 The Join operator performs an inner join, emitting a flat output sequence.
 
-*Entity Framework hides foreign key fields, so you can’t manually join across natural relationships (instead, you can query across association properties, as we described in the previous two sections).*
+*Entity Framework hides foreign key fields, so you can’t manually join across natural relationships(instead, you can query across association properties, as we described in the previous two sections).*
 
 The simplest way to demonstrate Join is with LINQ to SQL. The following query lists all customers alongside their purchases, without using an association property:
 
@@ -956,7 +956,7 @@ var fastQuery = from c in customers
                 select c.Name + " bought a " + p.Description;
 ```
 
-Although both queries yield the same results, the `Join` query is considerably faster because its implementation in `Enumerable` preloads the inner collection (purcha ses) into a keyed lookup.
+Although both queries yield the same results, the `Join` query is considerably faster because its implementation in `Enumerable` preloads the inner collection(purcha ses) into a keyed lookup.
 
 The query syntax for join can be written in general terms as follows:
 
@@ -964,8 +964,8 @@ The query syntax for join can be written in general terms as follows:
 
 Join operators in LINQ differentiate between the *outer sequence* and *inner sequence*. Syntactically:
 
-- The *outer sequence* is the input sequence (in this case, customers).
-- The *inner sequence* is the new collection you introduce (in this case, purcha ses).
+- The *outer sequence* is the input sequence(in this case, customers).
+- The *inner sequence* is the new collection you introduce(in this case, purcha ses).
 
 `Join` performs inner joins, meaning customers without purchases are excluded from the output. With inner joins, you can swap the inner and outer sequences in the query and still get the same results:
 
@@ -983,7 +983,7 @@ join pi in purchaseItems on p.ID equals pi.PurchaseID   // second join
 ...
 ```
 
-`purchases` acts as the *inner* sequence in the first join and as the *outer* sequence in the second join. You could obtain the same results (inefficiently) using nested `foreach` statements as follows:
+`purchases` acts as the *inner* sequence in the first join and as the *outer* sequence in the second join. You could obtain the same results(inefficiently) using nested `foreach` statements as follows:
 
 ```csharp
 foreach (Customer c in customers)
@@ -1022,7 +1022,7 @@ select new { c.Name, p.Description, p.Price };
 in fluent syntax is as follows:
 
 ```csharp
-customers.Join (        // outer collection
+customers.Join(        // outer collection
     purchases,          // inner collection
     c => c.ID,          // outer key selector
     p => p.CustomerID,  // inner key selector
@@ -1042,13 +1042,13 @@ orderby p.Price select c.Name + " bought a " + p.Description;
 you must manufacture a temporary anonymous type in the result selector in fluent syntax. This keeps both `c` and `p` in scope following the join:
 
 ```csharp
-customers.Join (                // outer collection
+customers.Join(                // outer collection
     purchases,                  // inner collection
     c => c.ID,                  // outer key selector
     p => p.CustomerID,          // inner key selector
     (c, p) => new { c, p })     // result selector
-.OrderBy (x => x.p.Price)
-.Select (x => x.c.Name + " bought a " + x.p.Description);
+.OrderBy(x => x.p.Price)
+.Select(x => x.c.Name + " bought a " + x.p.Description);
 ```
 
 Query syntax is usually preferable when joining; it’s less fiddly.
@@ -1088,7 +1088,7 @@ into custPurchases
 select new { CustName = c.Name, custPurchases };
 ```
 
-This gives the same results as the following (inefficient) `Select` subquery:
+This gives the same results as the following(inefficient) `Select` subquery:
 
 ```csharp
 from c in customers select new
@@ -1139,7 +1139,7 @@ from cp in custPurchases.DefaultIfEmpty()
 
 `IEnumerable<TFirst>, IEnumerable<TSecond> -> IEnumerable<TResult>`
 
-The `Zip` operator was added in Framework 4.0. It enumerates two sequences in step (like a zipper), returning a sequence based on applying a function over each element pair. For instance, the following:
+The `Zip` operator was added in Framework 4.0. It enumerates two sequences in step(like a zipper), returning a sequence based on applying a function over each element pair. For instance, the following:
 
 
 ```csharp
@@ -1209,7 +1209,7 @@ IEnumerable<string> query = names.OrderBy(s => s.Length);
 // Result: { "Jay", "Tom", "Mary", "Dick", "Harry" };
 ```
 
-The relative order of elements with the same sorting key (in this case, Jay/Tom and Mary/Dick) is indeterminate—unless you append a `ThenBy` operator:
+The relative order of elements with the same sorting key(in this case, Jay/Tom and Mary/Dick) is indeterminate—unless you append a `ThenBy` operator:
 
 ```csharp
 IEnumerable<string> query = names.OrderBy(s => s.Length).ThenBy(s => s);
@@ -1307,8 +1307,8 @@ The equivalent in interpreted queries is to call `AsQueryable`.
 |-----------------------------------|-------------------------------|
 | *Input sequence*                  | `IEnumerable<TSource>`        |
 | *Key selector*                    | `TSource => TKey`             |
-| *Element selector (optional)*     | `TSource => TElement`         |
-| *Comparer (optional)*             | `IEqualityComparer<TKey>`     |
+| *Element selector(optional)*     | `TSource => TElement`         |
+| *Comparer(optional)*             | `IEqualityComparer<TKey>`     |
 
 #### Query syntax
 
@@ -1319,7 +1319,7 @@ The equivalent in interpreted queries is to call `AsQueryable`.
 `GroupBy` organizes a flat input sequence into sequences of groups. For example, the following organizes all the files in `c:\temp` by extension:
 
 ```csharp
-string[] files = Directory.GetFiles ("c:\\temp");
+string[] files = Directory.GetFiles("c:\\temp");
 
 IEnumerable<IGrouping<string,string>> query = files.GroupBy(file => Path.GetExtension(file));
 ```
@@ -1580,7 +1580,7 @@ public static IEnumerable<TSource> Cast <TSource>(IEnumerable source)
 }
 ```
 
-A consequence of these implementations is that you cannot use `Cast` to perform numeric or custom conversions (for these, you must perform a Select operation instead). In other words, `Cast` is not as flexible as C#’s cast operator:
+A consequence of these implementations is that you cannot use `Cast` to perform numeric or custom conversions(for these, you must perform a Select operation instead). In other words, `Cast` is not as flexible as C#’s cast operator:
 
 ```csharp
 int i = 3;
@@ -1622,7 +1622,7 @@ from TreeNode node in myTreeView.Nodes
 
 ### ToArray, ToList, ToDictionary, and ToLookup
 
-`ToArray` and `ToList` emit the results into an array or generic list. These operators force the immediate enumeration of the input sequence (unless indirected via a subquery or expression tree). For examples, refer to the section “Deferred Execution”.
+`ToArray` and `ToList` emit the results into an array or generic list. These operators force the immediate enumeration of the input sequence(unless indirected via a subquery or expression tree). For examples, refer to the section “Deferred Execution”.
 
 `ToDictionary` and `ToLookup` accept the following arguments:
 
@@ -1630,8 +1630,8 @@ from TreeNode node in myTreeView.Nodes
 |-----------------------------------|-------------------------------|
 | *Input sequence*                  | `IEnumerable<TSource>`        |
 | *Key selector*                    | `TSource => TKey`             |
-| *Element selector (optional)*     | `TSource => TElement`         |
-| *Comparer (optional)*             | `IEqualityComparer<TKey>`     |
+| *Element selector(optional)*     | `TSource => TElement`         |
+| *Comparer(optional)*             | `IEqualityComparer<TKey>`     |
 
 `ToDictionary` also forces immediate execution of a sequence, writing the results to a generic `Dictionary`. The `keySelector` expression you provide must evaluate to a unique value for each element in the input sequence; otherwise, an exception is thrown. In contrast, `ToLookup` allows many elements of the same key.
 
@@ -1662,7 +1662,7 @@ Methods ending in “OrDefault” return `default(TSource)` rather than throwing
 | **Argument**            | **Type**                |
 |-------------------------|-------------------------|
 | *Source sequence*       | `IEnumerable<TSource>`  |
-| *Predicate (optional)*  | `TSource => bool`       |
+| *Predicate(optional)*  | `TSource => bool`       |
 
 The following example demonstrates `First` and `Last`:
 
@@ -1730,9 +1730,9 @@ int tenth = numbers.ElementAtOrDefault(9); // 0
 
 ![Aggregation Methods LINQ](./Images/Aggregation%20Methods%20LINQ.png "Aggregation Methods LINQ")
 
-- **`Count`, `LongCount`**: *Returns the number of elements in the input sequence, optionally satisfying a predicate.*. SQL Equivalents: `COUNT (...)`
-- **`Min`, `Max`**: *Returns the smallest or largest element in the sequence.*. SQL Equivalents: `MIN (...), MAX (...)`
-- **`Sum`, `Average`**: *Calculates a numeric sum or average over elements in the sequence.*. SQL Equivalents: `SUM (...), AVG (...)`
+- **`Count`, `LongCount`**: *Returns the number of elements in the input sequence, optionally satisfying a predicate.*. SQL Equivalents: `COUNT(...)`
+- **`Min`, `Max`**: *Returns the smallest or largest element in the sequence.*. SQL Equivalents: `MIN(...), MAX(...)`
+- **`Sum`, `Average`**: *Calculates a numeric sum or average over elements in the sequence.*. SQL Equivalents: `SUM(...), AVG(...)`
 - **`Aggregate`**: *Performs a custom aggregation.*. SQL Equivalents: `Exception thrown`
 
 ### Count and LongCount
@@ -1740,7 +1740,7 @@ int tenth = numbers.ElementAtOrDefault(9); // 0
 | **Argument**            | **Type**                |
 |-------------------------|-------------------------|
 | *Source sequence*       | `IEnumerable<TSource>`  |
-| *Predicate (optional)*  | `TSource => bool`       |
+| *Predicate(optional)*  | `TSource => bool`       |
 
 `Count` simply enumerates over a sequence, returning the number of items:
 
@@ -1763,7 +1763,7 @@ int digitCount = "pa55w0rd".Count(c => char.IsDigit(c));  // 3
 | **Argument**                  | **Type**                |
 |-------------------------------|-------------------------|
 | *Source sequence*             | `IEnumerable<TSource>`  |
-| *Result selector (optional)*  | `TSource => TResult`    |
+| *Result selector(optional)*  | `TSource => TResult`    |
 
 `Min` and `Max` return the smallest or largest element from a sequence:
 
@@ -1777,7 +1777,7 @@ int largest = numbers.Max(); // 32;
 If you include a selector expression, each element is first projected:
 
 ```csharp
-int smallest = numbers.Max (n => n % 10); // 8;
+int smallest = numbers.Max(n => n % 10); // 8;
 ```
 
 A selector expression is mandatory if the items themselves are not intrinsically comparable—in other words, if they do not implement `IComparable<T>`:
@@ -1800,7 +1800,7 @@ In this case, you could also formulate the query without an aggregation—using 
 | **Argument**                  | **Type**                |
 |-------------------------------|-------------------------|
 | *Source sequence*             | `IEnumerable<TSource>`  |
-| *Result selector (optional)*  | `TSource => TResult`    |
+| *Result selector(optional)*  | `TSource => TResult`    |
 
 `Sum` and `Average` are aggregation operators that are used in a similar manner to `Min` and `Max`:
 
@@ -1817,7 +1817,7 @@ The following returns the total length of each of the strings in the `names` arr
 int combinedLength = names.Sum(s => s.Length); // 19
 ```
 
-`Sum` and `Average` are fairly restrictive in their typing. Their definitions are hardwired to each of the numeric types (`int`, `long`, `float`, `double`, `decimal`, and their `nullable` versions). In contrast, Min and Max can operate directly on anything that implements `IComparable<T>`—such as a string, for instance.
+`Sum` and `Average` are fairly restrictive in their typing. Their definitions are hardwired to each of the numeric types(`int`, `long`, `float`, `double`, `decimal`, and their `nullable` versions). In contrast, Min and Max can operate directly on anything that implements `IComparable<T>`—such as a string, for instance.
 
 Further, Average always returns either `decimal`, `float`, or `double`, according to the following table:
 
@@ -1827,7 +1827,7 @@ Further, Average always returns either `decimal`, `float`, or `double`, accordin
 | *float*              | float            |
 | *int, long, double* | double          |
 
-This means the following does not compile (“cannot convert double to `int`”):
+This means the following does not compile(“cannot convert double to `int`”):
 
 ```csharp
 int avg = new int[] { 3, 4 }.Average();
@@ -1869,7 +1869,7 @@ The first argument to `Aggregate` is the seed, from which accumulation starts. T
 int[] numbers = { 1, 2, 3 };
 
 int x = numbers.Aggregate(0, (prod, n) => prod * n); // 0*1*2*3 = 0
-int y = numbers.Aggregate( (prod, n) => prod * n); // 1*2*3 = 6
+int y = numbers.Aggregate((prod, n) => prod * n); // 1*2*3 = 6
 ```
 
 #### Unseeded aggregations
@@ -1893,7 +1893,7 @@ As we’ll unseeded aggregations have the advantage of being parallelizable with
 
 #### Traps with unseeded aggregations
 
-The unseeded aggregation methods are intended for use with delegates that are commutative and associative. If used otherwise, the result is either unintuitive (with ordinary queries) or nondeterministic (in the case that you parallelize the query with PLINQ). For example, consider the following function:
+The unseeded aggregation methods are intended for use with delegates that are commutative and associative. If used otherwise, the result is either unintuitive(with ordinary queries) or nondeterministic(in the case that you parallelize the query with PLINQ). For example, consider the following function:
 
 ```
 (total, n) => total + n * n
@@ -1945,12 +1945,12 @@ Final result:       a + b*b     (= 365)
 OR EVEN:            b + a*a     (= 35)
 ```
 
-There are two good solutions. The first is to turn this into a seeded aggregationwith zero as the seed. The only complication is that with PLINQ, we’d need to use a special overload in order for the query not to execute sequentially (see “Optimizing PLINQ”).
+There are two good solutions. The first is to turn this into a seeded aggregationwith zero as the seed. The only complication is that with PLINQ, we’d need to use a special overload in order for the query not to execute sequentially(see “Optimizing PLINQ”).
 
 The second solution is to restructure the query such that the aggregation function is commutative and associative:
 
 ```csharp
-int sum = numbers.Select (n => n * n).Aggregate((total, n) => total + n);
+int sum = numbers.Select(n => n * n).Aggregate((total, n) => total + n);
 ```
 
 ## Quantifiers
@@ -2020,7 +2020,7 @@ dataContext.Customers.Where(c => c.Purchases.All(p => p.Price < 100));
 | `Repeat`   | *Creates a sequence of repeating elements* |
 | `Range`    | *Creates a sequence of integers*           |
 
-`Empty`, `Repeat`, and `Range` are static (nonextension) methods that manufacture simple local sequences.
+`Empty`, `Repeat`, and `Range` are static(nonextension) methods that manufacture simple local sequences.
 
 ### Empty
 
@@ -2055,7 +2055,7 @@ foreach (int i in flat)
 
 ### Range and Repeat
 
-`Range` accepts a starting index and count (both integers):
+`Range` accepts a starting index and count(both integers):
 
 ```csharp
 foreach (int i in Enumerable.Range(5, 3))
