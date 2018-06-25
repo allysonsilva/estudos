@@ -752,7 +752,7 @@ O conceito central do TPL é uma tarefa. Uma tarefa representa uma operação as
 
 ### Creating a task
 
-```c#
+```csharp
 using System;
 using System.Threading.Tasks;
 using static System.Console;
@@ -798,7 +798,7 @@ O método `Task.Run` é apenas um atalho para `Task.Factory.StartNew`, mas o úl
 
 ### Performing basic operations with a task
 
-```c#
+```csharp
 using System;
 using System.Threading.Tasks;
 using static System.Console;
@@ -870,7 +870,7 @@ Executamos a `Tarefa 3` da mesma forma que fizemos a `Tarefa 1`, mas em vez de b
 
 Irá mostrar-lhe como configurar tarefas que dependem umas das outras. Aprenderemos a criar uma tarefa que será executada após a conclusão da tarefa principal. Além disso, descobriremos uma maneira de salvar o uso da thread para tarefas de muito curta duração.
 
-```c#
+```csharp
 using System;
 using System.Threading.Tasks;
 using static System.Console;
@@ -962,7 +962,7 @@ Isso significa que a tarefa principal não será completa até que todas as tare
 
 Sobre a implementação do processo de cancelamento para operações assíncronas baseadas em tarefas. Você aprenderá a usar o token de cancelamento corretamente para tarefas e como descobrir se uma tarefa foi cancelada antes que ela realmente fosse executada.
 
-```c#
+```csharp
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1029,7 +1029,7 @@ Então, lidamos com o processo de cancelamento de nosso próprio código. Isso s
 
 ### Handling exceptions in tasks
 
-```c#
+```csharp
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1110,7 +1110,7 @@ O último exemplo mostra a situação em que temos duas exceções de lançament
 
 Mostra como lidar com muitas tarefas assíncronas que estão sendo executadas simultaneamente. Você aprenderá como ser notificado efetivamente quando todas as tarefas estiverem concluídas ou qualquer uma das tarefas em execução tiver que terminar seu trabalho.
 
-```c#
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -1976,7 +1976,7 @@ Console.WriteLine(await winningTask); // 1
 
 because any exceptions are then re-thrown without an `AggregateException` wrapping. In fact, we can perform both awaits in one step:
 
-```c#
+```csharp
 int answer = await await Task.WhenAny(Delay1(), Delay2(), Delay3());
 ```
 
@@ -1984,7 +1984,7 @@ If a nonwinning task subsequently faults, the exception will go unobserved unles
 
 `WhenAny` is useful for applying timeouts or cancellation to operations that don’t otherwise support it:
 
-```c#
+```csharp
 Task<string> task = SomeAsyncFunc();
 Task winner = await (Task.WhenAny(task, Task.Delay(5000)));
 
@@ -2006,7 +2006,7 @@ await Task.WhenAll(Delay1(), Delay2(), Delay3());
 
 We could get a similar result by awaiting `task1`, `task2` and `task3` in turn rather than using `WhenAll`:
 
-```c#
+```csharp
 Task task1 = Delay1(), task2 = Delay2(), task3 = Delay3();
 await task1; await task2; await task3;
 ```
@@ -2038,7 +2038,7 @@ int[] results = await Task.WhenAll(task1, task2); // { 1, 2 }
 
 To give a practical example, the following downloads URIs in parallel and sums their total length:
 
-```c#
+```csharp
 async Task<int> GetTotalSize(string[] uris)
 {
     IEnumerable<Task<byte[]>> downloadTasks = uris.Select(uri => new WebClient().DownloadDataTaskAsync(uri));
@@ -2051,7 +2051,7 @@ async Task<int> GetTotalSize(string[] uris)
 
 There’s a slight inefficiency here, though, in that we’re unnecessarily hanging onto the byte arrays that we download until every task is complete. It would be more efficient if we collapsed byte arrays into their lengths right after downloading them. This is where an asynchronous lambda comes in handy, because we need to feed an `await` expression into LINQ’s Select query operator:
 
-```c#
+```csharp
 async Task<int> GetTotalSize(string[] uris)
 {
     IEnumerable<Task<int>> downloadTasks = uris.Select(async uri => (await new WebClient().DownloadDataTaskAsync(uri)).Length);
