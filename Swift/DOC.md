@@ -865,3 +865,364 @@ let airportNames = [String](airports.values)
 ```
 
 ## Control Flow
+
+### For-In Loops
+
+```swift
+let names = ["Anna", "Alex", "Brian", "Jack"]
+for name in names {
+    print("Hello, \(name)!")
+}
+
+// Hello, Anna!
+// Hello, Alex!
+// Hello, Brian!
+// Hello, Jack!
+```
+
+#### Dictionary - (key, value)
+
+```swift
+let numberOfLegs = ["spider": 8, "ant": 6, "cat": 4]
+for (animalName, legCount) in numberOfLegs {
+    print("\(animalName)s have \(legCount) legs")
+}
+
+// ants have 6 legs
+// cats have 4 legs
+// spiders have 8 legs
+```
+
+#### Numeric ranges
+
+```swift
+for index in 1...5 {
+    print("\(index) times 5 is \(index * 5)")
+}
+
+// 1 times 5 is 5
+// 2 times 5 is 10
+// 3 times 5 is 15
+// 4 times 5 is 20
+// 5 times 5 is 25
+```
+
+If you don’t need each value from a sequence, you can ignore the values by using an underscore in place of a variable name.
+
+```swift
+let base = 3
+let power = 10
+var answer = 1
+for _ in 1...power {
+    answer *= base
+}
+
+print("\(base) to the power of \(power) is \(answer)")
+// Prints "3 to the power of 10 is 59049"
+```
+
+O caractere de sublinhado (`_`) usado no lugar de uma variável de loop faz com que os valores individuais sejam ignorados e não forneça acesso ao valor atual durante cada iteração do loop.
+
+In some situations, you might not want to use closed ranges, which include both endpoints. Consider drawing the tick marks for every minute on a watch face. You want to draw `60` tick marks, starting with the `0` minute. Use the half-open range operator (`..<`) to include the lower bound but not the upper bound. For more about ranges, see [Range Operators](https://docs.swift.org/swift-book/LanguageGuide/BasicOperators.html#ID73).
+
+```swift
+let minutes = 60
+for tickMark in 0..<minutes {
+    // render the tick mark each minute (60 times)
+}
+```
+
+**`stride(from:to:by:)`**
+
+```swift
+let minuteInterval = 5
+for tickMark in stride(from: 0, to: minutes, by: minuteInterval) {
+    // render the tick mark every 5 minutes (0, 5, 10, 15 ... 45, 50, 55)
+}
+```
+
+Closed ranges are also available, by using `stride(from:through:by:)` instead:
+
+```swift
+let hours = 12
+let hourInterval = 3
+for tickMark in stride(from: 3, through: hours, by: hourInterval) {
+    // render the tick mark every 3 hours (3, 6, 9, 12)
+}
+```
+
+### While Loops
+
+#### While
+
+A `while` loop starts by evaluating a single condition. If the condition is `true`, a set of statements is repeated until the condition becomes `false`.
+
+```
+while [condition] {
+    [statements]
+}
+```
+
+#### Repeat-While
+
+The other variation of the `while` loop, known as the `repeat-while` loop, performs a single pass through the loop block first, *before* considering the loop’s condition. It then continues to repeat the loop until the condition is `false`.
+
+*The repeat-while loop in Swift is analogous to a do-while loop in other languages.*
+
+```
+repeat {
+    [statements]
+} while [condition]
+```
+
+### Conditional Statements
+
+Swift provides two ways to add conditional branches to your code: the `if` statement and the `switch` statement. Typically, you use the `if` statement to evaluate simple conditions with only a few possible outcomes. The `switch` statement is better suited to more complex conditions with multiple possible permutations and is useful in situations where pattern matching can help select an appropriate code branch to execute.
+
+#### If
+
+In its simplest form, the `if` statement has a single `if` condition. It executes a set of statements only if that condition is `true`.
+
+```swift
+var temperatureInFahrenheit = 90
+
+if temperatureInFahrenheit <= 32 {
+    print("It's very cold. Consider wearing a scarf.")
+} else if temperatureInFahrenheit >= 86 {
+    print("It's really warm. Don't forget to wear sunscreen.")
+} else {
+    print("It's not that cold. Wear a t-shirt.")
+}
+
+// Prints "It's really warm. Don't forget to wear sunscreen."
+```
+
+#### Switch
+
+A `switch` statement considers a value and compares it against several possible matching patterns. It then executes an appropriate block of code, based on the first pattern that matches successfully. A `switch` statement provides an alternative to the `if` statement for responding to multiple potential states.
+
+```
+switch [some value to consider] {
+case [value 1]:
+    [respond to value 1]
+case [value 2],
+     [value 3]:
+    [respond to value 2 or 3]
+default:
+    [otherwise, do something else]
+}
+```
+
+This example uses a `switch` statement to consider a single lowercase character called `someCharacter`:
+
+```swift
+let someCharacter: Character = "z"
+
+switch someCharacter {
+case "a":
+    print("The first letter of the alphabet")
+case "z":
+    print("The last letter of the alphabet")
+default:
+    print("Some other character")
+}
+
+// Prints "The last letter of the alphabet"
+```
+
+The body of each case must contain at least one executable statement. It is not valid to write the following code, because the first case is empty:
+
+```swift
+let anotherCharacter: Character = "a"
+
+switch anotherCharacter {
+case "a": // Invalid, the case has an empty body
+case "A":
+    print("The letter A")
+default:
+    print("Not the letter A")
+}
+
+// This will report a compile-time error.
+```
+
+To make a switch with a single case that matches both "a" and "A", combine the two values into a compound case, separating the values with commas.
+
+```swift
+let anotherCharacter: Character = "a"
+
+switch anotherCharacter {
+case "a", "A":
+    print("The letter A")
+default:
+    print("Not the letter A")
+}
+
+// Prints "The letter A"
+```
+
+##### Interval Matching
+
+Values in `switch` cases can be checked for their inclusion in an interval. This example uses number intervals to provide a natural-language count for numbers of any size:
+
+```swift
+let approximateCount = 62
+let countedThings = "moons orbiting Saturn"
+let naturalCount: String
+
+switch approximateCount {
+case 0:
+    naturalCount = "no"
+case 1..<5:
+    naturalCount = "a few"
+case 5..<12:
+    naturalCount = "several"
+case 12..<100:
+    naturalCount = "dozens of"
+case 100..<1000:
+    naturalCount = "hundreds of"
+default:
+    naturalCount = "many"
+}
+
+print("There are \(naturalCount) \(countedThings).")
+// Prints "There are dozens of moons orbiting Saturn."
+```
+
+##### Tuples
+
+You can use tuples to test multiple values in the same `switch` statement. Each element of the tuple can be tested against a different value or interval of values. Alternatively, use the underscore character (`_`), also known as the wildcard pattern, to match any possible value.
+
+```swift
+let somePoint = (1, 1)
+
+switch somePoint {
+case (0, 0):
+    print("\(somePoint) is at the origin")
+case (_, 0):
+    print("\(somePoint) is on the x-axis")
+case (0, _):
+    print("\(somePoint) is on the y-axis")
+case (-2...2, -2...2):
+    print("\(somePoint) is inside the box")
+default:
+    print("\(somePoint) is outside of the box")
+}
+
+// Prints "(1, 1) is inside the box"
+```
+
+#####  Value Bindings
+
+A `switch` case can name the value or values it matches to temporary constants or variables, for use in the body of the case. This behavior is known as value binding, because the values are bound to temporary constants or variables within the case’s body.
+
+```swift
+let anotherPoint = (2, 0)
+
+switch anotherPoint {
+case (let x, 0):
+    print("on the x-axis with an x value of \(x)")
+case (0, let y):
+    print("on the y-axis with a y value of \(y)")
+case let (x, y):
+    print("somewhere else at (\(x), \(y))")
+}
+
+// Prints "on the x-axis with an x value of 2"
+```
+
+The `switch` statement determines whether the point is on the red x-axis, on the orange y-axis, or elsewhere (on neither axis).
+
+The three `switch` cases declare placeholder constants `x` and `y`, which temporarily take on one or both tuple values from `anotherPoint`. The first case  `case  (let  x,  0)`, matches any point with a `y` value of `0` and assigns the point’s `x` value to the temporary constant `x`. Similarly, the second case, `case  (0,  let  y)`, matches any point with an `x`value of `0` and assigns the point’  `y` value to the temporary constant `y`.
+
+After the temporary constants are declared, they can be used within the case’s code block. Here, they are used to print the categorization of the point.
+
+This `switch` statement does not have a `default` case. The final case, `case  let  (x,  y)`, declares a tuple of two placeholder constants that can match any value. Because `anotherPoint` is always a tuple of two values, this case matches all possible remaining values, and a `default` case is not needed to make the `switch` statement exhaustive.
+
+##### Where
+
+A `switch` case can use a `where` clause to check for additional conditions.
+
+```swift
+let yetAnotherPoint = (1, -1)
+
+switch yetAnotherPoint {
+case let (x, y) where x == y:
+    print("(\(x), \(y)) is on the line x == y")
+case let (x, y) where x == -y:
+    print("(\(x), \(y)) is on the line x == -y")
+case let (x, y):
+    print("(\(x), \(y)) is just some arbitrary point")
+}
+
+// Prints "(1, -1) is on the line x == -y"
+```
+
+The `switch` statement determines whether the point is on the green diagonal line where `x == y`, on the purple diagonal line where `x  ==  -y`, or neither.
+
+The three `switch` cases declare placeholder constants `x` and `y`, which temporarily take on the two tuple values from `yetAnotherPoint`. These constants are used as part of a `where` clause, to create a dynamic filter. The `switch` case matches the current value of `point` only if the `where` clause’s condition evaluates to `true` for that value.
+
+As in the previous example, the final case matches all possible remaining values, and so a  `default`  case is not needed to make the  `switch`  statement exhaustive.
+
+##### Compound Cases
+
+Multiple switch cases that share the same body can be combined by writing several patterns after `case`, with a comma between each of the patterns. If any of the patterns match, then the case is considered to match. The patterns can be written over multiple lines if the list is long.
+
+```swift
+let someCharacter: Character = "e"
+
+switch someCharacter {
+case "a", "e", "i", "o", "u":
+    print("\(someCharacter) is a vowel")
+case "b", "c", "d", "f", "g", "h", "j", "k", "l", "m",
+     "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z":
+    print("\(someCharacter) is a consonant")
+default:
+    print("\(someCharacter) is not a vowel or a consonant")
+}
+
+// Prints "e is a vowel"
+```
+
+Compound cases can also include value bindings. All of the patterns of a compound case have to include the same set of value bindings, and each binding has to get a value of the same type from all of the patterns in the compound case. This ensures that, no matter which part of the compound case matched, the code in the body of the case can always access a value for the bindings and that the value always has the same type.
+
+```swift
+let stillAnotherPoint = (9, 0)
+
+switch stillAnotherPoint {
+case (let distance, 0), (0, let distance):
+    print("On an axis, \(distance) from the origin")
+default:
+    print("Not on an axis")
+}
+
+// Prints "On an axis, 9 from the origin"
+```
+
+### Checking API Availability
+
+Swift has built-in support for checking API availability, which ensures that you don’t accidentally use APIs that are unavailable on a given deployment target.
+
+The compiler uses availability information in the SDK to verify that all of the APIs used in your code are available on the deployment target specified by your project. Swift reports an error at compile time if you try to use an API that isn’t available.
+
+You use an availability condition in an `if` or `guard` statement to conditionally execute a block of code, depending on whether the APIs you want to use are available at runtime. The compiler uses the information from the availability condition when it verifies that the APIs in that block of code are available.
+
+```swift
+if #available(iOS 10, macOS 10.12, *) {
+    // Use iOS 10 APIs on iOS, and use macOS 10.12 APIs on macOS
+} else {
+    // Fall back to earlier iOS and macOS APIs
+}
+```
+
+The availability condition above specifies that in iOS, the body of the if statement executes only in iOS 10 and later; in macOS, only in macOS 10.12 and later. The last argument, *, is required and specifies that on any other platform, the body of the if executes on the minimum deployment target specified by your target.
+
+```
+if #available([platform name] [version], [...], *) {
+    [statements to execute if the APIs are available]
+} else {
+    [fallback statements to execute if the APIs are unavailable]
+}
+```
+
+## Functions
