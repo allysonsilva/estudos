@@ -2435,3 +2435,703 @@ if let somePlanet = Planet(rawValue: positionToFind) {
 ```
 
 This example uses optional binding to try to access a planet with a raw value of 11. The statement `if let somePlanet = Planet(rawValue: 11)` creates an optional Planet, and sets `somePlanet` to the value of that optional `Planet` if it can be retrieved. In this case, it is not possible to retrieve a planet with a position of 11, and so the `else` branch is executed instead.
+
+## Classes and Structures
+
+**Classes**: Tipos de referências.
+**Estruturas**: Tipos de valores.
+
+Classes e estruturas são construções flexíveis e de propósito geral que se tornam os blocos de construção do código do seu programa. Você define propriedades e métodos para adicionar funcionalidade às suas classes e estruturas usando exatamente a mesma sintaxe como para constantes, variáveis ​​e funções.
+
+Unlike other programming languages, Swift does not require you to create separate interface and implementation files for custom classes and structures. In Swift, you define a class or a structure in a single file, and the external interface to that class or structure is automatically made available for other code to use.
+
+### Comparando Classes e Estruturas
+
+Classes e estruturas em Swift têm muitas coisas em comum. Ambos podem:
+
+* Definir propriedades para armazenar valores.
+* Definir métodos para fornecer funcionalidade.
+* Defina subscripts para fornecer acesso aos seus valores usando subscript syntax.
+* Defina initializers para configurar seu estado inicial.
+* Ser estendido para expandir suas funcionalidades para além de uma implementação padrão.
+* De acordo com protocolos para fornecer funcionalidades padrão de um determinado tipo.
+
+For more information, see [Properties](https://docs.swift.org/swift-book/LanguageGuide/Properties.html), [Methods](https://docs.swift.org/swift-book/LanguageGuide/Methods.html), [Subscripts](https://docs.swift.org/swift-book/LanguageGuide/Subscripts.html), [Initialization](https://docs.swift.org/swift-book/LanguageGuide/Initialization.html), [Extensions](https://docs.swift.org/swift-book/LanguageGuide/Extensions.html), and [Protocols](https://docs.swift.org/swift-book/LanguageGuide/Protocols.html).
+
+As classes possuem capacidades adicionais que as estruturas não:
+
+* A herança permite que uma classe herde as características de outra.
+* Type casting enables you to check and interpret the type of a class instance at runtime.
+* Os Deinitializers permitem que uma instância de uma classe libere todos os recursos que atribuiu.
+* Reference counting allows more than one reference to a class instance.
+
+The additional capabilities that classes support come at the cost of increased complexity. As a general guideline, prefer structures and enumerations because they’re easier to reason about, and use classes when they’re appropriate or necessary. In practice, this means most of the custom data types you define will be structures and enumerations. For a more detailed comparison, see [Choosing Between Structures and Classes](https://developer.apple.com/documentation/swift/choosing_between_structures_and_classes).
+
+#### Definition Syntax
+
+Structures and classes have a similar definition syntax. You introduce structures with the `struct` keyword and classes with the `class` keyword. Both place their entire definition within a pair of braces:
+
+```swift
+class SomeClass {
+    // class definition goes here
+}
+
+struct SomeStructure {
+    // structure definition goes here
+}
+```
+
+```swift
+class MyClass
+{
+    // MyClass definition
+}
+
+struct MyStruct
+{
+    // MyStruct definition
+}
+```
+
+Here’s an example of a structure definition and a class definition:
+
+```swift
+struct Resolution {
+    var width = 0
+    var height = 0
+}
+
+class VideoMode {
+    var resolution = Resolution()
+    var interlaced = false
+    var frameRate = 0.0
+    var name: String?
+}
+```
+
+As propriedades armazenadas são constantes ou variáveis ​​agrupadas e armazenadas como parte da classe ou estrutura.
+
+#### Instâncias de Classe e Estrutura
+
+A sintaxe para criar instâncias é muito semelhante para estruturas e classes:
+
+```swift
+let someResolution = Resolution()
+let someVideoMode = VideoMode()
+```
+
+Structures and classes both use initializer syntax for new instances. The simplest form of initializer syntax uses the type name of the class or structure followed by empty parentheses, such as `Resolution()` or `VideoMode()`. This creates a new instance of the class or structure, with any properties initialized to their default values. Class and structure initialization is described in more detail in [Initialization](https://docs.swift.org/swift-book/LanguageGuide/Initialization.html).
+
+#### Acessando propriedades
+
+```swift
+print("The width of someResolution is \(someResolution.width)")
+// Prints "The width of someResolution is 0"
+
+print("The width of someVideoMode is \(someVideoMode.resolution.width)")
+// Prints "The width of someVideoMode is 0"
+
+someVideoMode.resolution.width = 1280
+
+print("The width of someVideoMode is now \(someVideoMode.resolution.width)")
+// Prints "The width of someVideoMode is now 1280"
+```
+
+#### Memberwise Initializers for Structure Types
+
+All structures have an automatically-generated _memberwise initializer_, which you can use to initialize the member properties of new structure instances. Initial values for the properties of the new instance can be passed to the memberwise initializer by name:
+
+```swift
+let vga = Resolution(width: 640, height: 480)
+```
+
+_Unlike structures, class instances do not receive a default memberwise initializer._
+
+### Properties
+
+**Stored properties**: These store variable or constant values as part of an instance of a class or structure. Stored properties can also have property observers that can monitor the property for changes and respond with custom actions when the value of the property changes.
+
+**Computed properties**: These do not store a value themselves, but retrieve and possibly set other properties. The value returned by a computed property can also be calculated when it is requested.
+
+*Within our structure and class, we can now access these properties by using the name of the property and the self keyword. Every instance of a structure or class has a property named self. This property refers to the instance itself; therefore, we can use it to access the properties within the instance.*
+
+```swift
+struct EmployeeStruct
+{
+    var firstName = ""
+    var lastName = ""
+    var salaryYear = 0.0
+}
+
+public class EmployeeClass
+{
+    var firstName = ""
+    var lastName = ""
+    var salaryYear = 0.0
+}
+```
+
+#### Stored properties
+
+```swift
+struct MyStruct
+{
+    let c = 5
+    var v = ""
+}
+
+class MyClass
+{
+    let c = 5
+    var v = ""
+}
+```
+
+One of the differences between a structure and a class is that, by default, a structure creates an initializer that lets us populate the stored properties when we create an instance of the structure.
+
+```swift
+var myStruct = MyStruct(v: "Hello")
+```
+
+The order in which the parameters appear in the initializer is the order that we defined them.
+
+#### Computed properties
+
+```swift
+var salaryWeek: Double {
+    get {
+        return self.salaryYear/52
+    }
+}
+```
+
+We can simplify the definition of the read-only computed property by removing the get keyword.
+
+```swift
+var salaryWeek: Double {
+    return self.salaryYear/52
+}
+```
+
+As propriedades computed não se limitam a ser somente leitura, também podemos escrever para elas.
+
+```swift
+var salaryWeek: Double {
+    get {
+        return self.salaryYear / 52
+    } set (newSalaryWeek) {
+        self.salaryYear = newSalaryWeek * 52
+    }
+}
+```
+
+Podemos simplificar a definição do `set` ao não definir um nome para o novo valor. Nesse caso, o valor será atribuído a um nome de variável padrão, `newValue`.
+
+```swift
+var salaryWeek: Double {
+    get {
+        return self.salaryYear / 52
+    } set {
+        self.salaryYear = newValue * 52
+    }
+}
+```
+
+### Property observers
+
+Os observadores de propriedade são chamados sempre que o valor da propriedade é definido. Podemos adicionar observadores de propriedades a qualquer propriedade armazenada non-lazy. Podemos também adicionar observadores de propriedades a qualquer propriedade armazenada ou calculada herdada, substituindo a propriedade na subclasse.
+
+Existem dois observadores de propriedade que podemos definir no Swift - `willSet` e no `didSet`. O observador `willSet` é chamado imediatamente antes da configuração da propriedade, e o observador do `didSet` é chamado logo após a propriedade estar configurada.
+
+```swift
+var salaryYear: Double = 0.0 {
+    willSet(newSalary) {
+        print("About to set salaryYear to \(newSalary)")
+    }
+    didSet {
+        if salaryWeek > oldValue {
+            print("\(firstName) got a raise")
+        } else {
+            print("\(firstName) did not get a raise")
+        }
+    }
+}
+
+//
+
+willSet {
+    print("About to set salaryYear to \(newValue)")
+}
+```
+
+### Methods
+
+Os métodos são funções associadas a uma classe ou estrutura. Um método, como uma função, encapsulará o código para uma tarefa específica ou funcionalidade associada à classe ou estrutura.
+
+```swift
+func getFullName() -> String
+{
+    return firstName + " " + lastName
+}
+```
+
+Nós definimos esse método exatamente como nós definiríamos qualquer função. Um método é simplesmente uma função associada a uma classe ou estrutura específicas.
+
+```swift
+var e = EmployeeClass()
+var f = EmployeeStruct(firstName: "Jon", lastName: "Hoffman", salaryYear: 50000)
+
+e.firstName = "Jon"
+e.lastName = "Hoffman"
+e.salaryYear = 50000.00
+
+print(e.getFullName()) // Jon Hoffman is printed to the console
+print(f.getFullName()) //Jon Hoffman is printed to the console
+```
+
+Por padrão, não podemos atualizar valores de propriedade dentro de um método de uma estrutura. Se quisermos modificar uma propriedade, podemos optar por um comportamento mutante para esse método, adicionando a palavra-chave `mutating` antes da palavra-chave `func` da declaração do método.
+
+```swift
+mutating func giveRase(amount: Double)
+{
+    self.salaryYear += amount
+}
+```
+
+### Custom initializers
+
+Os inicializadores são chamados quando inicializamos uma nova instância de um tipo específico (classe ou estrutura). A inicialização é o processo de preparação de uma instância para uso. O processo de inicialização pode incluir a definição de valores iniciais para as propriedades armazenadas, verificar se há recursos externos disponíveis ou configurar a interface do usuário corretamente. Os inicializadores geralmente são usados para garantir que a instância da classe ou estrutura seja devidamente inicializada antes do primeiro uso.
+
+```swift
+init() {
+    //Perform initialization here
+}
+```
+
+```swift
+init() {
+    self.firstName = ""
+    self.lastName = ""
+    self.salaryYear = 0.0
+}
+
+init(firstName: String, lastName: String) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.salaryYear = 0.0
+}
+
+init(firstName: String, lastName: String, salaryYear: Double) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.salaryYear = salaryYear
+}
+```
+
+**Um inicializador não tem um valor de retorno**.
+
+Uma classe, ao contrário de uma estrutura, pode ter um desinstalador. Um desinstalador é chamado apenas antes de uma instância da classe ser destruída e removida da memória.
+
+### Internal and external parameter names
+
+Assim como as funções, os parâmetros associados a um inicializador podem ter nomes internos e externos separados. Se não fornecemos nomes de parâmetros externos para nossos parâmetros, o Swift os gerará automaticamente para nós. Nos exemplos anteriores, não incluímos nomes de parâmetros externos na definição dos inicializadores, portanto Swift os criou para usar o nome do parâmetro interno como o nome do parâmetro externo.
+
+Se quisermos fornecer nossos próprios nomes de parâmetros, faria isso colocando o nome do parâmetro externo antes do nome do parâmetro interno, exatamente como fazemos com qualquer função normal.
+
+```swift
+init(employeeWithFirstName firstName: String, lastName lastName: String, andSalary salaryYear: Double) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.salaryYear = salaryYear
+}
+```
+
+```swift
+var i = EmployeeClass(employeeWithFirstName: "Me", lastName: "Moe", andSalary: 45000)
+```
+
+### Access levels
+
+In Swift, there are four access levels:
+
+* **Public**: Este é o nível de controle de acesso mais visível. Isso nos permite usar a propriedade, o método, a classe, etc., onde queremos importar o módulo. Basicamente, qualquer coisa pode usar um item que tenha um nível de controle de acesso de público. Este nível é usado principalmente por frameworks para expor a API pública da estrutura.
+
+* **Internal**: Este é o nível de acesso padrão. This access level allows us to use the property, method, class, and so on in the defining source as well as the module that the source is in (the application or framework). If this level is used in a framework, it lets other parts of the framework use the item but code outside the framework will be unable to access it.
+
+* **Private**: este é o nível de controle de acesso menos visível. Só nos permite usar a propriedade, método, classe e assim por diante no arquivo de origem que o define.
+
+* **Fileprivate**: This access control allows access to the properties and methods from any code within the same source file that the item is defined in.
+
+To define access levels, we place the name of the level before the definition of the entity.
+
+```swift
+private struct EmployeeStruct {}
+public class EmployeeClass {}
+internal class EmployeeClass2 {}
+public var firstName = "Jon"
+internal var lastName = "Hoffman"
+private var salaryYear = 0.0
+public func getFullName() -> String {}
+private func giveRaise(amount: Double) {}
+```
+
+### Preventing overrides
+
+```swift
+override func getDetails() -> String
+{
+    let details = super.getDetails()
+    return "\(details) Leaves: \(leaves)"
+}
+```
+
+```swift
+override var description: String
+{
+    return "\(super.description) I am a Tree class."
+}
+```
+
+Para evitar substituições ou subclassing, usamos a palavra-chave `final`. Para usar a palavra-chave `final`, nós a adicionamos antes da definição do item. Exemplos são `final func`, `final var` e `final class`.
+
+Qualquer tentativa de substituir um item marcado como `final` dará um erro de compilação.
+
+### Protocols (Interfaces)
+
+Há momentos em que gostaríamos de descrever as implementações (métodos, propriedades e outros requisitos) de uma classe sem realmente fornecer qualquer implementação. Para isso, usaríamos protocolos.
+
+Os protocolos definem um modelo de métodos, propriedades e outros requisitos para uma classe ou uma estrutura. Uma classe ou uma estrutura podem então fornecer uma implementação que esteja em conformidade com esses requisitos. A classe ou estrutura que fornece a implementação é dito em conformidade com o protocolo.
+
+#### Protocol syntax
+
+```swift
+protocol MyProtocol
+{
+    //protocol definition here
+}
+
+class myClass: MyProtocol
+{
+    //class implementation here
+}
+
+class MyClass: MyProtocol, AnotherProtocol, ThirdProtocol
+{
+    // class implementation here
+}
+
+Class MyClass: MySuperClass, MyProtocol, MyProtocol2
+{
+    // Class implementation here
+}
+```
+
+#### Property requirements
+
+Ao definir uma propriedade dentro de um protocolo, devemos especificar se a propriedade é uma propriedade de somente leitura ou de leitura e gravação usando as palavras-chave `get` e `set`.
+
+```swift
+protocol FullName
+{
+    var firstName: String {get set}
+    var lastName: String {get set}
+}
+```
+
+Se quisermos especificar que a propriedade é somente leitura, nós a definimos com apenas a palavra-chave `get`.
+
+```swift
+var readOnly: String {get}
+```
+
+Let's see how we can create a `Scientist` class that conforms to this protocol:
+
+```swift
+class Scientist: FullName
+{
+    var firstName = ""
+    var lastName = ""
+}
+```
+
+#### Method requirements
+
+Um protocolo pode exigir que a classe ou estrutura conforme forneça certos métodos. Nós definimos um método dentro de um protocolo exatamente como fazemos dentro de uma classe ou estrutura normal.
+
+```swift
+protocol FullName
+{
+    var firstName: String {get set}
+    var lastName: String {get set}
+    func getFullName() -> String
+}
+```
+
+```swift
+class Scientist: FullName
+{
+    var firstName = ""
+    var lastName = ""
+    var field = ""
+
+    func getFullName() -> String
+    {
+        return "\(firstName) \(lastName) studies \(field)"
+    }
+}
+```
+
+```swift
+var scientist = Scientist()
+scientist.firstName = "Kara"
+scientist.lastName = "Hoffman"
+scientist.field = "Physics"
+
+var person: FullName
+person = scientist
+print(person.getFullName()) // Kara Hoffman studies Physics
+```
+
+#### Protocols as types
+
+Embora nenhuma funcionalidade seja implementada em um protocolo, eles ainda são considerados um tipo completo na linguagem de programação Swift e podem ser usados como qualquer outro tipo. O que isso significa é que podemos usar protocolos como um tipo de parâmetro ou como um tipo de retorno em uma função. Também podemos usá-los como tipo de variáveis, constantes e coleções.
+
+```swift
+protocol PersonProtocol
+{
+    var firstName: String {get set}
+    var lastName: String {get set}
+    var birthDate: NSDate {get set}
+    var profession: String {get}
+
+    init (firstName: String, lastName: String, birthDate: NSDate)
+}
+```
+
+In this first example, we will see how we can use protocols as a parameter type or return type in functions, methods, or initializers:
+
+```swift
+func updatePerson(person: PersonProtocol) -> PersonProtocol
+{
+    // Code to update person goes here return person
+}
+```
+
+Now let's see how we can use protocols as a type for constants, variables, or properties:
+
+```swift
+var myPerson: PersonProtocol
+var people: [PersonProtocol] = []
+```
+
+Como vimos anteriormente, podemos usar nosso protocolo `PersonProtocol` como o tipo de uma matriz. Isso significa que podemos preencher a matriz com instâncias de qualquer tipo que estejam em conformidade com o protocolo `PersonProtocol`. Mais uma vez, não importa se o tipo for uma classe ou uma estrutura, desde que esteja em conformidade com o protocolo `PersonProtocol`.
+
+```swift
+var programmer = SwiftProgrammer(firstName: "Jon", lastName: "Hoffman", birthDate: bDateProgrammer)
+
+var player = FootballPlayer(firstName: "Dan", lastName: "Marino", birthDate: bDatePlayer)
+
+var people: [PersonProtocol] = []
+people.append(programmer)
+people.append(player)
+```
+
+#### Type casting with protocols
+
+```swift
+for person in people where person is SwiftProgrammer {
+    print("\(person.firstName) is a Swift Programmer")
+}
+```
+
+```swift
+for person in people {
+    if let p = person as? SwiftProgrammer {
+        print("\(person.firstName) is a Swift Programmer")
+    }
+}
+```
+
+```swift
+for person in people where person is SwiftProgrammer {
+    let p = person as! SwiftProgrammer
+}
+```
+
+#### Protocol extensions
+
+As extensões de protocolo nos permitem estender um protocolo para fornecer implementações de métodos e propriedades para os tipos de conformidade. Eles também nos permitem fornecer implementações comuns a todos os tipos de confirmação, eliminando a necessidade de fornecer uma implementação em cada tipo individual ou a necessidade de criar uma hierarquia de classe. Embora as extensões de protocolo possam não parecer muito excitantes, uma vez que você veja o quão poderosas elas realmente são, elas vão transformar a maneira como você pensa e escreve código.
+
+```swift
+protocol DogProtocol
+{
+    var name: String {get set}
+    var color: String {get set}
+}
+
+extension DogProtocol
+{
+    func speak() -> String { return "Woof Woof" }
+}
+```
+
+### Extensions
+
+Com extensões, podemos adicionar novas propriedades, métodos, inicializações e subíndices, ou tornar uma classe ou estrutura existente de acordo com um protocolo sem modificar o código fonte para a classe ou estrutura. Uma coisa a observar é que as extensões não podem substituir a funcionalidade existente.
+
+```swift
+extension String {
+
+    var firstLetter: Character? {
+        get {
+            return self.characters.first
+        }
+    }
+
+    func reverse() -> String
+    {
+        var reverse = ""
+        for letter in self.characters {
+            reverse = "\(letter)" + reverse
+        }
+
+        return reverse
+    }
+}
+```
+
+```swift
+var myString = "Learning Swift is fun" print(myString.reverse())
+print(myString.firstLetter)
+```
+
+### Failable initializers
+
+Um inicializador failable é um inicializador que pode não inicializar os recursos necessários para uma classe ou uma estrutura, tornando assim a instância inutilizável. Ao usar um inicializador failable, o resultado do inicializador é um tipo opcional, contendo uma instância válida do tipo ou nulo.
+
+Um inicializador pode ser disponibilizado adicionando um ponto de interrogação (?) Após a palavra-chave `init`.
+
+```swift
+init?(firstName: String, lastName: String, salaryYear: Double) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.salaryYear = salaryYear
+
+    if self.salaryYear < 20000 {
+        return nil
+    }
+}
+```
+
+```swift
+if let f = EmployeeClass(firstName: "Jon", lastName: "Hoffman", salaryYear: 19000) {
+    print(f.getFullName())
+} else {
+    print("Failed to initialize")
+}
+```
+
+### Structures and Enumerations Are Value Types
+
+Um tipo de valor é um tipo cujo valor é copiado quando é atribuído a uma variável ou constante, ou quando é passado para uma função.
+
+Todas as estruturas e enumerações são tipos de valor em Swift. Isso significa que todas as instâncias de estrutura e enumeração que você cria - e quaisquer tipos de valor que possuem como propriedades - sempre são copiadas quando são transmitidas em seu código.
+
+```swift
+let hd = Resolution(width: 1920, height: 1080)
+var cinema = hd
+
+cinema.width = 2048
+
+print("cinema is now \(cinema.width) pixels wide")
+// Prints "cinema is now 2048 pixels wide"
+
+print("hd is still \(hd.width) pixels wide")
+// Prints "hd is still 1920 pixels wide"
+```
+
+![Shared State Struct](./Images/SharedStateStruct.png "Shared State Struct")
+
+O mesmo comportamento aplica-se às enumerações:
+
+```swift
+enum CompassPoint {
+    case north, south, east, west
+}
+
+var currentDirection = CompassPoint.west
+let rememberedDirection = currentDirection
+
+currentDirection = .east
+
+if rememberedDirection == .west {
+    print("The remembered direction is still .west")
+}
+
+// Prints "The remembered direction is still .west"
+```
+
+### As classes são tipos de referência
+
+Ao contrário dos tipos de valor, os tipos de referência não são copiados quando são atribuídos a uma variável ou constante, ou quando são passados ​​para uma função. Em vez de uma cópia, uma referência à mesma instância existente é usada em vez disso.
+
+```swift
+let tenEighty = VideoMode()
+tenEighty.resolution = hd
+tenEighty.interlaced = true
+tenEighty.name = "1080i"
+tenEighty.frameRate = 25.0
+
+let alsoTenEighty = tenEighty
+alsoTenEighty.frameRate = 30.0
+
+print("The frameRate property of tenEighty is now \(tenEighty.frameRate)")
+// Prints "The frameRate property of tenEighty is now 30.0"
+```
+
+![Shared State Class](./Images/SharedStateClass.png "Shared State Class")
+
+#### Identity Operators
+
+Because classes are reference types, it is possible for multiple constants and variables to refer to the same single instance of a class behind the scenes. (The same is not true for structures and enumerations, because they are always copied when they are assigned to a constant or variable, or passed to a function.)
+
+It can sometimes be useful to find out if two constants or variables refer to exactly the same instance of a class. To enable this, Swift provides two identity operators:
+
+Identical to (`===`)
+Not identical to (`!==`)
+
+Use esses operadores para verificar se duas constantes ou variáveis ​​se referem à mesma instância única:
+
+```swift
+if tenEighty === alsoTenEighty {
+    print("tenEighty and alsoTenEighty refer to the same VideoMode instance.")
+}
+
+// Prints "tenEighty and alsoTenEighty refer to the same VideoMode instance."
+```
+
+Note that “identical to” (represented by three equals signs, or `===`) does not mean the same thing as “equal to” (represented by two equals signs, or `==`):
+
+* “Identical to” means that two constants or variables of class type refer to exactly the same class instance.
+* “Equal to” means that two instances are considered “equal” or “equivalent” in value, for some appropriate meaning of “equal”, as defined by the type’s designer.
+
+### Escolhendo entre classes e estruturas
+
+Você pode usar classes e estruturas para definir tipos de dados personalizados para usar como blocos de construção do código do seu programa.
+
+No entanto, as instâncias de estrutura são sempre passadas por valor , e as instâncias de classe são sempre aprovadas por referência . Isso significa que eles são adequados para diferentes tipos de tarefas. À medida que você considera as construções de dados e a funcionalidade que você precisa para um projeto, decida se cada construção de dados deve ser definida como uma classe ou como uma estrutura.
+
+Como orientação geral, considere criar uma estrutura quando uma ou mais dessas condições se aplicam:
+
+* O objetivo principal da estrutura é encapsular alguns valores de dados relativamente simples.
+* É razoável esperar que os valores encapsulados sejam copiados e não referenciados quando você atribui ou passa uma instância dessa estrutura.
+* Quaisquer propriedades armazenadas pela estrutura são elas próprias tipos de valor, que também deveriam ser copiados e não referenciados.
+* A estrutura não precisa herdar propriedades ou comportamento de outro tipo existente.
+
+Em todos os outros casos, defina uma classe e crie instâncias dessa classe para serem gerenciadas e aprovadas por referência. Na prática, isso significa que a maioria das construções de dados personalizados devem ser classes, não estruturas.
+
+### Assignment and Copy Behavior for Strings, Arrays, and Dictionaries
+
+In Swift, many basic data types such as `String`, `Array`, and `Dictionary` are implemented as structures. This means that data such as strings, arrays, and dictionaries are copied when they are assigned to a new constant or variable, or when they are passed to a function or method.
+
+This behavior is different from Foundation: `NSString`, `NSArray`, and `NSDictionary` are implemented as classes, not structures. Strings, arrays, and dictionaries in Foundation are always assigned and passed around as a reference to an existing instance, rather than as a copy.
