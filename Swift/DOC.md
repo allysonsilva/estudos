@@ -2239,3 +2239,199 @@ for customerProvider in customerProviders {
 // Prints "Now serving Barry!"
 // Prints "Now serving Daniella!"
 ```
+
+## Enumerations
+
+Uma enumeração define um tipo comum para um grupo de valores relacionados e permite que você trabalhe com esses valores de forma segura em seu código.
+
+Enumerations in Swift are first-class types in their own right. They adopt many features traditionally supported only by classes, such as computed properties to provide additional information about the enumeration’s current value, and instance methods to provide functionality related to the values the enumeration represents. Enumerations can also define initializers to provide an initial case value; can be extended to expand their functionality beyond their original implementation; and can conform to protocols to provide standard functionality.
+
+### Enumeration Syntax
+
+```swift
+enum SomeEnumeration {
+    // enumeration definition goes here
+}
+```
+
+```swift
+enum CompassPoint {
+    case north
+    case south
+    case east
+    case west
+}
+```
+
+The values defined in an enumeration (such as `north`, `south`, `east`, and `west`) are its _enumeration_ cases. You use the `case` keyword to introduce new enumeration cases.
+
+Vários casos podem aparecer em uma única linha, separados por vírgulas:
+
+```swift
+enum Planet {
+    case mercury, venus, earth, mars, jupiter, saturn, uranus, neptune
+}
+```
+
+```swift
+var directionToHead = CompassPoint.west
+```
+
+The type of `directionToHead` is inferred when it is initialized with one of the possible values of `CompassPoint.` Once `directionToHead` is declared as a `CompassPoint`, you can set it to a different `CompassPoint` value using a shorter dot syntax:
+
+```swift
+directionToHead = .east
+```
+
+### Matching Enumeration Values with a Switch Statement
+
+Você pode combinar valores de enumeração individuais com uma declaração `switch`:
+
+```swift
+directionToHead = .south
+switch directionToHead {
+case .north:
+    print("Lots of planets have a north")
+case .south:
+    print("Watch out for penguins")
+case .east:
+    print("Where the sun rises")
+case .west:
+    print("Where the skies are blue")
+}
+
+// Prints "Watch out for penguins"
+```
+
+When it is not appropriate to provide a `case` for every enumeration case, you can provide a `default` case to cover any cases that are not addressed explicitly:
+
+```swift
+let somePlanet = Planet.earth
+switch somePlanet {
+case .earth:
+    print("Mostly harmless")
+default:
+    print("Not a safe place for humans")
+}
+
+// Prints "Mostly harmless"
+```
+
+### Associated Values
+
+```swift
+enum Barcode {
+    case upc(Int, Int, Int, Int)
+    case qrCode(String)
+}
+
+var productBarcode = Barcode.upc(8, 85909, 51226, 3)
+//
+productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
+```
+
+```swift
+switch productBarcode {
+case .upc(let numberSystem, let manufacturer, let product, let check):
+    print("UPC: \(numberSystem), \(manufacturer), \(product), \(check).")
+case .qrCode(let productCode):
+    print("QR code: \(productCode).")
+}
+// Prints "QR code: ABCDEFGHIJKLMNOP."
+```
+
+Se todos os valores associados para um caso de enumeração são extraídos como constantes, ou se todos são extraídos como variáveis, você pode colocar um único `var` ou `let` anotação antes do nome do caso, por brevidade:
+
+```swift
+switch productBarcode {
+case let .upc(numberSystem, manufacturer, product, check):
+    print("UPC : \(numberSystem), \(manufacturer), \(product), \(check).")
+case let .qrCode(productCode):
+    print("QR code: \(productCode).")
+}
+// Prints "QR code: ABCDEFGHIJKLMNOP."
+```
+
+### Raw Values
+
+```swift
+enum ASCIIControlCharacter: Character {
+    case tab = "\t"
+    case lineFeed = "\n"
+    case carriageReturn = "\r"
+}
+```
+
+Os valores brutos podem ser strings, caracteres ou qualquer um dos tipos de número inteiro ou de ponto flutuante. **Cada valor bruto deve ser exclusivo dentro de sua declaração de enumeração**.
+
+_Raw values are not the same as associated values. Raw values are set to prepopulated values when you first define the enumeration in your code, like the three ASCII codes above. The raw value for a particular enumeration case is always the same. Associated values are set when you create a new constant or variable based on one of the enumeration’s cases, and can be different each time you do so._
+
+#### Implicitly Assigned Raw Values
+
+Quando você trabalha com enumerações que armazenam valores brutos inteiros ou de string, não é necessário atribuir explicitamente um valor bruto a cada caso. Quando você não fizer isso, o Swift atribuirá automaticamente os valores para você.
+
+Por exemplo, quando números inteiros são usados ​​para valores brutos, o valor implícito para cada caso é um a mais que o caso anterior. Se o primeiro caso não tiver um valor definido, seu valor será 0.
+
+A enumeração abaixo é um refinamento da enumeração `Planet` anterior, com valores brutos inteiros para representar a ordem de cada planeta do sistema solar:
+
+```swift
+enum Planet: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+}
+```
+
+No exemplo acima, `Planet.mercury` tem um valor bruto explícito de 1, `Planet.venus` tem um valor bruto implícito de 2 e assim por diante.
+
+Quando as seqüências de caracteres são usadas para valores brutos, o valor implícito para cada caso é o texto do nome desse caso.
+
+A enumeração abaixo é um refinamento da enumeração anterior `CompassPoint`, com valores brutos de string para representar o nome de cada direção:
+
+```swift
+enum CompassPoint: String {
+    case north, south, east, west
+}
+```
+
+No exemplo acima, `CompassPoint.south` tem um valor bruto implícito de "south" e assim por diante.
+
+Você acessa o valor bruto de um caso de enumeração com sua propriedade `rawValue`:
+
+```swift
+let earthsOrder = Planet.earth.rawValue
+// earthsOrder is 3
+
+let sunsetDirection = CompassPoint.west.rawValue
+// sunsetDirection is "west"
+```
+
+#### Initializing from a Raw Value
+
+If you define an enumeration with a raw-value type, the enumeration automatically receives an initializer that takes a value of the raw value’s type (as a parameter called `rawValue`) and returns either an enumeration case or `nil`. You can use this initializer to try to create a new instance of the enumeration.
+
+This example identifies Uranus from its raw value of 7:
+
+```swift
+let possiblePlanet = Planet(rawValue: 7)
+// possiblePlanet is of type Planet? and equals Planet.uranus
+```
+
+Not all possible `Int` values will find a matching planet, however. Because of this, the raw value initializer always returns an optional enumeration case. In the example above, `possiblePlanet` is of type `Planet?`, or “optional `Planet`.”
+
+If you try to find a planet with a position of 11, the optional `Planet` value returned by the raw value initializer will be `nil`:
+
+```swift
+let positionToFind = 11
+if let somePlanet = Planet(rawValue: positionToFind) {
+    switch somePlanet {
+    case .earth:
+        print("Mostly harmless")
+    default:
+        print("Not a safe place for humans")
+    }
+} else {
+    print("There isn't a planet at position \(positionToFind)")
+}
+// Prints "There isn't a planet at position 11"
+```
+
+This example uses optional binding to try to access a planet with a raw value of 11. The statement `if let somePlanet = Planet(rawValue: 11)` creates an optional Planet, and sets `somePlanet` to the value of that optional `Planet` if it can be retrieved. In this case, it is not possible to retrieve a planet with a position of 11, and so the `else` branch is executed instead.
