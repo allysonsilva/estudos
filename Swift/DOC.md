@@ -3438,6 +3438,17 @@ struct AudioChannel {
 }
 ```
 
+The  `AudioChannel`  structure defines two stored type properties to support its functionality. The first,  `thresholdLevel`, defines the maximum threshold value an audio level can take. This is a constant value of  `10`  for all  `AudioChannel`  instances. If an audio signal comes in with a higher value than  `10`, it will be capped to this threshold value (as described below).
+
+The second type property is a variable stored property called  `maxInputLevelForAllChannels`. This keeps track of the maximum input value that has been received by  _any_  `AudioChannel`  instance. It starts with an initial value of  `0`.
+
+The  `AudioChannel`  structure also defines a stored instance property called  `currentLevel`, which represents the channel’s current audio level on a scale of  `0`  to  `10`.
+
+The  `currentLevel`  property has a  `didSet`  property observer to check the value of  `currentLevel`  whenever it is set. This observer performs two checks:
+
+-   If the new value of  `currentLevel`  is greater than the allowed  `thresholdLevel`, the property observer caps  `currentLevel`  to  `thresholdLevel`.
+-   If the new value of  `currentLevel`  (after any capping) is higher than any value previously received by  _any_  `AudioChannel`  instance, the property observer stores the new  `currentLevel`  value in the  `maxInputLevelForAllChannels`  type property.
+
 Você pode usar a estrutura `AudioChannel` para criar dois novos canais de áudio `leftChannel` e `rightChannel`, para representar os níveis de áudio de um sistema de som estéreo:
 
 ```swift
@@ -3463,4 +3474,246 @@ print(rightChannel.currentLevel)
 // Prints "10"
 print(AudioChannel.maxInputLevelForAllChannels)
 // Prints "10"
+```
+
+## Métodos
+
+Os métodos são funções associadas a um tipo específico. Classes, estruturas e enumerações podem definir métodos de instância, que encapsulam tarefas e funcionalidades específicas para trabalhar com uma instância de um determinado tipo. Classes, estruturas e enumerações também podem definir métodos de tipo, que estão associados ao próprio tipo.
+
+### Métodos de instância
+
+Os métodos de instância são funções que pertencem a instâncias de uma determinada classe, estrutura ou enumeração. Eles suportam a funcionalidade dessas instâncias, fornecendo maneiras de acessar e modificar as propriedades da instância, ou fornecendo funcionalidades relacionadas à finalidade da instância. Os métodos de instância têm exatamente a mesma sintaxe que as funções.
+
+```swift
+class Counter
+{
+    var count = 0
+    func increment() {
+        count += 1
+    }
+
+    func increment(by amount: Int) {
+        count += amount
+    }
+
+    func reset() {
+        count = 0
+    }
+}
+```
+
+A classe `Counter` define três métodos de instância:
+
+- `increment()` incrementa o contador por 1.
+- `increment(by: Int)` incrementa o contador por um valor inteiro especificado.
+- `reset()` reinicia o contador em zero.
+
+Você chama métodos de instância com a mesma sintaxe de ponto como propriedades:
+
+```swift
+let counter = Counter()
+// the initial counter value is 0
+
+counter.increment()
+// the counter's value is now 1
+
+counter.increment(by: 5)
+// the counter's value is now 6
+
+counter.reset()
+// the counter's value is now 0
+```
+
+#### The self Property
+
+Cada instância de um tipo tem uma propriedade implícita chamada `self`, que é exatamente equivalente à própria instância. Você usa a propriedade `self` para se referir à instância atual em seus próprios métodos de instância.
+
+O método `increment()` no exemplo acima poderia ter sido escrito assim:
+
+```swift
+func increment() {
+    self.count += 1
+}
+```
+
+A principal exceção a esta regra ocorre quando um nome de parâmetro para um método de instância tem o mesmo nome que uma propriedade dessa instância. Nessa situação, o nome do parâmetro tem precedência e torna-se necessário consultar a propriedade de forma mais qualificada. Você usa a propriedade `self` para distinguir entre o nome do parâmetro e o nome da propriedade.
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    func isToTheRightOf(x: Double) -> Bool {
+        return self.x > x
+    }
+}
+
+let somePoint = Point(x: 4.0, y: 5.0)
+
+if somePoint.isToTheRightOf(x: 1.0) {
+    print("This point is to the right of the line where x == 1.0")
+}
+// Prints "This point is to the right of the line where x == 1.0"
+```
+
+#### Modifying Value Types from Within Instance Methods
+
+Em swift, as classes são do tipo de referência, enquanto as estruturas e enumerações são tipos de valor . As propriedades dos tipos de valor não podem ser modificadas dentro de seus métodos de instância por padrão. Para modificar as propriedades de um tipo de valor, você precisa usar a palavra-chave mutating no método da instância. Com essa palavra-chave, seu método pode ter a capacidade de alterar os valores das propriedades e gravá-lo de volta na estrutura original quando a implementação do método terminar.
+
+**Estruturas e enumerações são tipos de valor . Por padrão, as propriedades de um tipo de valor não podem ser modificadas a partir de seus métodos de instância**.
+
+No entanto, se você precisar modificar as propriedades de sua estrutura ou enumeração dentro de um método específico, você pode optar pelo comportamento mutante desse método. O método pode então mutar(isto é, alterar) suas propriedades dentro do método, e todas as alterações que faz são escritas de volta à estrutura original quando o método termina. O método também pode atribuir uma instância completamente nova à sua propriedade `self` implícita , e esta nova instância substituirá a existente quando o método terminar.
+
+Você pode optar por esse comportamento colocando a palavra-chave `mutating` antes da palavra-chave `func` para esse método:
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        x += deltaX
+        y += deltaY
+    }
+}
+
+var somePoint = Point(x: 1.0, y: 1.0)
+somePoint.moveBy(x: 2.0, y: 3.0)
+print("The point is now at (\(somePoint.x), \(somePoint.y))")
+// Prints "The point is now at (3.0, 4.0)"
+```
+
+Observe que você não pode chamar um método de mutação em uma constante de tipo de estrutura, porque suas propriedades não podem ser alteradas, mesmo que sejam propriedades variáveis.
+
+```swift
+let fixedPoint = Point(x: 3.0, y: 3.0)
+fixedPoint.moveBy(x: 2.0, y: 3.0)
+// this will report an error
+```
+
+#### Assigning to self Within a Mutating Method (Atribuindo-se a si mesmo dentro de um método mutante)
+
+Os métodos mutantes podem atribuir uma instância inteiramente nova à propriedade `self` implícita.
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        self = Point(x: x + deltaX, y: y + deltaY)
+    }
+}
+```
+
+Os métodos mutantes para enumerações podem definir o parâmetro `self` implícito como um caso diferente da mesma enumeração:
+
+```swift
+enum TriStateSwitch {
+    case off, low, high
+    mutating func next() {
+        switch self {
+        case .off:
+            self = .low
+        case .low:
+            self = .high
+        case .high:
+            self = .off
+        }
+    }
+}
+
+var ovenLight = TriStateSwitch.low
+ovenLight.next()
+// ovenLight is now equal to .high
+ovenLight.next()
+// ovenLight is now equal to .off
+```
+
+### Type Methods
+
+Os métodos de instância, conforme descrito acima, são métodos que são chamados de uma instância de um tipo específico. Você também pode definir métodos que são chamados no próprio tipo. Esses tipos de métodos são chamados de métodos de tipo. Você indica métodos de tipo escrevendo a palavra-chave `static` antes da palavra-chave do método `func`. As classes também podem usar a palavra-chave `class` para permitir que as subclasses anulem a implementação da superclasse desse método.
+
+```swift
+class SomeClass {
+    class func someTypeMethod() {
+        // type method implementation goes here
+    }
+}
+
+SomeClass.someTypeMethod()
+```
+
+Within the body of a type method, the implicit `self` property refers to the type itself, rather than an instance of that type. This means that you can use  `self`  to disambiguate between type properties and type method parameters, just as you do for instance properties and instance method parameters.
+
+More generally, any unqualified method and property names that you use within the body of a type method will refer to other type-level methods and properties. A type method can call another type method with the other method’s name, without needing to prefix it with the type name. Similarly, type methods on structures and enumerations can access type properties by using the type property’s name without a type name prefix.
+
+The example below defines a structure called `LevelTracker`, which tracks a player’s progress through the different levels or stages of a game. It is a single-player game, but can store information for multiple players on a single device.
+
+All of the game’s levels (apart from level one) are locked when the game is first played. Every time a player finishes a level, that level is unlocked for all players on the device. The `LevelTracker` structure uses type properties and methods to keep track of which levels of the game have been unlocked. It also tracks the current level for an individual player.
+
+```swift
+struct LevelTracker {
+    static var highestUnlockedLevel = 1
+    var currentLevel = 1
+
+    static func unlock(_ level: Int) {
+        if level > highestUnlockedLevel { highestUnlockedLevel = level }
+    }
+
+    static func isUnlocked(_ level: Int) -> Bool {
+        return level <= highestUnlockedLevel
+    }
+
+    @discardableResult
+    mutating func advance(to level: Int) -> Bool {
+        if LevelTracker.isUnlocked(level) {
+            currentLevel = level
+            return true
+        } else {
+            return false
+        }
+    }
+}
+```
+
+The `LevelTracker` structure keeps track of the highest level that any player has unlocked. This value is stored in a type property called `highestUnlockedLevel`.
+
+`LevelTracker` also defines two type functions to work with the `highestUnlockedLevel`property. The first is a type function called `unlock(_:)`, which updates the value of `highestUnlockedLevel` whenever a new level is unlocked. The second is a convenience type function called `isUnlocked(_:)`, which returns `true` if a particular level number is already unlocked. (Note that these type methods can access the `highestUnlockedLevel` type property without your needing to write it as `LevelTracker.highestUnlockedLevel`.)
+
+In addition to its type property and type methods, `LevelTracker` tracks an individual player’s progress through the game. It uses an instance property called `currentLevel`to track the level that a player is currently playing.
+
+To help manage the `currentLevel` property, `LevelTracker` defines an instance method called `advance(to:)`. Before updating `currentLevel`, this method checks whether the requested new level is already unlocked. The `advance(to:)` method returns a Boolean value to indicate whether or not it was actually able to set `currentLevel`. Because it’s not necessarily a mistake for code that calls the `advance(to:)` method to ignore the return value, this function is marked with the `@discardableResult` attribute. For more information about this attribute, see  [Attributes](https://docs.swift.org/swift-book/ReferenceManual/Attributes.html).
+
+The  `LevelTracker`  structure is used with the  `Player`  class, shown below, to track and update the progress of an individual player:
+
+```swift
+class Player {
+    var tracker = LevelTracker()
+    let playerName: String
+    func complete(level: Int) {
+        LevelTracker.unlock(level + 1)
+        tracker.advance(to: level + 1)
+    }
+    init(name: String) {
+        playerName = name
+    }
+}
+```
+
+The `Player` class creates a new instance of `LevelTracker` to track that player’s progress. It also provides a method called `complete(level:)`, which is called whenever a player completes a particular level. This method unlocks the next level for all players and updates the player’s progress to move them to the next level. (The Boolean return value of `advance(to:)` is ignored, because the level is known to have been unlocked by the call to `LevelTracker.unlock(_:)` on the previous line.)
+
+You can create an instance of the `Player` class for a new player, and see what happens when the player completes level one:
+
+```swift
+var player = Player(name: "Argyrios")
+player.complete(level: 1)
+print("highest unlocked level is now \(LevelTracker.highestUnlockedLevel)")
+// Prints "highest unlocked level is now 2"
+```
+
+If you create a second player, whom you try to move to a level that is not yet unlocked by any player in the game, the attempt to set the player’s current level fails:
+
+```swift
+player = Player(name: "Beto")
+if player.tracker.advance(to: 6) {
+    print("player is now on level 6")
+} else {
+    print("level 6 has not yet been unlocked")
+}
+// Prints "level 6 has not yet been unlocked"
 ```
