@@ -3824,3 +3824,165 @@ func indexIsValid(row: Int, column: Int) -> Bool {
     return row >= 0 && row < rows && column >= 0 && column < columns
 }
 ```
+
+## Inheritance (Herança)
+
+Uma classe pode herdar métodos, propriedades e outras características de outra classe. Quando uma classe herda de outra, a classe herdada é conhecida como uma subclasse e a classe que ela herda é conhecida como sua superclasse. A herança é um comportamento fundamental que diferencia classes de outros tipos em Swift.
+
+Classes em Swift podem chamar e acessar métodos, propriedades e subíndices pertencentes à sua superclasse e podem fornecer suas próprias versões primárias desses métodos, propriedades e subíndices para refinar ou modificar seu comportamento. O Swift ajuda a garantir que suas substituições sejam corretas ao verificar se a definição de substituição possui uma definição de superclasse correspondente.
+
+As classes também podem adicionar observadores de propriedade para propriedades herdadas para serem notificadas quando o valor de uma propriedade mudar. Os observadores de propriedade podem ser adicionados a qualquer propriedade, independentemente de ter sido originalmente definido como uma propriedade armazenada ou calculada.
+
+### Definindo uma classe base
+
+Qualquer classe que não herda de outra classe é conhecida como uma classe base.
+
+_As classes Swift não herdam de uma classe base universal. As classes que você define sem especificar uma superclasse se tornam automaticamente classes básicas para você construir._
+
+```swift
+class Vehicle {
+    var currentSpeed = 0.0
+    var description: String {
+        return "traveling at \(currentSpeed) miles per hour"
+    }
+    func makeNoise() {
+        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+    }
+}
+```
+
+Você cria uma nova instância `Vehicle` com a sintaxe do inicializador, que é escrita como um nome de tipo seguido por parênteses vazios:
+
+```swift
+let someVehicle = Vehicle()
+print("Vehicle: \(someVehicle.description)")
+// Vehicle: traveling at 0.0 miles per hour
+```
+
+### Subclassing
+
+A subclasse é o ato de basear uma nova classe em uma classe existente. A subclasse herda as características da classe existente, que você pode refinar. Você também pode adicionar novas características à subclasse.
+
+Para indicar que uma subclasse possui uma superclasse, escreva o nome da subclasse antes do nome da superclasse, separados por dois pontos:
+
+```swift
+class SomeSubclass: SomeSuperclass {
+    // subclass definition goes here
+}
+```
+
+O exemplo a seguir define uma subclasse chamada `Bicycle`, com uma superclasse de `Vehicle`:
+
+```swift
+class Bicycle: Vehicle {
+    var hasBasket = false
+}
+```
+
+A nova classe `Bicycle` gera automaticamente todas as características de `Vehicle`.
+
+```swift
+let bicycle = Bicycle()
+bicycle.hasBasket = true
+
+bicycle.currentSpeed = 15.0
+print("Bicycle: \(bicycle.description)")
+// Bicycle: traveling at 15.0 miles per hour
+```
+
+Subclasses can themselves be subclassed. The next example creates a subclass of `Bicycle` for a two-seater bicycle known as a “tandem”:
+
+```swift
+class Tandem: Bicycle {
+    var currentNumberOfPassengers = 0
+}
+```
+
+`Tandem` herda todas as propriedades e métodos de `Bicycle`, que, por sua vez, herdam todas as propriedades e métodos de `Vehicle`. A `Tandem` subclasse também adiciona uma nova propriedade armazenada chamada `currentNumberOfPassengers`, com um valor padrão de `0`.
+
+```swift
+let tandem = Tandem()
+tandem.hasBasket = true
+tandem.currentNumberOfPassengers = 2
+tandem.currentSpeed = 22.0
+print("Tandem: \(tandem.description)")
+// Tandem: traveling at 22.0 miles per hour
+```
+
+### Overriding
+
+A subclass can provide its own custom implementation of an instance method, type method, instance property, type property, or subscript that it would otherwise inherit from a superclass. This is known as *overriding*.
+
+Para substituir uma característica que de outra forma seria herdada, você prefixa sua definição de substituição com a palavra-chave `override`. Isso deixa claro que você pretende fornecer uma substituição e não forneceu uma definição correspondente por engano. Substituir por acidente pode causar um comportamento inesperado, e quaisquer substituições sem a palavra-chave `override` são diagnosticadas como um erro quando seu código é compilado.
+
+#### Accessing Superclass Methods, Properties, and Subscripts
+
+Where this is appropriate, you access the superclass version of a method, property, or subscript by using the `super` prefix:
+
+* An overridden method named `someMethod()` can call the superclass version of `someMethod()` by calling `super.someMethod()` within the overriding method implementation.
+* An overridden property called `someProperty` can access the superclass version of `someProperty` as `super.someProperty` within the overriding getter or setter implementation.
+* An overridden subscript for `someIndex` can access the superclass version of the same subscript as `super[someIndex]` from within the overriding subscript implementation.
+
+#### Substituindo Métodos
+
+Você pode substituir um método de instância ou tipo herdado para fornecer uma implementação personalizada ou alternativa do método dentro de sua subclasse.
+
+```swift
+class Train: Vehicle {
+    override func makeNoise() {
+        print("Choo Choo")
+    }
+}
+
+let train = Train()
+train.makeNoise()
+// Prints "Choo Choo"
+```
+
+#### Substituindo Propriedades
+
+You can override an inherited instance or type property to provide your own custom getter and setter for that property, or to add property observers to enable the overriding property to observe when the underlying property value changes.
+
+##### Substituindo propriedade Getters e Setters
+
+You can provide a custom getter (and setter, if appropriate) to override any inherited property, regardless of whether the inherited property is implemented as a stored or computed property at source. The stored or computed nature of an inherited property is not known by a subclass—it only knows that the inherited property has a certain name and type. You must always state both the name and the type of the property you are overriding, to enable the compiler to check that your override matches a superclass property with the same name and type.
+
+```swift
+class Car: Vehicle {
+    var gear = 1
+    override var description: String {
+        return super.description + " in gear \(gear)"
+    }
+}
+
+let car = Car()
+car.currentSpeed = 25.0
+car.gear = 3
+print("Car: \(car.description)")
+// Car: traveling at 25.0 miles per hour in gear 3
+```
+
+##### Overriding Property Observers
+
+Você pode usar a substituição de propriedades para adicionar observadores de propriedade a uma propriedade herdada. Isso permite que você seja notificado quando o valor de uma propriedade herdada for alterado, independentemente de como essa propriedade foi implementada originalmente.
+
+_Você não pode adicionar observadores de propriedade a propriedades armazenadas constantes herdadas ou propriedades computadas somente leitura herdadas. O valor dessas propriedades não pode ser definido e, portanto, não é apropriado fornecer uma `willSet` ou uma `didSet` implementação como parte de uma substituição._
+
+```swift
+class AutomaticCar: Car {
+    override var currentSpeed: Double {
+        didSet {
+            gear = Int(currentSpeed / 10.0) + 1
+        }
+    }
+}
+
+let automatic = AutomaticCar()
+automatic.currentSpeed = 35.0
+print("AutomaticCar: \(automatic.description)")
+// AutomaticCar: traveling at 35.0 miles per hour in gear 4
+```
+
+### Preventing Overrides
+
+You can prevent a method, property, or subscript from being overridden by marking it as `final`. Do this by writing the `final` modifier before the method, property, or subscript’s introducer keyword (such as `final var`, `final func`, `final class func`, and `final subscript`).
