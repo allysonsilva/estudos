@@ -2639,7 +2639,7 @@ var salaryWeek: Double {
 
 ### Property observers
 
-Os observadores de propriedade são chamados sempre que o valor da propriedade é definido. Podemos adicionar observadores de propriedades a qualquer propriedade armazenada non-lazy. Podemos também adicionar observadores de propriedades a qualquer propriedade armazenada ou calculada herdada, substituindo a propriedade na subclasse.
+Os observadores de propriedade são chamados sempre que o valor da propriedade é definido. Podemos adicionar observadores de propriedades a qualquer propriedade armazenada non-lazy. Podemos também adicionar observadores de propriedades a qualquer propriedade armazenada ou computadas herdada, substituindo a propriedade na subclasse.
 
 Existem dois observadores de propriedade que podemos definir no Swift - `willSet` e no `didSet`. O observador `willSet` é chamado imediatamente antes da configuração da propriedade, e o observador do `didSet` é chamado logo após a propriedade estar configurada.
 
@@ -3135,3 +3135,332 @@ Em todos os outros casos, defina uma classe e crie instâncias dessa classe para
 In Swift, many basic data types such as `String`, `Array`, and `Dictionary` are implemented as structures. This means that data such as strings, arrays, and dictionaries are copied when they are assigned to a new constant or variable, or when they are passed to a function or method.
 
 This behavior is different from Foundation: `NSString`, `NSArray`, and `NSDictionary` are implemented as classes, not structures. Strings, arrays, and dictionaries in Foundation are always assigned and passed around as a reference to an existing instance, rather than as a copy.
+
+## Propriedades
+
+Propriedades associam valores com uma classe, estrutura ou enumeração específica. As propriedades armazenadas armazenam valores constantes e variáveis ​​como parte de uma instância, enquanto que as propriedades computadas calculam (em vez de armazenar) um valor. As computed properties são fornecidas por classes, estruturas e enumerações. As propriedades armazenadas são fornecidas apenas por classes e estruturas.
+
+As propriedades armazenadas e computadas geralmente são associadas a instâncias de um tipo específico. No entanto, as propriedades também podem ser associadas ao próprio tipo. Tais propriedades são conhecidas como propriedades de tipo.
+
+Além disso, você pode definir observadores de propriedades para monitorar mudanças no valor de uma propriedade, que você pode responder com ações personalizadas. Os observadores de propriedade podem ser adicionados às propriedades armazenadas que você se define, e também às propriedades que uma subclasse herda de sua superclasse.
+
+### Stored Properties (Propriedades Armazenadas)
+
+Na sua forma mais simples, uma propriedade armazenada é uma constante ou variável que é armazenada como parte de uma instância de uma determinada classe ou estrutura. As propriedades armazenadas podem ser propriedades armazenadas variáveis (introduzidas pela palavra-chave `var`) ou propriedades armazenadas constantes (introduzidas pela palavra-chave `let`).
+
+Você pode fornecer um valor padrão para uma propriedade armazenada como parte de sua definição.  Você também pode definir e modificar o valor inicial para uma propriedade armazenada durante a inicialização.
+
+O exemplo abaixo define uma estrutura chamada `FixedLengthRange`, que descreve um intervalo de inteiros cujo comprimento de intervalo não pode ser alterado após a criação:
+
+```swift
+struct FixedLengthRange {
+    var firstValue: Int
+    let length: Int
+}
+
+var rangeOfThreeItems = FixedLengthRange(firstValue: 0, length: 3)
+// the range represents integer values 0, 1, and 2
+
+rangeOfThreeItems.firstValue = 6
+// the range now represents integer values 6, 7, and 8
+```
+
+Instâncias de `FixedLengthRangeter` uma propriedade variável armazenada chamada `firstValue` e uma propriedade armazenada constante chamada `length`. No exemplo acima, `length` é inicializado quando o novo intervalo é criado e não pode ser alterado posteriormente, porque é uma propriedade constante.
+
+#### Stored Properties of Constant Structure Instances
+
+Se você criar uma instância de uma estrutura e atribuir essa instância a uma constante, não pode modificar as propriedades da instância, mesmo que fossem declaradas como propriedades variáveis:
+
+```swift
+let rangeOfFourItems = FixedLengthRange(firstValue: 0, length: 4)
+// this range represents integer values 0, 1, 2, and 3
+
+rangeOfFourItems.firstValue = 6
+// this will report an error, even though firstValue is a variable property
+```
+
+This behavior is due to structures being value types. When an instance of a value type is marked as a constant, so are all of its properties.
+
+O mesmo não é verdadeiro para classes, que são tipos de referência. Se você atribuir uma instância de um tipo de referência a uma constante, você ainda pode alterar as propriedades variáveis ​​dessa instância.
+
+#### Lazy Stored Properties
+
+Uma _lazy stored property_ é uma propriedade cujo valor inicial não é calculado até a primeira vez que é usado. Você indica uma propriedade armazenada lazy escrevendo o `lazy` modificador antes de sua declaração.
+
+As Lazy properties são úteis quando o valor inicial para uma propriedade depende de fatores externos cujos valores não são conhecidos até a conclusão da inicialização de uma instância. As Lazy properties também são úteis quando o valor inicial para uma propriedade requer uma configuração complexa ou computacionalmente dispendiosa que não deve ser realizada a menos que seja necessária.
+
+```swift
+class DataImporter {
+    /*
+     DataImporter is a class to import data from an external file.
+     The class is assumed to take a nontrivial amount of time to initialize.
+     */
+    var filename = "data.txt"
+    // the DataImporter class would provide data importing functionality here
+}
+
+class DataManager {
+    lazy var importer = DataImporter()
+    var data = [String]()
+    // the DataManager class would provide data management functionality here
+}
+
+let manager = DataManager()
+
+manager.data.append("Some data")
+manager.data.append("Some more data")
+// the DataImporter instance for the importer property has not yet been created
+```
+
+Como está marcado com o `lazy` modificador, a instância `DataImporter` para a propriedade `importer` só é criada quando a propriedade `importer` é acessada pela primeira vez, como quando a propriedade `filename` é consultada:
+
+```swift
+print(manager.importer.filename)
+// the DataImporter instance for the importer property has now been created
+// Prints "data.txt"
+```
+
+#### Stored Properties and Instance Variables
+
+### Computed Properties(Propriedades computadas)
+
+Além das propriedades armazenadas, classes, estruturas e enumerações podem definir computed properties, que na verdade não armazenam um valor. Em vez disso, eles fornecem um `getter` e um opcional `setter` para recuperar e definir outras propriedades e valores indiretamente.
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+}
+
+struct Size {
+    var width = 0.0, height = 0.0
+}
+
+struct Rect {
+    var origin = Point()
+    var size = Size()
+    var center: Point {
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return Point(x: centerX, y: centerY)
+        }
+        set(newCenter) {
+            origin.x = newCenter.x - (size.width / 2)
+            origin.y = newCenter.y - (size.height / 2)
+        }
+    }
+}
+
+var square = Rect(origin: Point(x: 0.0, y: 0.0), size: Size(width: 10.0, height: 10.0))
+let initialSquareCenter = square.center
+square.center = Point(x: 15.0, y: 15.0)
+
+print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
+// Prints "square.origin is now at (10.0, 10.0)"
+```
+
+#### Shorthand Setter Declaration
+
+Se o setter de uma computed properties não definir um nome para o novo valor a ser definido, um nome padrão `newValue` é usado.
+
+```swift
+struct AlternativeRect {
+    var origin = Point()
+    var size = Size()
+    var center: Point {
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return Point(x: centerX, y: centerY)
+        }
+        set {
+            origin.x = newValue.x - (size.width / 2)
+            origin.y = newValue.y - (size.height / 2)
+        }
+    }
+}
+```
+
+#### Read-Only Computed Properties
+
+Uma computed properties com um `getter`, mas nenhum setter é conhecida como uma propriedade computacional somente leitura  Uma propriedade computacional somente leitura retorna sempre um valor e pode ser acessada através de sintaxe de ponto, mas não pode ser configurada para um valor diferente.
+
+*You must declare computed properties—including read-only computed properties—as variable properties with the `var` keyword, because their value is not fixed. The `let` keyword is only used for constant properties, to indicate that their values cannot be changed once they are set as part of instance initialization.*
+
+Você pode simplificar a declaração de uma computed properties somente leitura, removendo a palavra-chave `get` e suas chaves:
+
+```swift
+struct Cuboid {
+    var width = 0.0, height = 0.0, depth = 0.0
+    var volume: Double {
+        return width * height * depth
+    }
+}
+
+let fourByFiveByTwo = Cuboid(width: 4.0, height: 5.0, depth: 2.0)
+print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
+// Prints "the volume of fourByFiveByTwo is 40.0"
+```
+
+### Property Observers
+
+Os observadores da propriedade observam e respondem às mudanças no valor de uma propriedade. Os observadores de propriedade são chamados sempre que o valor de uma propriedade é definido, mesmo que o novo valor seja o mesmo que o valor atual da propriedade.
+
+Você pode adicionar observadores de propriedades a quaisquer propriedades armazenadas que você define, exceto para Lazy properties armazenadas.
+
+Você tem a opção de definir um ou ambos os observadores em uma propriedade:
+
+* `willSet` é chamado antes do valor ser armazenado.
+* `didSet` é chamado imediatamente após o novo valor ser armazenado.
+
+Se você implementar um observador `willSet`, é passado o novo valor da propriedade como um parâmetro constante. Você pode especificar um nome para este parâmetro como parte de sua implementação `willSet`. Se você não escrever o nome do parâmetro e parênteses dentro de sua implementação, o parâmetro é disponibilizado com um nome de parâmetro padrão `newValue`.
+
+Da mesma forma, se você implementar um observador `didSet`, é passado um parâmetro constante que contém o valor da propriedade antiga. Você pode nomear o parâmetro ou usar o nome do parâmetro padrão `oldValue`. Se você atribuir um valor a uma propriedade dentro de seu próprio observador `didSet`, o novo valor que você atribui substitui o que acabou de ser definido.
+
+*The `willSet` and `didSet` observers of superclass properties are called when a property is set in a subclass initializer, after the superclass initializer has been called. They are not called while a class is setting its own properties, before the superclass initializer has been called.*
+
+```swift
+class StepCounter {
+    var totalSteps: Int = 0 {
+        willSet(newTotalSteps) {
+            print("About to set totalSteps to \(newTotalSteps)")
+        }
+        didSet {
+            if totalSteps > oldValue  {
+                print("Added \(totalSteps - oldValue) steps")
+            }
+        }
+    }
+}
+
+let stepCounter = StepCounter()
+stepCounter.totalSteps = 200
+// About to set totalSteps to 200
+// Added 200 steps
+stepCounter.totalSteps = 360
+// About to set totalSteps to 360
+// Added 160 steps
+stepCounter.totalSteps = 896
+// About to set totalSteps to 896
+// Added 536 steps
+```
+
+Os observadores `willSet` e `didSet` para `totalSteps` são chamados sempre que a propriedade recebe um novo valor. Isso é verdade mesmo se o novo valor for o mesmo que o valor atual.
+
+O observador `willSet` deste exemplo usa um nome de parâmetro personalizado `newTotalSteps` para o próximo novo valor. Neste exemplo, ele simplesmente imprime o valor que está prestes a ser configurado.
+
+O observador `didSet` é chamado após o valor de `totalSteps` ser atualizado. Ele compara o novo valor de `totalSteps` com o valor antigo. Se o número total de etapas aumentou, uma mensagem é impressa para indicar quantos passos novos foram feitos. O observador `didSet` não fornece um nome de parâmetro personalizado para o valor antigo e o nome padrão do `oldValue` é usado em vez disso.
+
+### Variáveis ​​globais e locais
+
+Os recursos descritos acima para as propriedades de computação e observação também estão disponíveis para variáveis globais e variáveis locais. Variáveis globais são variáveis que são definidas fora de qualquer função, método, encerramento ou contexto de tipo. As variáveis locais são variáveis que são definidas dentro de uma função, método ou contexto de encerramento.
+
+### Type Properties (Propriedades Estáticas)
+
+Propriedades de instância são propriedades que pertencem a uma instância de um tipo específico. Toda vez que você cria uma nova instância desse tipo, possui seu próprio conjunto de valores de propriedade, separado de qualquer outra instância.
+
+Você também pode definir propriedades que pertencem ao próprio tipo, e não a nenhuma instância desse tipo. Só haverá uma cópia dessas propriedades, independentemente de quantas instâncias desse tipo você crie. Esses tipos de propriedades são chamados de *type properties*.
+
+As propriedades de tipo são úteis para definir valores que são universais para todas as instâncias de um tipo específico, como uma propriedade constante que todas as instâncias podem usar ou uma propriedade variável que armazena um valor global para todos instâncias desse tipo.
+
+Stored type properties can be variables or constants. Computed type properties are always declared as variable properties, in the same way as computed instance properties.
+
+#### Type Property Syntax
+
+You define type properties with the `static` keyword. For computed type properties for class types, you can use the `class` keyword instead to allow subclasses to override the superclass’s implementation.
+
+```swift
+struct SomeStructure {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 1
+    }
+}
+
+enum SomeEnumeration {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 6
+    }
+}
+
+class SomeClass {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 27
+    }
+    class var overrideableComputedTypeProperty: Int {
+        return 107
+    }
+}
+```
+
+_The computed type property examples above are for read-only computed type properties, but you can also define read-write computed type properties with the same syntax as for computed instance properties._
+
+#### Querying and Setting Type Properties
+
+As propriedades de tipo são consultadas e definidas com sintaxe de ponto, assim como as propriedades da instância. No entanto, as propriedades de tipo são consultadas e definidas no tipo , não em uma instância desse tipo.
+
+```swift
+print(SomeStructure.storedTypeProperty)
+// Prints "Some value."
+SomeStructure.storedTypeProperty = "Another value."
+print(SomeStructure.storedTypeProperty)
+// Prints "Another value."
+print(SomeEnumeration.computedTypeProperty)
+// Prints "6"
+print(SomeClass.computedTypeProperty)
+// Prints "27"
+```
+
+The figure below illustrates how two of these audio channels can be combined to model a stereo audio level meter. When a channel’s audio level is 0, none of the lights for that channel are lit. When the audio level is 10, all of the lights for that channel are lit. In this figure, the left channel has a current level of 9, and the right channel has a current level of 7:
+
+![Static Properties VUMeter](./Images/StaticPropertiesVUMeter.png "Static Properties VUMeter")
+
+Os canais de áudio descritos acima são representados por instâncias da estrutura `AudioChannel`:
+
+```swift
+struct AudioChannel {
+    static let thresholdLevel = 10
+    static var maxInputLevelForAllChannels = 0
+    var currentLevel: Int = 0 {
+        didSet {
+            if currentLevel > AudioChannel.thresholdLevel {
+                // cap the new audio level to the threshold level
+                currentLevel = AudioChannel.thresholdLevel
+            }
+            if currentLevel > AudioChannel.maxInputLevelForAllChannels {
+                // store this as the new overall maximum input level
+                AudioChannel.maxInputLevelForAllChannels = currentLevel
+            }
+        }
+    }
+}
+```
+
+Você pode usar a estrutura `AudioChannel` para criar dois novos canais de áudio `leftChannel` e `rightChannel`, para representar os níveis de áudio de um sistema de som estéreo:
+
+```swift
+var leftChannel = AudioChannel()
+var rightChannel = AudioChannel()
+```
+
+If you set the `currentLevel` of the left channel to 7, you can see that the `maxInputLevelForAllChannels` type property is updated to equal 7:
+
+```swift
+leftChannel.currentLevel = 7
+print(leftChannel.currentLevel)
+// Prints "7"
+print(AudioChannel.maxInputLevelForAllChannels)
+// Prints "7"
+```
+
+If you try to set the `currentLevel` of the right channel to 11, you can see that the right channel’s `currentLevel` property is capped to the maximum value of 10, and the `maxInputLevelForAllChannels` type property is updated to equal 10:
+
+```swift
+rightChannel.currentLevel = 11
+print(rightChannel.currentLevel)
+// Prints "10"
+print(AudioChannel.maxInputLevelForAllChannels)
+// Prints "10"
+```
