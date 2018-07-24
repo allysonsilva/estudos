@@ -521,7 +521,7 @@ shoppingList[0] = "Six eggs"
 // the first item in the list is now equal to "Six eggs" rather than "Eggs"
 ```
 
-Você também pode usar a sintaxe de subíndice para alterar um intervalo de valores ao mesmo tempo, mesmo que o conjunto de valores de substituição tenha um comprimento diferente do intervalo que você está substituindo. O exemplo a seguir substitui "Chocolate Spread", "Cheese" e "Butter" por "Bananas" e "Apples":
+Você também pode usar a sintaxe de subscript para alterar um intervalo de valores ao mesmo tempo, mesmo que o conjunto de valores de substituição tenha um comprimento diferente do intervalo que você está substituindo. O exemplo a seguir substitui "Chocolate Spread", "Cheese" e "Butter" por "Bananas" e "Apples":
 
 ```swift
 shoppingList[4...6] = ["Bananas", "Apples"]
@@ -2977,7 +2977,7 @@ extension DogProtocol
 
 ### Extensions
 
-Com extensões, podemos adicionar novas propriedades, métodos, inicializações e subíndices, ou tornar uma classe ou estrutura existente de acordo com um protocolo sem modificar o código fonte para a classe ou estrutura. Uma coisa a observar é que as extensões não podem substituir a funcionalidade existente.
+Com extensões, podemos adicionar novas propriedades, métodos, inicializações e subscripts, ou tornar uma classe ou estrutura existente de acordo com um protocolo sem modificar o código fonte para a classe ou estrutura. Uma coisa a observar é que as extensões não podem substituir a funcionalidade existente.
 
 ```swift
 extension String {
@@ -3716,4 +3716,111 @@ if player.tracker.advance(to: 6) {
     print("level 6 has not yet been unlocked")
 }
 // Prints "level 6 has not yet been unlocked"
+```
+
+## Subscripts
+
+Classes, structures, and enumerations can define subscripts, which are shortcuts for accessing the member elements of a collection, list, or sequence. You use subscripts to set and retrieve values by index without needing separate methods for setting and retrieval. For example, you access elements in an `Array` instance as `someArray[index]` and elements in a `Dictionary` instance as `someDictionary[key]`.
+
+You can define multiple subscripts for a single type, and the appropriate subscript overload to use is selected based on the type of index value you pass to the subscript. Subscripts are not limited to a single dimension, and you can define subscripts with multiple input parameters to suit your custom type’s needs.
+
+### Sintaxe do Subscripts
+
+Os subscript permitem consultar instâncias de um tipo escrevendo um ou mais valores entre colchetes após o nome da instância. Sua sintaxe é semelhante à sintaxe do método da instância e à sintaxe da propriedade calculada. Você escreve definições de subscript com a palavra-chave `subscript` e especifica um ou mais parâmetros de entrada e um tipo de retorno, da mesma forma que os métodos de instância. Ao contrário dos métodos de instância, os índices podem ser lidos ou escritos ou somente leitura. Esse comportamento é comunicado por um `getter` e `setter` da mesma maneira que para propriedades calculadas:
+
+```swift
+subscript(index: Int) -> Int {
+    get {
+        // return an appropriate subscript value here
+    }
+    set(newValue) {
+        // perform a suitable setting action here
+    }
+}
+```
+
+Tal como acontece com as propriedades calculadas somente de leitura, você pode simplificar a declaração de um subscript somente de leitura removendo a palavra-chave `get` e as chaves:
+
+```swift
+subscript(index: Int) -> Int {
+    // return an appropriate subscript value here
+}
+```
+
+```swift
+struct TimesTable {
+    let multiplier: Int
+    subscript(index: Int) -> Int {
+        return multiplier * index
+    }
+}
+
+let threeTimesTable = TimesTable(multiplier: 3)
+print("six times three is \(threeTimesTable[6])")
+// Prints "six times three is 18"
+```
+
+### Subscript Usage
+
+O significado exato de "subscript" depende do contexto em que é usado. Os subscripts geralmente são usados ​​como um atalho para acessar os elementos do membro em uma coleção, lista ou seqüência. Você é livre para implementar subscripts da maneira mais apropriada para sua classe específica ou a funcionalidade da estrutura.
+
+Por exemplo, o tipo `Dictionary` de Swift implementa um subscript para definir e recuperar os valores armazenados em uma `Dictionary` instância.
+
+```swift
+var numberOfLegs = ["spider": 8, "ant": 6, "cat": 4]
+numberOfLegs["bird"] = 2
+```
+
+The example above defines a variable called `numberOfLegs` and initializes it with a dictionary literal containing three key-value pairs. The type of the `numberOfLegs`dictionary is inferred to be `[String:  Int]`. After creating the dictionary, this example uses subscript assignment to add a `String` key of `"bird"` and an `Int` value of `2` to the dictionary.
+
+_Swift’s Dictionary type implements its key-value subscripting as a subscript that takes and returns an optional type. For the numberOfLegs dictionary above, the key-value subscript takes and returns a value of type Int?, or “optional int”. The Dictionary type uses an optional subscript type to model the fact that not every key will have a value, and to give a way to delete a value for a key by assigning a nil value for that key._
+
+### Subscript Options
+
+As subscripts podem levar qualquer número de parâmetros de entrada, e esses parâmetros de entrada podem ser de qualquer tipo. Os subscripts também podem retornar qualquer tipo. Os subscripts podem usar parâmetros variadic, mas não podem usar parâmetros de saída(in-out) ou fornecer valores de parâmetro padrão.
+
+Uma classe ou estrutura pode fornecer tantas implementações de subscript quanto ela precisa, e o subscript apropriado a ser usado será inferido com base nos tipos de valores ou valores que estão contidos nos suportes do subscript no ponto em que o subscript é usado. Esta definição de subscritos múltiplos é conhecida como sobrecarga de subscript.
+
+```swift
+struct Matrix {
+    let rows: Int, columns: Int
+    var grid: [Double]
+    init(rows: Int, columns: Int) {
+        self.rows = rows
+        self.columns = columns
+        grid = Array(repeating: 0.0, count: rows * columns)
+    }
+    func indexIsValid(row: Int, column: Int) -> Bool {
+        return row >= 0 && row < rows && column >= 0 && column < columns
+    }
+    subscript(row: Int, column: Int) -> Double {
+        get {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            return grid[(row * columns) + column]
+        }
+        set {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            grid[(row * columns) + column] = newValue
+        }
+    }
+}
+```
+
+```swift
+var matrix = Matrix(rows: 2, columns: 2)
+```
+
+Os valores na matriz podem ser definidos passando valores de linha e coluna para o subscrito, separados por uma vírgula:
+
+```swift
+matrix[0, 1] = 1.5
+matrix[1, 0] = 3.2
+```
+
+The `Matrix` subscript’s getter and setter both contain an assertion to check that the subscript’s `row` and `column` values are valid. To assist with these assertions, `Matrix`includes a convenience method called `indexIsValid(row:column:)`, which checks whether the requested `row` and `column` are inside the bounds of the matrix:
+
+```swift
+func indexIsValid(row: Int, column: Int) -> Bool {
+    return row >= 0 && row < rows && column >= 0 && column < columns
+}
 ```
