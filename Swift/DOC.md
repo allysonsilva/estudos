@@ -5075,3 +5075,547 @@ if let beginsWithThe = john.residence?.address?.buildingIdentifier()?.hasPrefix(
 ```
 
 *In the example above, you place the optional chaining question mark after the parentheses, because the optional value you are chaining on is the `buildingIdentifier()` method’s return value, and not the `buildingIdentifier()` method itself*.
+
+## Error Handling (Manipulação de erros)
+
+O tratamento de erros é o processo de resposta e recuperação de condições de erro em seu programa. O Swift oferece suporte de primeira classe para lançar, capturar, propagar e manipular erros recuperáveis ​​em tempo de execução.
+
+Algumas operações não são garantidas para sempre completar a execução ou produzir uma saída útil. Os opcionais são usados ​​para representar a ausência de um valor, mas quando uma operação falha, muitas vezes é útil entender o que causou a falha, para que seu código possa responder de acordo.
+
+### Representando e lançando erros
+
+Em Swift, os erros são representados por valores de tipos que estão em conformidade com o protocolo de `Error`. Este protocolo vazio indica que um tipo pode ser usado para o tratamento de erros.
+
+As enumerações Swift são particularmente adequadas para modelar um grupo de condições de erro relacionadas, com valores associados que permitem que informações adicionais sobre a natureza de um erro sejam comunicadas. For example, here’s how you might represent the error conditions of operating a vending machine inside a game:
+
+```swift
+enum VendingMachineError: Error {
+    case invalidSelection
+    case insufficientFunds(coinsNeeded: Int)
+    case outOfStock
+}
+```
+
+Você usa uma a declaração de `throw` para lançar um erro.
+
+```swift
+throw VendingMachineError.insufficientFunds(coinsNeeded: 5)
+```
+
+### Handling Errors (Manipulação de erros)
+
+Quando um erro é lançado, algum código envolvente deve ser responsável por lidar com o erro, por exemplo, corrigindo o problema, tentando uma abordagem alternativa ou informando o usuário da falha.
+
+There are four ways to handle errors in Swift. You can propagate the error from a function to the code that calls that function, handle the error using a `do-catch` statement, handle the error as an optional value, or assert that the error will not occur. Each approach is described in a section below.
+
+When a function throws an error, it changes the flow of your program, so it’s important that you can quickly identify places in your code that can throw errors. To identify these places in your code, write the `try` keyword—or the `try?` or `try!` variation—before a piece of code that calls a function, method, or initializer that can throw an error. These keywords are described in the sections below.
+
+#### Propagating Errors Using Throwing Functions
+
+To indicate that a function, method, or initializer can throw an error, you write the `throws` keyword in the function’s declaration after its parameters. A function marked with `throws` is called a throwing function. If the function specifies a return type, you write the `throws` keyword before the return arrow (`->`).
+
+```swift
+func canThrowErrors() throws -> String
+
+func cannotThrowErrors() -> String
+```
+
+A throwing function propagates errors that are thrown inside of it to the scope from which it’s called.
+
+_Only throwing functions can propagate errors. Any errors thrown inside a nonthrowing function must be handled inside the function._
+
+```swift
+struct Item {
+    var price: Int
+    var count: Int
+}
+
+class VendingMachine {
+    var inventory = [
+        "Candy Bar": Item(price: 12, count: 7),
+        "Chips": Item(price: 10, count: 4),
+        "Pretzels": Item(price: 7, count: 11)
+    ]
+    var coinsDeposited = 0
+
+    func vend(itemNamed name: String) throws {
+        guard let item = inventory[name] else {
+            throw VendingMachineError.invalidSelection
+        }
+
+        guard item.count > 0 else {
+            throw VendingMachineError.outOfStock
+        }
+
+        guard item.price <= coinsDeposited else {
+            throw VendingMachineError.insufficientFunds(coinsNeeded: item.price - coinsDeposited)
+        }
+
+        coinsDeposited -= item.price
+
+        var newItem = item
+        newItem.count -= 1
+        inventory[name] = newItem
+
+        print("Dispensing \(name)")
+    }
+}
+```
+
+Because the `vend(itemNamed:)` method propagates any errors it throws, any code that calls this method must either handle the errors—using a `do-catch` statement, `try?`, or `try!`—or continue to propagate them. For example, the `buyFavoriteSnack(person:vendingMachine:)` in the example below is also a throwing function, and any errors that the `vend(itemNamed:)` method throws will propagate up to the point where the `buyFavoriteSnack(person:vendingMachine:)` function is called.
+
+```swift
+let favoriteSnacks = [
+    "Alice": "Chips",
+    "Bob": "Licorice",
+    "Eve": "Pretzels",
+]
+
+func buyFavoriteSnack(person: String, vendingMachine: VendingMachine) throws {
+    let snackName = favoriteSnacks[person] ?? "Candy Bar"
+    try vendingMachine.vend(itemNamed: snackName)
+}
+```
+
+Throwing initializers can propagate errors in the same way as throwing functions. For example, the initializer for the `PurchasedSnack` structure in the listing below calls a throwing function as part of the initialization process, and it handles any errors that it encounters by propagating them to its caller.
+
+```swift
+struct PurchasedSnack {
+    let name: String
+    init(name: String, vendingMachine: VendingMachine) throws {
+        try vendingMachine.vend(itemNamed: name)
+        self.name = name
+    }
+}
+```
+
+#### Handling Errors Using Do-Catch
+
+You use a `do-catch` statement to handle errors by running a block of code. If an error is thrown by the code in the `do` clause, it is matched against the `catch` clauses to determine which one of them can handle the error.
+
+Here is the general form of a `do-catch` statement:
+
+```
+do {
+    try expression
+    statements
+} catch pattern 1 {
+    statements
+} catch pattern 2 where condition {
+    statements
+}
+```
+
+```swift
+var vendingMachine = VendingMachine()
+vendingMachine.coinsDeposited = 8
+do {
+    try buyFavoriteSnack(person: "Alice", vendingMachine: vendingMachine)
+} catch VendingMachineError.invalidSelection {
+    print("Invalid Selection.")
+} catch VendingMachineError.outOfStock {
+    print("Out of Stock.")
+} catch VendingMachineError.insufficientFunds(let coinsNeeded) {
+    print("Insufficient funds. Please insert an additional \(coinsNeeded) coins.")
+}
+// Prints "Insufficient funds. Please insert an additional 2 coins."
+```
+
+#### Conversão de erros em valores opcionais
+
+You use `try?` to handle an error by converting it to an optional value. If an error is thrown while evaluating the `try?` expression, the value of the expression is `nil`. For example, in the following code `x` and `y` have the same value and behavior:
+
+```swift
+func someThrowingFunction() throws -> Int {
+    // ...
+}
+
+let x = try? someThrowingFunction()
+
+let y: Int?
+do {
+    y = try someThrowingFunction()
+} catch {
+    y = nil
+}
+```
+
+Using `try?` lets you write concise error handling code when you want to handle all errors in the same way. For example, the following code uses several approaches to fetch data, or returns `nil` if all of the approaches fail.
+
+```swift
+func fetchData() -> Data? {
+    if let data = try? fetchDataFromDisk() { return data }
+    if let data = try? fetchDataFromServer() { return data }
+    return nil
+}
+```
+
+#### Disabling Error Propagation (Desativando a Propagação de Erros)
+
+Sometimes you know a throwing function or method won’t, in fact, throw an error at runtime. On those occasions, you can write `try!` before the expression to disable error propagation and wrap the call in a runtime assertion that no error will be thrown. If an error actually is thrown, you’ll get a runtime error.
+
+```swift
+let photo = try! loadImage(atPath: "./Resources/John Appleseed.jpg")
+```
+
+### Specifying Cleanup Actions
+
+You use a `defer` statement to execute a set of statements just before code execution leaves the current block of code. This statement lets you do any necessary cleanup that should be performed regardless of how execution leaves the current block of code—whether it leaves because an error was thrown or because of a statement such as `return` or `break`. For example, you can use a `defer` statement to ensure that file descriptors are closed and manually allocated memory is freed.
+
+A `defer` statement defers execution until the current scope is exited. This statement consists of the `defer` keyword and the statements to be executed later. The deferred statements may not contain any code that would transfer control out of the statements, such as a `break` or a `return` statement, or by throwing an error. Deferred actions are executed in the reverse of the order that they’re written in your source code. That is, the code in the first `defer` statement executes last, the code in the second `defer` statement executes second to last, and so on. The last `defer` statement in source code order executes first.
+
+```swift
+func processFile(filename: String) throws {
+    if exists(filename) {
+        let file = open(filename)
+        defer {
+            close(file)
+        }
+        while let line = try file.readline() {
+            // Work with the file.
+        }
+        // close(file) is called here, at the end of the scope.
+    }
+}
+```
+
+The above example uses a `defer` statement to ensure that the `open(_:)` function has a corresponding call to `close(_:)`.
+
+## Type Casting
+
+Type casting is a way to check the type of an instance, or to treat that instance as a different superclass or subclass from somewhere else in its own class hierarchy.
+
+### Defining a Class Hierarchy for Type Casting
+
+You can use type casting with a hierarchy of classes and subclasses to check the type of a particular class instance and to cast that instance to another class within the same hierarchy. The three code snippets below define a hierarchy of classes and an array containing instances of those classes, for use in an example of type casting.
+
+```swift
+class MediaItem {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+
+class Movie: MediaItem {
+    var director: String
+    init(name: String, director: String) {
+        self.director = director
+        super.init(name: name)
+    }
+}
+
+class Song: MediaItem {
+    var artist: String
+    init(name: String, artist: String) {
+        self.artist = artist
+        super.init(name: name)
+    }
+}
+```
+
+```swift
+let library = [
+    Movie(name: "Casablanca", director: "Michael Curtiz"),
+    Song(name: "Blue Suede Shoes", artist: "Elvis Presley"),
+    Movie(name: "Citizen Kane", director: "Orson Welles"),
+    Song(name: "The One And Only", artist: "Chesney Hawkes"),
+    Song(name: "Never Gonna Give You Up", artist: "Rick Astley")
+]
+// the type of "library" is inferred to be [MediaItem]
+```
+
+### Checking Type
+
+Use the *type check operator* (`is`) to check whether an instance is of a certain subclass type. The type check operator returns `true` if the instance is of that subclass type and `false` if it is not.
+
+```swift
+var movieCount = 0
+var songCount = 0
+
+for item in library {
+    if item is Movie {
+        movieCount += 1
+    } else if item is Song {
+        songCount += 1
+    }
+}
+
+print("Media library contains \(movieCount) movies and \(songCount) songs")
+// Prints "Media library contains 2 movies and 3 songs"
+```
+
+### Downcasting
+
+A constant or variable of a certain class type may actually refer to an instance of a subclass behind the scenes. Where you believe this is the case, you can try to *downcast* to the subclass type with a type cast operator (`as?` or `as!`).
+
+Because downcasting can fail, the type cast operator comes in two different forms. The conditional form, `as?`, returns an optional value of the type you are trying to downcast to. The forced form, `as!`, attempts the downcast and force-unwraps the result as a single compound action.
+
+Use the conditional form of the type cast operator (`as?`) when you are not sure if the downcast will succeed. This form of the operator will always return an optional value, and the value will be `nil` if the downcast was not possible. This enables you to check for a successful downcast.
+
+Use the forced form of the type cast operator (`as!`) only when you are sure that the downcast will always succeed. This form of the operator will trigger a runtime error if you try to downcast to an incorrect class type.
+
+```swift
+for item in library {
+    if let movie = item as? Movie {
+        print("Movie: \(movie.name), dir. \(movie.director)")
+    } else if let song = item as? Song {
+        print("Song: \(song.name), by \(song.artist)")
+    }
+}
+
+// Movie: Casablanca, dir. Michael Curtiz
+// Song: Blue Suede Shoes, by Elvis Presley
+// Movie: Citizen Kane, dir. Orson Welles
+// Song: The One And Only, by Chesney Hawkes
+// Song: Never Gonna Give You Up, by Rick Astley
+```
+
+### Type Casting for Any and AnyObject
+
+Swift fornece dois tipos especiais para trabalhar com tipos não específicos:
+
+* `Any` pode representar uma instância de qualquer tipo, incluindo tipos de função.
+* `AnyObject` pode representar uma instância de qualquer tipo de classe.
+
+Use `Any` and `AnyObject` only when you explicitly need the behavior and capabilities they provide. It is always better to be specific about the types you expect to work with in your code.
+
+```swift
+var things = [Any]()
+
+things.append(0)
+things.append(0.0)
+things.append(42)
+things.append(3.14159)
+things.append("hello")
+things.append((3.0, 5.0))
+things.append(Movie(name: "Ghostbusters", director: "Ivan Reitman"))
+things.append({ (name: String) -> String in "Hello, \(name)" })
+```
+
+```swift
+for thing in things {
+    switch thing {
+    case 0 as Int:
+        print("zero as an Int")
+    case 0 as Double:
+        print("zero as a Double")
+    case let someInt as Int:
+        print("an integer value of \(someInt)")
+    case let someDouble as Double where someDouble > 0:
+        print("a positive double value of \(someDouble)")
+    case is Double:
+        print("some other double value that I don't want to print")
+    case let someString as String:
+        print("a string value of \"\(someString)\"")
+    case let (x, y) as (Double, Double):
+        print("an (x, y) point at \(x), \(y)")
+    case let movie as Movie:
+        print("a movie called \(movie.name), dir. \(movie.director)")
+    case let stringConverter as (String) -> String:
+        print(stringConverter("Michael"))
+    default:
+        print("something else")
+    }
+}
+
+// zero as an Int
+// zero as a Double
+// an integer value of 42
+// a positive double value of 3.14159
+// a string value of "hello"
+// an (x, y) point at 3.0, 5.0
+// a movie called Ghostbusters, dir. Ivan Reitman
+// Hello, Michael
+```
+
+## Extensions
+
+As extensões adicionam novas funcionalidades a uma classe existente, estrutura, enumeração ou tipo de protocolo. Isso inclui a capacidade de estender os tipos para os quais você não tem acesso ao código fonte original.
+
+As extensões no Swift podem:
+
+- Adicionar propriedades da instância calculada e propriedades do tipo calculado
+- Definir métodos de instância e métodos de tipo
+- Fornecer novos inicializadores
+- Definir índices
+- Definir e usar novos tipos aninhados
+- Criar um tipo existente de acordo com um protocolo
+
+Em Swift, você pode até estender um protocolo para fornecer implementações de seus requisitos ou adicionar funcionalidades adicionais que os tipos conformes podem aproveitar.
+
+*As extensões podem adicionar novas funcionalidades a um tipo, mas não podem substituir a funcionalidade existente.*
+
+### Sintaxe de extensão
+
+Declare as extensões com a palavra-chave `extension`:
+
+```swift
+extension SomeType {
+    // new functionality to add to SomeType goes here
+}
+```
+
+Uma extensão pode estender um tipo existente para que ele adote um ou mais protocolos. Para adicionar a conformidade do protocolo, você escreve os nomes dos protocolos da mesma maneira que os escreve para uma classe ou estrutura:
+
+```swift
+extension SomeType: SomeProtocol, AnotherProtocol {
+    // implementation of protocol requirements goes here
+}
+```
+
+*Se você definir uma extensão para adicionar novas funcionalidades a um tipo existente, a nova funcionalidade estará disponível em todas as instâncias existentes desse tipo, mesmo que elas tenham sido criadas antes da extensão ser definida*.
+
+### Computed Properties
+
+As extensões podem adicionar propriedades da instância calculada e propriedades do tipo calculado aos tipos existentes.
+
+```swift
+extension Double {
+    var km: Double { return self * 1_000.0 }
+    var m: Double { return self }
+    var cm: Double { return self / 100.0 }
+    var mm: Double { return self / 1_000.0 }
+    var ft: Double { return self / 3.28084 }
+}
+
+let oneInch = 25.4.mm
+print("One inch is \(oneInch) meters")
+// Prints "One inch is 0.0254 meters"
+let threeFeet = 3.ft
+print("Three feet is \(threeFeet) meters")
+// Prints "Three feet is 0.914399970739201 meters"
+```
+
+```swift
+let aMarathon = 42.km + 195.m
+print("A marathon is \(aMarathon) meters long")
+// Prints "A marathon is 42195.0 meters long"
+```
+
+*Extensions can add new computed properties, but they cannot add stored properties, or add property observers to existing properties.*
+
+### Inicializadores
+
+As extensões podem adicionar novas inicializações a tipos existentes. Isso permite expandir outros tipos para aceitar seus próprios tipos personalizados como parâmetros de inicialização ou para fornecer opções de inicialização adicionais que não foram incluídas como parte da implementação original do tipo.
+
+As extensões podem adicionar novas inicializações de conveniência a uma classe, mas não podem adicionar novos inicializadores designados ou desinitializadores a uma classe. Os inicializadores designados e os desinitializadores devem sempre ser fornecidos pela implementação original da classe.
+
+```swift
+struct Size {
+    var width = 0.0, height = 0.0
+}
+
+struct Point {
+    var x = 0.0, y = 0.0
+}
+
+struct Rect {
+    var origin = Point()
+    var size = Size()
+}
+```
+
+```swift
+let defaultRect = Rect()
+let memberwiseRect = Rect(origin: Point(x: 2.0, y: 2.0),
+                          size: Size(width: 5.0, height: 5.0))
+```
+
+Você pode estender a estrutura `Rect` para fornecer um inicializador adicional que leve um ponto e tamanho do centro específico:
+
+```swift
+extension Rect {
+    init(center: Point, size: Size) {
+        let originX = center.x - (size.width / 2)
+        let originY = center.y - (size.height / 2)
+        self.init(origin: Point(x: originX, y: originY), size: size)
+    }
+}
+```
+
+```swift
+let centerRect = Rect(center: Point(x: 4.0, y: 4.0),
+                      size: Size(width: 3.0, height: 3.0))
+// centerRect's origin is (2.5, 2.5) and its size is (3.0, 3.0)
+```
+
+### Métodos
+
+Extensions can add new instance methods and type methods to existing types.
+
+```swift
+extension Int {
+    func repetitions(task: () -> Void) {
+        for _ in 0..<self {
+            task()
+        }
+    }
+}
+```
+
+Depois de definir esta extensão, você pode chamar o método `repetitions(task:)` em qualquer número inteiro para executar uma tarefa muitas vezes:
+
+```swift
+3.repetitions {
+    print("Hello!")
+}
+
+// Hello!
+// Hello!
+// Hello!
+```
+
+#### Mutating Instance Methods
+
+Os métodos de instância adicionados com uma extensão também podem modificar (ou mutar) a própria instância. Os métodos de estrutura e enumeração que modificam `self` ou as suas propriedades devem marcar o método da instância como `mutating`, assim como os métodos de mutação de uma implementação original.
+
+```swift
+extension Int {
+    mutating func square() {
+        self = self * self
+    }
+}
+
+var someInt = 3
+someInt.square()
+// someInt is now 9
+```
+
+### Subscripts
+
+As extensões podem adicionar novos subíndices a um tipo existente. Este exemplo adiciona um subíndice inteiro ao tipo `Int` incorporado do Swift. Este subíndice `[n]` retorna os `n` locais de dígitos decimais a partir da direita do número:
+
+```
+123456789[0] retorna 9
+123456789[1] retorna 8
+```
+
+```swift
+extension Int {
+    subscript(digitIndex: Int) -> Int {
+        var decimalBase = 1
+        for _ in 0..<digitIndex {
+            decimalBase *= 10
+        }
+        return (self / decimalBase) % 10
+    }
+}
+
+746381295[0]
+// returns 5
+746381295[1]
+// returns 9
+746381295[2]
+// returns 2
+746381295[8]
+// returns 7
+```
+
+Se o valor `Int` não tiver dígitos suficientes para o índice solicitado, a implementação do subíndice retorna 0, como se o número tivesse sido preenchido com zeros à esquerda:
+
+```
+746381295[9]
+// returns 0, as if you had requested:
+0746381295[9]
+```
