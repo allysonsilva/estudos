@@ -5619,3 +5619,640 @@ Se o valor `Int` não tiver dígitos suficientes para o índice solicitado, a im
 // returns 0, as if you had requested:
 0746381295[9]
 ```
+
+## Automatic Reference Counting
+
+Swift usa contagem de referência automática (ARC) para rastrear e gerenciar o uso de memória do seu aplicativo. Na maioria dos casos, isso significa que o gerenciamento de memória "apenas funciona" no Swift, e você não precisa pensar em gerenciamento de memória. O ARC liberta automaticamente a memória usada pelas instâncias da classe quando essas instâncias não são mais necessárias.
+
+A contagem de referência aplica-se apenas a instâncias de classes. Estruturas e enumerações são tipos de valor, não tipos de referência, e não são armazenados e passados ​​por referência.
+
+### Como o ARC funciona
+
+Toda vez que você cria uma nova instância de uma classe, o ARC aloca um pedaço de memória para armazenar informações sobre essa instância. Esta memória contém informações sobre o tipo de instância, juntamente com os valores de quaisquer propriedades armazenadas associadas a essa instância.
+
+Além disso, quando uma instância não é mais necessária, o ARC liberta a memória usada por essa instância para que a memória possa ser usada para outros fins. Isso garante que as instâncias da classe não ocupem espaço na memória quando elas não são mais necessárias.
+
+No entanto, se a ARC estivesse deallocated uma instância que ainda estava em uso, não seria mais possível acessar as propriedades dessa instância ou chamar os métodos dessa instância. Na verdade, se você tentar acessar a instância, seu aplicativo provavelmente irá falhar.
+
+Para garantir que as instâncias não desapareçam enquanto elas ainda são necessárias, o ARC rastreia quantas propriedades, constantes e variáveis ​​estão atualmente se referindo a cada instância da classe. ARC não irá desalocar uma instância, desde que pelo menos uma referência ativa para essa instância ainda exista.
+
+Para tornar isso possível, sempre que você atribuir uma instância de classe a uma propriedade, constante ou variável, essa propriedade, constante ou variável faz uma referência forte à instância. A referência é chamada de referência "forte" porque mantém uma firme retenção naquela instância, e não permite que ela seja deallocated desde que essa referência forte permaneça.
+
+### ARC in Action
+
+### Ciclos de Referência Forte entre Instâncias de Classe
+
+```swift
+class Person {
+    let name: String
+    init(name: String) { self.name = name }
+    var apartment: Apartment?
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class Apartment {
+    let unit: String
+    init(unit: String) { self.unit = unit }
+    var tenant: Person?
+    deinit { print("Apartment \(unit) is being deinitialized") }
+}
+```
+
+```swift
+var john: Person?
+var unit4A: Apartment?
+
+john = Person(name: "John Appleseed")
+unit4A = Apartment(unit: "4A")
+```
+
+Here’s how the strong references look after creating and assigning these two instances. The `john` variable now has a strong reference to the new `Person` instance, and the `unit4A` variable has a strong reference to the new `Apartment` instance:
+
+![Reference Cycle](./Images/ReferenceCycle01.png "Reference Cycle")
+
+Agora você pode vincular as duas instâncias juntas para que a pessoa tenha um apartamento e o apartamento tenha um inquilino. Observe que um ponto de exclamação (`!`) É usado para desempacotar e acessar as instâncias armazenadas dentro das variáveis opcionais `john` e `unit4A`, para que as propriedades dessas instâncias possam ser definidas:
+
+```swift
+john!.apartment = unit4A
+unit4A!.tenant = john
+```
+
+Infelizmente, a ligação destas duas instâncias cria um forte ciclo de referência entre eles. A instância da pessoa agora possui uma forte referência à instância do Apartamento, e a instância do Apartamento tem uma forte referência à instância `Person`. Portanto, quando você quebra as referências fortes detidas pelas variáveis `john` e `unit4A`, as contagens de referência não caem para zero e as instâncias não são desalocadas pela ARC:
+
+```swift
+john = nil
+unit4A = nil
+```
+
+Observe que nenhum deinicializador foi chamado quando você definiu essas duas variáveis como nulas. O forte ciclo de referência evita que as instâncias Pessoa e Apartamento sejam desalocadas, causando um vazamento de memória em seu aplicativo.
+
+Veja como as referências fortes ajudam a definir as variáveis `john` e `unit4A` como `nil`:
+
+![Reference Cycle](./Images/ReferenceCycle03.png "Reference Cycle")
+
+As referências fortes entre a instância `Person` e a instância do `Apartment` permanecem e não podem ser quebradas.
+
+### Resolvendo ciclos de referência fortes entre instâncias de classe
+
+Swift provides two ways to resolve strong reference cycles when you work with properties of class type: weak references and unowned references.
+
+Use a weak reference when the other instance has a shorter lifetime—that is, when the other instance can be deallocated first. In the Apartment example above, it’s appropriate for an apartment to be able to have no tenant at some point in its lifetime, and so a weak reference is an appropriate way to break the reference cycle in this case. In contrast, use an unowned reference when the other instance has the same lifetime or a longer lifetime.
+
+#### Referências fracas
+
+Uma referência fraca é uma referência que não mantém uma forte retenção na instância a que se refere e, portanto, não impede a ARC de descartar a instância referenciada. Esse comportamento impede que a referência se torne parte de um ciclo de referência forte. Você indica uma referência fraca colocando a palavra-chave `weak` antes de uma declaração de propriedade ou variável.
+
+Como uma referência fraca não mantém uma forte retenção na instância a que se refere, é possível que essa instância seja deallocated enquanto a referência fraca ainda está se referindo a ela. Portanto, o ARC define automaticamente uma referência fraca como `nil` quando a instância a que se refere é desalocada. E, porque as referências fracas precisam permitir que seu valor seja alterado para `nil` no tempo de execução, eles são sempre declarados como variáveis, em vez de constantes, de um tipo opcional.
+
+> Property observers aren't called when ARC sets a weak reference to `nil`.
+
+```swift
+class Person {
+    let name: String
+    init(name: String) { self.name = name }
+    var apartment: Apartment?
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class Apartment {
+    let unit: String
+    init(unit: String) { self.unit = unit }
+    weak var tenant: Person?
+    deinit { print("Apartment \(unit) is being deinitialized") }
+}
+```
+
+```swift
+var john: Person?
+var unit4A: Apartment?
+
+john = Person(name: "John Appleseed")
+unit4A = Apartment(unit: "4A")
+
+john!.apartment = unit4A
+unit4A!.tenant = john
+```
+
+Veja como as referências aparecem agora que você vinculou as duas instâncias em conjunto:
+
+![Weak Reference](./Images/WeakReference01.png "Weak Reference")
+
+#### Unowned References
+
+Como uma referência fraca, uma referência unowned não mantém um forte controle sobre a instância a que se refere. Ao contrário de uma referência fraca, no entanto, uma referência unowned é usada quando a outra instância tem a mesma vida útil ou uma vida útil mais longa. Você indica uma referência unowned colocando a palavra-chave `unowned` antes de uma declaração de propriedade ou variável.
+
+Espera-se que uma referência unowned tenha sempre um valor. Como resultado, o ARC nunca define o valor de referência unowned como nulo, o que significa que as referências unowned são definidas usando tipos não-opcionais.
+
+> Use apenas unowned reference quando tiver certeza de que a referência sempre se refere a uma instância que não foi desalocada. Se você tentar acessar o valor de unowned reference depois que essa instância foi desalocada, você receberá um erro de tempo de execução.
+
+Como um cartão de crédito sempre terá um cliente, você define sua propriedade do cliente como uma referência unowned, para evitar um ciclo de referência forte:
+
+```swift
+class Customer {
+    let name: String
+    var card: CreditCard?
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class CreditCard {
+    let number: UInt64
+    unowned let customer: Customer
+    init(number: UInt64, customer: Customer) {
+        self.number = number
+        self.customer = customer
+    }
+
+    deinit { print("Card #\(number) is being deinitialized") }
+}
+```
+
+```swift
+var john: Customer?
+
+john = Customer(name: "John Appleseed")
+john!.card = CreditCard(number: 1234_5678_9012_3456, customer: john!)
+```
+
+Veja como as referências se parecem, agora que você vinculou as duas instâncias:
+
+![Unowned Reference](./Images/UnownedReference01.png "Unowned Reference")
+
+A instância do Cliente agora possui uma forte referência à instância do CreditCard e a instância do CreditCard possui uma unowned reference para a instância do Cliente.
+
+Por causa da unowned reference do cliente, quando você quebra a referência forte detida pela variável john, não há mais referências fortes à instância do Cliente:
+
+![Unowned Reference](./Images/UnownedReference02.png "Unowned Reference")
+
+Because there are no more strong references to the `Customer` instance, it’s deallocated. After this happens, there are no more strong references to the `CreditCard` instance, and it too is deallocated:
+
+```swift
+john = nil
+// Prints "John Appleseed is being deinitialized"
+// Prints "Card #1234567890123456 is being deinitialized"
+```
+
+#### Unowned References and Implicitly Unwrapped Optional Properties
+
+O exemplo abaixo define duas classes, País e Cidade, cada uma das quais armazena uma instância da outra classe como uma propriedade. Neste modelo de dados, cada país deve sempre ter uma capital e cada cidade deve sempre pertencer a um país. Para representar isso, a classe Country possui uma propriedade capitalCity e a classe City possui uma propriedade de país:
+
+```swift
+class Country {
+    let name: String
+    var capitalCity: City!
+    init(name: String, capitalName: String) {
+        self.name = name
+        self.capitalCity = City(name: capitalName, country: self)
+    }
+}
+
+class City {
+    let name: String
+    unowned let country: Country
+    init(name: String, country: Country) {
+        self.name = name
+        self.country = country
+    }
+}
+
+var country = Country(name: "Canada", capitalName: "Ottawa")
+print("\(country.name)'s capital city is called \(country.capitalCity.name)")
+// Prints "Canada's capital city is called Ottawa"
+```
+
+### Strong Reference Cycles for Closures
+???
+
+## Segurança da Memória
+
+Por padrão, o Swift evita o comportamento inseguro em seu código. Por exemplo, Swift garante que as variáveis sejam inicializadas antes de serem usadas, a memória não é acessada depois que ela foi desalocada e os índices da matriz são verificados para erros fora do limite.
+
+O Swift também garante que vários acessos para a mesma área de memória não entrem em conflito, exigindo que o código que modifica um local na memória tenha acesso exclusivo a essa memória. Como Swift gerencia memória automaticamente, na maioria das vezes você não precisa pensar em acessar a memória. No entanto, é importante entender onde podem ocorrer conflitos potenciais, para que você possa evitar escrever código que tenha acesso conflitante à memória. Se o seu código contiver conflitos, você obterá um erro de compilação ou tempo de execução.
+
+## Controle de acesso
+
+O controle de acesso restringe o acesso a partes do seu código a partir do código em outros arquivos e módulos de origem. Esse recurso permite ocultar os detalhes de implementação do seu código e especificar uma interface preferida através da qual esse código pode ser acessado e usado.
+
+Você pode atribuir níveis de acesso específicos a tipos individuais (classes, estruturas e enumerações), bem como propriedades, métodos, inicializações e índices pertencentes a esses tipos. Os protocolos podem ser restritos a um determinado contexto, assim como constantes globais, variáveis e funções.
+
+Além de oferecer vários níveis de controle de acesso, o Swift reduz a necessidade de especificar níveis de controle de acesso explícitos, fornecendo níveis de acesso padrão para cenários típicos. Na verdade, se você estiver escrevendo um aplicativo de destino único, talvez não precise especificar níveis de controle de acesso explícitos.
+
+### Modules and Source Files
+
+O modelo de controle de acesso da Swift baseia-se no conceito de módulos e arquivos de origem.
+
+Um módulo é uma única unidade de distribuição de código - uma estrutura ou aplicativo que é construído e enviado como uma única unidade e que pode ser importado por outro módulo com a palavra-chave de importação do Swift.
+
+Cada alvo de compilação (como um pacote ou estrutura de aplicativos) no Xcode é tratado como um módulo separado em Swift. Se você agrupar aspectos do código do seu aplicativo como uma estrutura autônoma - talvez para encapsular e reutilizar esse código em vários aplicativos -, tudo o que você define dentro dessa estrutura será parte de um módulo separado quando ele for importado e usado em um aplicativo, ou quando é usado em outra estrutura.
+
+Um arquivo de origem é um único arquivo de código-fonte Swift dentro de um módulo (de fato, um único arquivo dentro de um aplicativo ou framework). Embora seja comum definir tipos individuais em arquivos de origem separados, um único arquivo de origem pode conter definições para vários tipos, funções e assim por diante.
+
+### Níveis de acesso
+
+Swift fornece cinco níveis de acesso diferentes para entidades dentro do seu código. Esses níveis de acesso são relativos ao arquivo de origem em que uma entidade é definida e também relativa ao módulo ao qual o arquivo de origem pertence.
+
+- **Open access and public access** permitem que as entidades sejam usadas em qualquer arquivo fonte de seu módulo de definição, e também em um arquivo de origem de outro módulo que importa o módulo de definição. Você normalmente usa o acesso aberto ou público ao especificar a interface pública em uma estrutura. A diferença entre acesso aberto e público é descrita abaixo.
+- **Internal access** permite que as entidades sejam usadas dentro de qualquer arquivo fonte de seu módulo de definição, mas não em qualquer arquivo fonte fora desse módulo. Você normalmente usa o acesso interno ao definir a estrutura interna de um aplicativo ou de uma estrutura.
+- **File-private access** restringe o uso de uma entidade ao seu próprio arquivo fonte definidor. Use o acesso privado de arquivos para ocultar os detalhes de implementação de um tipo específico de funcionalidade quando esses detalhes são usados ​​em um arquivo inteiro.
+- **Private access** restringe o uso de uma entidade a enclosing declaration, e às extensões dessa declaração que estão no mesmo arquivo. Use o acesso privado para ocultar os detalhes de implementação de um tipo específica de funcionalidade quando esses detalhes são usados ​​apenas em uma única declaração.
+
+O acesso *open* é o nível de acesso mais elevado (menos restritivo) e o acesso privado é o nível de acesso mais baixo (mais restritivo).
+
+O acesso aberto aplica-se apenas a classes e membros da classe, e difere do acesso público da seguinte forma:
+
+- Classes com acesso público ou qualquer nível de acesso mais restritivo podem ser subclassificadas somente dentro do módulo onde elas são definidas.
+- Membros de classe com acesso público, ou qualquer nível de acesso mais restritivo, podem ser substituídos por subclasses somente dentro do módulo onde eles estão definidos.
+- As classes abertas podem ser subclassificadas dentro do módulo onde elas estão definidas e dentro de qualquer módulo que importa o módulo onde elas estão definidas.
+- Os membros da classe aberta podem ser substituídos por subclasses dentro do módulo onde eles estão definidos e dentro de qualquer módulo que importa o módulo onde eles estão definidos.
+
+Marcar uma classe como aberta indica explicitamente que você considerou o impacto do código de outros módulos usando essa classe como uma superclasse e que você criou o código da sua classe de acordo.
+
+#### Níveis de acesso padrão
+
+Todas as entidades em seu código (com algumas exceções específicas, conforme descrito mais adiante neste capítulo) têm um nível de acesso padrão de interno se você não especificar um nível de acesso explícito. Como resultado, em muitos casos, você não precisa especificar um nível de acesso explícito no seu código.
+
+### Sintaxe de controle de acesso
+
+Define the access level for an entity by placing one of the `open`, `public`, `internal`, `fileprivate`, or `private` modifiers before the entity’s introducer:
+
+```swift
+public class SomePublicClass {}
+internal class SomeInternalClass {}
+fileprivate class SomeFilePrivateClass {}
+private class SomePrivateClass {}
+
+public var somePublicVariable = 0
+internal let someInternalConstant = 0
+fileprivate func someFilePrivateFunction() {}
+private func somePrivateFunction() {}
+```
+
+### Tipos personalizados
+
+If you want to specify an explicit access level for a custom type, do so at the point that you define the type. The new type can then be used wherever its access level permits. For example, if you define a file-private class, that class can only be used as the type of a property, or as a function parameter or return type, in the source file in which the file-private class is defined.
+
+The access control level of a type also affects the default access level of that type’s members (its properties, methods, initializers, and subscripts). If you define a type’s access level as private or file private, the default access level of its members will also be private or file private. If you define a type’s access level as internal or public (or use the default access level of internal without specifying an access level explicitly), the default access level of the type’s members will be internal.
+
+```swift
+public class SomePublicClass {                  // explicitly public class
+    public var somePublicProperty = 0            // explicitly public class member
+    var someInternalProperty = 0                 // implicitly internal class member
+    fileprivate func someFilePrivateMethod() {}  // explicitly file-private class member
+    private func somePrivateMethod() {}          // explicitly private class member
+}
+
+class SomeInternalClass {                       // implicitly internal class
+    var someInternalProperty = 0                 // implicitly internal class member
+    fileprivate func someFilePrivateMethod() {}  // explicitly file-private class member
+    private func somePrivateMethod() {}          // explicitly private class member
+}
+
+fileprivate class SomeFilePrivateClass {        // explicitly file-private class
+    func someFilePrivateMethod() {}              // implicitly file-private class member
+    private func somePrivateMethod() {}          // explicitly private class member
+}
+
+private class SomePrivateClass {                // explicitly private class
+    func somePrivateMethod() {}                  // implicitly private class member
+}
+```
+
+#### Tuple Types
+
+The access level for a tuple type is the most restrictive access level of all types used in that tuple. For example, if you compose a tuple from two different types, one with internal access and one with private access, the access level for that compound tuple type will be private.
+
+> Tuple types don't have a standalone definition in the way that classes, structures, enumerations, and functions do. A tuple type's access level is deduced automatically when the tuple type is used, and can't be specified explicitly.
+
+#### Function Types
+
+O nível de acesso para um tipo de função é calculado como o nível de acesso mais restritivo dos tipos de parâmetros da função e do tipo de retorno. Você deve especificar o nível de acesso explicitamente como parte da definição da função se o nível de acesso calculado da função não corresponder ao padrão contextual.
+
+O exemplo abaixo define uma função global chamada `someFunction()`, sem fornecer um modificador de nível de acesso específico para a própria função. Você pode esperar que esta função tenha o nível de acesso padrão de "interno", mas este não é o caso. Na verdade, `someFunction()` não compilará conforme escrito abaixo:
+
+```swift
+func someFunction() -> (SomeInternalClass, SomePrivateClass) {
+    // function implementation goes here
+}
+```
+
+O tipo de retorno da função é um tipo de tupla composto de duas das classes personalizadas definidas acima em Tipos personalizados. Uma dessas classes foi definida como "interna", e a outra foi definida como "privada". Portanto, o nível de acesso geral do tipo de tupla composto é "privado" (o nível de acesso mínimo dos tipos de componentes da tupla).
+
+Como o tipo de retorno da função é privado, você deve marcar o nível de acesso geral da função com o modificador privado para que a declaração da função seja válida:
+
+```swift
+private func someFunction() -> (SomeInternalClass, SomePrivateClass) {
+    // function implementation goes here
+}
+```
+
+Não é válido marcar a definição de `someFunction()` com os modificadores públicos ou internos ou usar a configuração padrão do interno, porque os usuários públicos ou internos da função podem não ter acesso apropriado à classe privada usada no tipo de retorno da função .
+
+#### Enumeration Types
+
+The individual cases of an enumeration automatically receive the same access level as the enumeration they belong to. You can’t specify a different access level for individual enumeration cases.
+
+#### Nested Types
+
+Nested types defined within a private type have an automatic access level of private. Nested types defined within a file-private type have an automatic access level of file private. Nested types defined within a public type or an internal type have an automatic access level of internal. If you want a nested type within a public type to be publicly available, you must explicitly declare the nested type as public.
+
+### Subclassing
+
+Você pode subclasse qualquer classe que possa ser acessada no contexto de acesso atual. Uma subclasse não pode ter um nível de acesso maior do que a sua superclasse - por exemplo, você não pode escrever uma subclasse pública de uma superclasse interna.
+
+Além disso, você pode substituir qualquer membro da classe (método, propriedade, inicializador ou subíndice) visível em um determinado contexto de acesso.
+
+Uma substituição pode tornar um membro da classe herdada mais acessível do que a sua versão de superclasse.
+
+```swift
+public class A {
+    fileprivate func someMethod() {}
+}
+
+internal class B: A {
+    override internal func someMethod() {}
+}
+```
+
+É mesmo válido para um membro da subclasse chamar um membro de superclasse que tenha permissões de acesso mais baixas do que o membro da subclasse, desde que a chamada para o membro da superclasse ocorra dentro de um contexto de nível de acesso permitido (isto é, dentro do mesmo arquivo de origem que o superclasse para uma chamada de membro privado de arquivo ou dentro do mesmo módulo que a superclasse para uma chamada de membro interno):
+
+```swift
+public class A {
+    fileprivate func someMethod() {}
+}
+
+internal class B: A {
+    override internal func someMethod() {
+        super.someMethod()
+    }
+}
+```
+
+Como a superclasse `A` e a subclasse `B` são definidas no mesmo arquivo de origem, é válido para a implementação `B` de `someMethod()` para chamar `super.someMethod()`.
+
+### Constantes, Variáveis, Propriedades e Subscritos
+
+Uma constante, variável ou propriedade não pode ser mais pública que seu tipo. Não é válido escrever uma propriedade pública com um tipo particular, por exemplo. Da mesma forma, um subíndice não pode ser mais público do que seu tipo de índice ou tipo de retorno.
+
+Se uma constante, variável, propriedade ou subíndice faz uso de um tipo privado, a constante, variável, propriedade ou subíndice também deve ser marcado como privado:
+
+```swift
+private var privateInstance = SomePrivateClass()
+```
+
+#### Getters and Setters
+
+Getters and setters for constants, variables, properties, and subscripts automatically receive the same access level as the constant, variable, property, or subscript they belong to.
+
+You can give a setter a lower access level than its corresponding getter, to restrict the read-write scope of that variable, property, or subscript. You assign a lower access level by writing `fileprivate(set)`, `private(set)`, or `internal(set)` before the var or subscript introducer.
+
+> This rule applies to stored properties as well as computed properties. Even though you don't write an explicit getter and setter for a stored property, Swift still synthesizes an implicit getter and setter for you to provide access to the stored property's backing storage. Use `fileprivate(set)`, `private(set)`, and `internal(set)` to change the access level of this synthesized setter in exactly the same way as for an explicit setter in a computed property.
+
+```swift
+struct TrackedString {
+    private(set) var numberOfEdits = 0
+    var value: String = "" {
+        didSet {
+            numberOfEdits += 1
+        }
+    }
+}
+```
+
+```swift
+var stringToEdit = TrackedString()
+stringToEdit.value = "This string will be tracked."
+stringToEdit.value += " This edit will increment numberOfEdits."
+stringToEdit.value += " So will this one."
+print("The number of edits is \(stringToEdit.numberOfEdits)")
+// Prints "The number of edits is 3"
+```
+
+Note that you can assign an explicit access level for both a getter and a setter if required. The example below shows a version of the `TrackedString` structure in which the structure is defined with an explicit access level of public. The structure’s members (including the `numberOfEdits` property) therefore have an internal access level by default. You can make the structure’s `numberOfEdits` property getter public, and its property setter private, by combining the public and `private(set)` access-level modifiers:
+
+```swift
+public struct TrackedString {
+    public private(set) var numberOfEdits = 0
+    public var value: String = "" {
+        didSet {
+            numberOfEdits += 1
+        }
+    }
+    public init() {}
+}
+```
+
+### Inicializadores
+
+Os inicializadores personalizados podem receber um nível de acesso inferior ou igual ao tipo que eles inicializam. A única exceção é para os inicializadores necessários (conforme definido em Inicializadores Requeridos). Um inicializador necessário deve ter o mesmo nível de acesso que a classe a que pertence.
+
+Tal como acontece com os parâmetros de função e método, os tipos de parâmetros de um iniciador não podem ser mais privados que o próprio nível de acesso do inicializador.
+
+#### Inicializadores padrão
+
+Conforme descrito em Inicializadores Padrão, o Swift fornece automaticamente um inicializador padrão sem argumentos para qualquer estrutura ou classe base que forneça valores padrão para todas as suas propriedades e não forneça pelo menos um inicializador.
+
+Um inicializador padrão tem o mesmo nível de acesso que o tipo que ele inicializa, a menos que esse tipo seja definido como público. Para um tipo que é definido como público, o inicializador padrão é considerado interno. Se você deseja que um tipo público seja inicializado com um inicializador sem argumentos quando usado em outro módulo, você deve fornecer explicitamente um inicializador público sem argumentos como parte da definição do tipo.
+
+### Protocolos
+
+Se você deseja atribuir um nível de acesso explícito a um tipo de protocolo, faça isso no ponto em que você define o protocolo. Isso permite que você crie protocolos que só podem ser adotados dentro de um determinado contexto de acesso.
+
+O nível de acesso de cada requisito dentro de uma definição de protocolo é automaticamente configurado para o mesmo nível de acesso que o protocolo. Você não pode definir um requisito de protocolo para um nível de acesso diferente do protocolo que ele suporta. Isso garante que todos os requisitos do protocolo serão visíveis em qualquer tipo que adote o protocolo.
+
+> If you define a public protocol, the protocol's requirements require a public access level for those requirements when they'r implemented. This behavior is different from other types, where a public type definition implies an access level of internal for the type's members.
+
+#### Herança de protocolo
+
+Se você definir um novo protocolo que herda de um protocolo existente, o novo protocolo pode ter no máximo o mesmo nível de acesso que o protocolo do qual ele herda. Você não pode escrever um protocolo público que herda de um protocolo interno, por exemplo.
+
+#### Conformidade do Protocolo
+
+Um tipo pode ser conforme a um protocolo com um nível de acesso inferior ao do próprio tipo. Por exemplo, você pode definir um tipo público que pode ser usado em outros módulos, mas cuja conformidade com um protocolo interno só pode ser usada dentro do módulo de definição do protocolo interno.
+
+O contexto em que um tipo está em conformidade com um protocolo específico é o mínimo do nível de acesso do tipo e o nível de acesso do protocolo. Se um tipo é público, mas um protocolo conforme ele é interno, a conformidade do tipo com esse protocolo também é interna.
+
+Quando você escreve ou amplia um tipo para se adequar a um protocolo, você deve garantir que a implementação do tipo de cada requisito de protocolo tenha pelo menos o mesmo nível de acesso que a conformidade do tipo com esse protocolo. Por exemplo, se um tipo público estiver em conformidade com um protocolo interno, a implementação do tipo de cada requisito de protocolo deve ser pelo menos "interna".
+
+### Extensões
+
+Você pode estender uma classe, estrutura ou enumeração em qualquer contexto de acesso no qual a classe, a estrutura ou a enumeração estão disponíveis. Qualquer membro do tipo adicionado em uma extensão possui o mesmo nível de acesso padrão que os membros do tipo declarados no tipo original que está sendo estendido. Se você estender um tipo público ou interno, todos os novos membros de tipo que você adiciona têm um nível de acesso padrão de interno. Se você estender um tipo de arquivo privado, todos os novos membros que você adiciona têm um nível de acesso padrão de arquivo privado. Se você estender um tipo privado, qualquer membro novo que você adicione tenha um nível de acesso padrão de privacidade.
+
+Alternativamente, você pode marcar uma extensão com um modificador de nível de acesso explícito (por exemplo, `private extension`) para definir um novo nível de acesso padrão para todos os membros definidos dentro da extensão. Este novo padrão ainda pode ser substituído dentro da extensão para membros de tipo individuais.
+
+Você não pode fornecer um modificador de nível de acesso explícito para uma extensão se você estiver usando essa extensão para adicionar a conformidade do protocolo. Em vez disso, o próprio nível de acesso do protocolo é usado para fornecer o nível de acesso padrão para cada implementação de requisito de protocolo dentro da extensão.
+
+#### Membros Privados em Extensões
+
+As extensões que estão no mesmo arquivo que a classe, a estrutura ou a enumeração que se estendem se comportam como se o código na extensão tivesse sido escrito como parte da declaração do tipo original. Como resultado, você pode:
+
+* Declare um membro privado na declaração original e acesse esse membro de extensões no mesmo arquivo.
+* Declare um membro privado em uma extensão e acesse esse membro de outra extensão no mesmo arquivo.
+* Declare um membro privado em uma extensão e acesse esse membro da declaração original no mesmo arquivo.
+
+Esse comportamento significa que você pode usar extensões da mesma forma para organizar seu código, independentemente de seus tipos possuírem entidades privadas. Por exemplo, dado o seguinte protocolo simples:
+
+```swift
+protocol SomeProtocol {
+    func doSomething()
+}
+```
+
+Você pode usar uma extensão para adicionar a conformidade do protocolo, assim:
+
+```swift
+struct SomeStruct {
+    private var privateVariable = 12
+}
+
+extension SomeStruct: SomeProtocol {
+    func doSomething() {
+        print(privateVariable)
+    }
+}
+```
+
+### Genéricos
+
+The access level for a generic type or generic function is the minimum of the access level of the generic type or function itself and the access level of any type constraints on its type parameters.
+
+### Type Aliases
+
+Any type aliases you define are treated as distinct types for the purposes of access control. A type alias can have an access level less than or equal to the access level of the type it aliases. For example, a private type alias can alias a private, file-private, internal, public, or open type, but a public type alias can’t alias an internal, file-private, or private type.
+
+> This rule also applies to type aliases for associated types used to satisfy protocol conformances.
+
+## Operadores avançados
+
+### Métodos do operador
+
+Classes e estruturas podem fornecer suas próprias implementações de operadores existentes. Isso é conhecido como sobrecarregar os operadores existentes.
+
+O exemplo abaixo mostra como implementar o operador de adição aritmética (`+`) para uma estrutura personalizada. O operador de adição aritmética é um operador binário porque ele opera em dois alvos e é dito que é infix porque aparece entre esses dois alvos.
+
+```swift
+struct Vector2D {
+    var x = 0.0, y = 0.0
+}
+
+extension Vector2D {
+    static func + (left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y + right.y)
+    }
+}
+```
+
+```swift
+let vector = Vector2D(x: 3.0, y: 1.0)
+let anotherVector = Vector2D(x: 2.0, y: 4.0)
+let combinedVector = vector + anotherVector
+// combinedVector is a Vector2D instance with values of (5.0, 5.0)
+```
+
+#### Operadores de prefixos e postfixos
+
+O exemplo mostrado acima demonstra uma implementação personalizada de um operador de infixo binário. Classes e estruturas também podem fornecer implementações dos operadores unários padrão. Operadores unários operam em um único alvo. Eles são prefixos se precederem seus objetivos (como `-a`) e postfix se eles seguirem seu alvo (como `b!`).
+
+Você implementar um prefixo ou postfix operador unário escrevendo o modificador `prefix` ou `postfix` antes da palavra-chave `func` quando declarando o método do operador:
+
+```swift
+extension Vector2D {
+    static prefix func - (vector: Vector2D) -> Vector2D {
+        return Vector2D(x: -vector.x, y: -vector.y)
+    }
+}
+```
+
+```swift
+let positive = Vector2D(x: 3.0, y: 4.0)
+let negative = -positive
+// negative is a Vector2D instance with values of (-3.0, -4.0)
+let alsoPositive = -negative
+// alsoPositive is a Vector2D instance with values of (3.0, 4.0)
+```
+
+#### Operadores de atribuição de compostos
+
+Os operadores de atribuição de compostos combinam a atribuição (`=`) com outra operação. Por exemplo, o operador de atribuição de adição (`+=`) combina adição e atribuição em uma única operação. Você marca o tipo de parâmetro de entrada esquerda do operador de atribuição composta como `inout`, porque o valor do parâmetro será modificado diretamente do método do operador.
+
+```swift
+extension Vector2D {
+    static func += (left: inout Vector2D, right: Vector2D) {
+        left = left + right
+    }
+}
+```
+
+```swift
+var original = Vector2D(x: 1.0, y: 2.0)
+let vectorToAdd = Vector2D(x: 3.0, y: 4.0)
+original += vectorToAdd
+// original now has values of (4.0, 6.0)
+```
+
+#### Operadores de Equivalência
+
+Classes e estruturas personalizadas não recebem uma implementação padrão dos operadores de equivalência, conhecido como operador "igual a" (`==`) e operador "não igual" (`!=`). Não é possível para Swift adivinhar o que qualificaria como "igual" para seus próprios tipos personalizados, porque o significado de "igual" depende das funções que esses tipos desempenham no seu código.
+
+Para usar os operadores de equivalência para verificar a equivalência de seu próprio tipo personalizado, forneça uma implementação dos operadores da mesma maneira que para outros operadores de infixas:
+
+```swift
+extension Vector2D {
+    static func == (left: Vector2D, right: Vector2D) -> Bool {
+        return (left.x == right.x) && (left.y == right.y)
+    }
+    static func != (left: Vector2D, right: Vector2D) -> Bool {
+        return !(left == right)
+    }
+}
+```
+
+```swift
+let twoThree = Vector2D(x: 2.0, y: 3.0)
+let anotherTwoThree = Vector2D(x: 2.0, y: 3.0)
+if twoThree == anotherTwoThree {
+    print("These two vectors are equivalent.")
+}
+// Prints "These two vectors are equivalent."
+```
+
+### Custom Operators
+
+You can declare and implement your own custom operators in addition to the standard operators provided by Swift. For a list of characters that can be used to define custom operators, see Operators.
+
+New operators are declared at a global level using the `operator` keyword, and are marked with the `prefix`, `infix` or `postfix` modifiers:
+
+```swift
+prefix operator +++
+```
+
+```swift
+extension Vector2D {
+    static prefix func +++ (vector: inout Vector2D) -> Vector2D {
+        vector += vector
+        return vector
+    }
+}
+
+var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
+let afterDoubling = +++toBeDoubled
+// toBeDoubled now has values of (2.0, 8.0)
+// afterDoubling also has values of (2.0, 8.0)
+```
+
+#### Precedence for Custom Infix Operators
+
+```swift
+infix operator +-: AdditionPrecedence
+extension Vector2D {
+    static func +- (left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y - right.y)
+    }
+}
+let firstVector = Vector2D(x: 1.0, y: 2.0)
+let secondVector = Vector2D(x: 3.0, y: 4.0)
+let plusMinusVector = firstVector +- secondVector
+// plusMinusVector is a Vector2D instance with values of (4.0, -2.0)
+```
