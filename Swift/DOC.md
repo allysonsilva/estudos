@@ -204,6 +204,12 @@ print("The status message is \(http200Status.description)")
 
 You use _optionals_ in situations where a value may be absent. An optional represents two possibilities: Either there _is_ a value, and you can unwrap the optional to access that value, or there _isn’t_ a value at all.
 
+Variáveis não-opcionais significa que as variáveis são necessárias para ter um valor não-nulo; No entanto, há momentos em que queremos ou precisamos de nossas variáveis para conter valores `nil`(nulos). Isso pode ocorrer se retornarmos um `nil`(nulo) de uma função cuja operação falhou ou se um valor não for encontrado.
+
+Em *Swift*, uma **variável opcional** é uma variável na qual podemos atribuir `nil` (sem valor). Variáveis e constantes opcionais são definidas usando `?` (ponto de interrogação).
+
+Os opcionais são um tipo especial no Swift. Estas duas declarações são equivalentes. Ambas as linhas declaram um tipo opcional que pode conter um tipo de string ou pode estar ausente de um valor.
+
 **_`nil` significando “a ausência de um objeto válido”._**
 
 The example below uses the initializer to try to convert a `String` into an `Int`:
@@ -215,6 +221,146 @@ let convertedNumber = Int(possibleNumber)
 ```
 
 Because the initializer might fail, it returns an _optional_ `Int`, rather than an `Int`. An optional `Int` is written as `Int?`, not `Int`. The question mark indicates that the value it contains is optional, meaning that it might contain _some_ `Int` value, or it might contain _no value at all_. (It can’t contain anything else, such as a `Bool` value or a `String` value. It’s either an `Int`, or it’s nothing at all.)
+
+```swift
+// Optional Variable
+var stringOne : String?
+// Non-Optional Variable
+var stringTwo : String
+
+stringOne = nil
+stringTwo = nil // error: nil cannot be assigned to type 'String'
+```
+
+Abordagem geral:
+
+```swift
+//Optional Variable
+var stringOne : String?
+
+//--------stringOne is nil ---------------//
+//Explicitly check for nil
+if stringOne != nil {
+    print(stringOne)
+} else {
+    print("Explicit Check:  stringOne is nil")
+}
+
+//option binding
+if let tmp = stringOne {
+    print(tmp)
+} else {
+    print("Optional Binding: stringOne is nil")
+}
+
+//Optional chainging
+var charCount1 = stringOne?.characters.count
+
+//--------adding value to stringONe ---------------//
+stringOne = "http://www.example.com"
+
+//--------stringOne is nil ---------------//
+//Explicitly check for nil
+if stringOne != nil {
+    print(stringOne)
+} else {
+    print("Explicit Check:  stringOne is nil")
+}
+
+//option binding
+if let tmp = stringOne {
+    print(tmp)
+} else {
+    print("Optional Binding: stringOne is nil")
+}
+
+//Optional chainging
+var charCount2 = stringOne?.characters.count
+```
+
+```swift
+var myString1: String?
+var myString2: Optional<String>
+```
+
+#### Forced unwrapping of an optional
+
+Para unwrap ou recuperar o valor de um opcional, colocamos um ponto de exclamação (!) Após o nome da variável. O unwrapping forçado, desta maneira, pode ser muito perigoso e deve ser usado somente se tivermos certeza de que o valor não é nulo.
+
+Quando usamos o ponto de exclamação para unwrap um opcional, estamos dizendo ao compilador que sabemos que o opcional contém um valor, então vá em frente e entregue-nos.
+
+```swift
+var myString1: String?
+myString1 = "test"
+var test: String = myString1!
+```
+
+```swift
+var myString: String?
+
+myString = "test"
+if myString != nil {
+    var test:String = myString!
+}
+```
+
+#### Returning optionals from functions, methods, and subscripts
+
+```swift
+func getName(index: Int) -> String?
+{
+    let names = ["Jon", "Kim", "Kailey", "Kara"]
+    if index >= names.count || index < 0 {
+        return nil
+    } else {
+        return names[index]
+    }
+}
+```
+
+```swift
+subscript(index: Int) -> String?
+{
+	//some statements
+}
+```
+
+#### Using an optional as a parameter in a function or method
+
+```swift
+func optionalParam(myString: String?)
+{
+    if let temp = myString {
+        print("Contains value \(temp)")
+    } else {
+        print("Does not contain value")
+    }
+}
+```
+
+#### Optional binding with the guard statement
+
+```swift
+func sayHello(name: String?)
+{
+    guard let internalName = name else
+    {
+        print("Name has not value")
+        return
+    }
+
+    print("Hello \(internalName)")
+}
+```
+
+#### Optional types with tuples
+
+Podemos definir uma tupla inteira como opcional ou qualquer um dos elementos dentro de uma tupla como opcional.
+
+```swift
+var tuple1: (one: String, two: Int)?
+var tuple2: (one: String, two: Int?)
+```
 
 #### `nil`
 
@@ -394,6 +540,122 @@ You can also call the [`preconditionFailure(_:file:line:)`](https://developer.ap
 > If you compile in unchecked mode (`-Ounchecked`), preconditions aren’t checked. The compiler assumes that preconditions are always true, and it optimizes your code accordingly. However, the `fatalError(_:file:line:)` function always halts execution, regardless of optimization settings.
 >
 > You can use the `fatalError(_:file:line:)` function during prototyping and early development to create stubs for functionality that hasn’t been implemented yet, by writing `fatalError("Unimplemented")` as the stub implementation. Because fatal errors are never optimized out, unlike assertions or preconditions, you can be sure that execution always halts if it encounters a stub implementation.
+
+### Generic Functions
+
+```swift
+func swapGeneric<T>(a: inout T, b: inout T)
+{
+    let tmp = a
+    a = b
+    b = tmp
+}
+
+var a = 5
+var b = 10
+
+swapGeneric(a: &a, b: &b)
+
+print("a: \(a) b: \(b)")
+```
+
+We can declare multiple constraints just like we declare multiple generic types.
+
+```swift
+func testFunction<T: MyClass, E: MyProtocol>(a: T, b: E) {
+}
+```
+
+### Generic Types
+
+```swift
+class List<T> { }
+
+struct GenericStruct<T> { }
+
+enum GenericEnum<T> { }
+```
+
+```swift
+class List<T>
+{
+    var items = [T]()
+
+    func add(item: T)
+    {
+        items.append(item)
+    }
+
+    func getItemAtIndex(index: Int) -> T?
+    {
+        if items.count > index {
+            return items[index]
+        } else {
+            return nil
+        }
+    }
+}
+
+var list = List<String>()
+list.add(item: "Hello")
+list.add(item: "World")
+
+print(list.getItemAtIndex(index: 1)) // Optional("World")
+```
+
+Nós também podemos usar restrições de tipo com tipos genéricos. Mais uma vez, usar uma restrição de tipo para um tipo genérico é exatamente o mesmo que usar um com uma função genérica.
+
+```swift
+class MyClass<T: Comparable>{}
+```
+
+### Associated Types
+
+```swift
+protocol QueueProtocol
+{
+    associatedtype QueueType
+    func add(item: QueueType)
+    func getItem() -> QueueType?
+    func count() -> Int
+}
+
+class GenericQueue<T>: QueueProtocol
+{
+    var items = [T]()
+
+    func add(item: T)
+    {
+        items.append(item)
+    }
+
+    func getItem() -> T?
+    {
+        if items.count > 0 {
+            return items.remove(at: 0)
+        } else {
+            return nil
+        }
+    }
+
+    func count() -> Int
+    {
+        return items.count
+    }
+}
+
+var intQ2 = GenericQueue<Int>()
+intQ2.add(item: 2)
+intQ2.add(item: 4)
+
+print(intQ2.items) // [2, 4]
+
+print(intQ2.getItem()) // Optional(2)
+
+intQ2.add(item: 6)
+
+print(intQ2.items) // [4, 6]
+```
 
 ## Collection Types
 
@@ -862,6 +1124,446 @@ let airportCodes = [String](airports.keys)
 
 let airportNames = [String](airports.values)
 // airportNames is ["Toronto Pearson", "London Heathrow"]
+```
+
+## Using Swift Collections and the Tuple Type
+
+* **Matriz**
+* **Dicionário**
+* **Conjunto**
+* **Tupla**
+
+### Swift collection types
+
+Uma coleção agrupa vários itens em uma única unidade. Swift fornece três tipos de coleção nativos. Esses tipos de coleção são arrays, sets e dictionaries. Arrays armazenam dados em uma coleção ordenada, sets(conjuntos) são coleções não ordenadas de dados exclusivos, e os dictionaries(dicionários) são coleções não ordenadas de pares chave/valor. Em uma matriz, acessamos os dados pela localização (índice) da matriz; Em um conjunto, tendemos a iterar sobre ele; e os dicionários geralmente são acessados ​​usando uma chave exclusiva.
+
+Os dados armazenados em uma coleção Swift devem ser do mesmo tipo.
+
+### Mutability
+
+Swift não contém classes separadas para coleções mutáveis e imutáveis. Em vez disso usa-se as palavras chaves de declaração de variáveis `let` e `var` para dizer se uma coleção é mutável ou imutável. Utilize `let` para criar constantes de coleções imutáveis, que não alteram seu valor e `var` para criar coleções mutáveis, que seus valores podem ser alterados.
+
+É uma boa prática criar coleções imutáveis(como constantes `let`), a menos que exista uma necessidade específica de alterar os objetos dentro da coleção. Isso permite que o compilador otimize o desempenho.
+
+### Arrays
+
+**Em Swift, uma matriz é uma lista ordenada de objetos do mesmo tipo.**
+
+Quando uma matriz é criada, devemos declarar o tipo de dados a serem armazenados por declaração de tipo explícito ou por inferência de tipo. Normalmente, declaramos explicitamente o tipo de dados de uma matriz quando criamos uma matriz vazia. Se inicializarmos uma matriz com dados, devemos permitir que o compilador use a inferência de tipo para inferir o tipo de dados mais apropriado para a matriz.
+
+Cada objeto em uma matriz é chamado de elemento. Cada um desses elementos é armazenado em uma ordem definida e pode ser acessado pela sua localização (índice) na matriz.
+
+#### Creating and initializing arrays
+
+Podemos inicializar uma matriz com um literal de matriz e com inferência do tipo pelo compilador.
+
+```swift
+let arrayOne = [10,20,30]
+var shoppingList: [String] = ["Eggs", "Milk"]
+```
+
+Se quisermos criar um array vazio, precisamos declarar explicitamente o tipo de valores a serem armazenados na matriz.
+
+```swift
+var arrayOne = [String]()
+let arrayTwo = [Double]()
+var arrayThree = [Int]()
+let arrayFour = [MyObject]()
+```
+
+*Uma vez que uma matriz é definida como contendo um tipo específico, todos os elementos da matriz devem ser desse mesmo tipo*.
+
+Swift fornece alias de tipo especial para trabalhar com tipos não específicos. Esses alias são `AnyObject` e `Any`. Podemos usar estes alias para definir arrays cujos elementos são de diferentes tipos, como este:
+
+```swift
+var myArray: [Any] = [1,"Two"]
+```
+
+Os alias de `AnyObject` podem representar uma instância de qualquer tipo de classe, enquanto os `Any` alias podem representar uma instância de qualquer tipo. Devemos usar os alias `Any` e `AnyObject` somente quando houver uma necessidade explícita desse comportamento. É sempre melhor ser específico sobre os tipos de dados que nossas coleções contêm.
+
+Também podemos inicializar uma matriz para um determinado tamanho, com todos os elementos do conjunto de matrizes para um valor predefinido. O exemplo a seguir define uma matriz com sete elementos e cada elemento contém o número 3:
+
+```swift
+var arrayFour = [Int](repeating: 3, count: 7) // [3, 3, 3, 3, 3, 3, 3]
+```
+
+Embora a matriz mais comum seja uma matriz unidimensional, também podemos criar matrizes multidimensionais. Uma matriz multidimensional é realmente nada mais do que uma matriz de arrays. Por exemplo, uma matriz bidimensional é uma matriz de matrizes, enquanto uma matriz tridimensional é uma matriz de arrays de arrays. Os exemplos a seguir mostram as duas maneiras de criar uma matriz bidimensional em Swift:
+
+```swift
+var multiArrayOne = [[1,2],[3,4],[5,6]]
+var multiArrayTwo = [[Int]]()
+```
+
+#### Accessing the array elements
+
+*Índice*
+
+```swift
+let arrayOne = [1,2,3,4,5,6]
+print(arrayOne[0]) //Displays '1'
+print(arrayOne[3]) //Displays '4'
+```
+
+*Recuperando valor de uma matriz multidimensional*.
+
+```swift
+var multiArray = [[1,2],[3,4],[5,6]]
+var arr = multiArray[0] //arr contains the array [1,2]
+var value = multiArray[0][1] // value contains 2
+```
+
+*Com propriedades de `first` e `last`.
+
+```swift
+let arrayOne = [1,2,3,4,5,6]
+let first = arrayOne.first //first contains 1
+let last = arrayOne.last //last contains 6
+
+let multiArray = [[1,2],[3,4],[5,6]]
+let arrFirst1 = multiArray[0].first //arrFirst1 contains 1
+let arrFirst2 = multiArray.first //arrFirst2 contains[1,2]
+let arrLast1 = multiArray[0].last //arrLast1 contains 2
+let arrLast2 = multiArray.last //arrLast2 contains [5,6]
+```
+
+#### Counting the elements of an array
+
+```swift
+let arrayOne = [1,2,3]
+let multiArrayOne = [[3,4],[5,6],[7,8]]
+print(arrayOne.count) //Displays 3
+print(multiArrayOne.count) //Displays 3 for the three arrays
+print(multiArrayOne[0].count) //Displays 2 for the two elements
+```
+
+#### Is the array empty?
+
+```swift
+var arrayOne = [1,2]
+var arrayTwo = [Int]()
+arrayOne.isEmpty //Returns false because the array is not empty
+arrayTwo.isEmpty //Returns true because the array is empty
+```
+
+#### Appending to an array
+
+**`append`: Adicionando novos itens no final da matriz**
+
+```swift
+var arrayOne = [1,2]
+arrayOne.append(3) //arrayOne will now contain 1, 2 and 3
+```
+
+Swift também nos permite usar o operador de atribuição de adição (+ =) para anexar uma matriz a outra matriz. O exemplo a seguir mostra como usar o operador de atribuição de adição para anexar uma matriz ao final de outra matriz:
+
+```swift
+var arrayOne = [1,2]
+arrayOne += [3,4] //arrayOne will now contain 1, 2, 3 and 4
+```
+
+#### Inserting a value into an array
+
+Podemos inserir um valor em uma matriz usando o método de `insert`. O método `insert` moverá todos os itens até um ponto, começando no índice especificado, para abrir espaço para o novo elemento e, em seguida, inserirá o valor no índice especificado.
+
+```swift
+var arrayOne = [1,2,3,4,5]
+arrayOne.insert(10, at: 3) //arrayOne now contains 1, 2, 3, 10, 4 and 5
+```
+
+#### Removing elements from an array
+
+Existem três métodos que podemos usar para remover um ou todos os elementos em uma matriz. Esses métodos são `removeLast()`, `remove(at:)`, and `removeAll()`.
+
+```swift
+var arrayOne = [1,2,3,4,5]
+arrayOne.removeLast() //arrayOne now contains 1, 2, 3 and 4
+arrayOne.remove(at:2) //arrayOne now contains 1, 2 and 4
+arrayOne.removeAll() //arrayOne is now empty
+```
+
+Os métodos `removeLast()` e `remove(at:)` também retornarão o valor do elemento que está sendo removido.
+
+```swift
+var arrayOne = [1,2,3,4,5]
+var removedLast = arrayOne.removeLast() //removedLast contains the value 5
+var removed = arrayOne.remove(at: 2)  //removed contains the value 3
+```
+
+#### Merging two arrays
+
+```swift
+let arrayOne = [1,2]
+let arrayTwo = [3,4]
+var combine = arrayOne + arrayTwo //combine contains 1, 2, 3 and 4
+```
+
+#### Reversing an array
+
+```swift
+let arrayOne = [1,2,3]
+var reverse = arrayOne.reversed() //reverse contains 3, 2 and 1
+```
+
+#### Retrieving a subarray from an array
+
+Podemos recuperar um subarray de uma matriz existente usando a sintaxe de subíndice com um intervalo.
+
+```swift
+let arrayOne = [1,2,3,4,5]
+var subArray = arrayOne[2...4] //subArray contains 3, 4 and 5
+```
+
+O operador `...` (three periods) é conhecido como um **range** operator. The range operator, no código anterior, diz que eu quero todos os elementos entre a partir do segundo índice e até o quarto índice. Existe outro, que é `..<`; é o mesmo que o operador range`...`, mas exclui o último elemento.
+
+```swift
+let arrayOne = [1,2,3,4,5]
+var subArray = arrayOne[2..<4] //subArray contains 3 and 4
+```
+
+#### Making bulk changes to an array
+
+```swift
+var arrayOne = [1,2,3,4,5]
+arrayOne[1...2] = [12,13] //arrayOne contains 1,12,13,4 and 5
+```
+
+```swift
+var arrayOne = [1,2,3,4,5]
+arrayOne[1...3] = [12,13] //arrayOne now contains 1, 12, 13 and 5 (four elements)
+```
+
+```swift
+var arrayOne = [1,2,3,4,5]
+arrayOne[1...3] = [12,13,14,15] //arrayOne now contains 1, 12, 13, 14, 15 and 5 (six elements)
+```
+
+#### Algorithms for arrays
+
+##### Sort
+
+```swift
+var arrayOne = [9,3,6,2,8,5]
+arrayOne.sort(){ $0 < $1 } //arrayOne contains 2,3,5,6,8 and 9
+arrayOne.sort(){ $1 > $0 } //arrayOne contains [9, 8, 6, 5, 3, 2]
+```
+
+##### Sorted
+
+Enquanto o algoritmo sorts classifica a matriz no local (substitui a matriz original), o algoritmo sorted não altera a matriz original; Em vez disso, cria uma nova matriz com os elementos ordenados da matriz original.
+
+```swift
+var arrayOne = [9,3,6,2,8,5]
+let sorted = arrayOne.sorted(){ $0 < $1 } //sorted contains 2,3,5,6,8 and 9
+//arrayOne contains 9,3,6,2,8 and 5
+```
+
+##### Filter
+
+O algoritmo do filtro retornará uma nova matriz, filtrando a matriz original. Este é um dos algoritmos de matriz mais poderosos. Se você precisa recuperar um subconjunto de uma matriz, com base em um conjunto de regras, recomendo usar esse algoritmo em vez de tentar escrever seu próprio método para filtrar a matriz. A closure leva um argumento e ele deve retornar um booleano verdadeiro se o elemento deve ser incluído na nova matriz.
+
+```swift
+var arrayFiltered = [4,1,6,9,3,5,2,8,7]
+let filtered = arrayFiltered.filter{$0 > 3 && $0 < 7} // filtered contains 4,5 and 6
+```
+
+```swift
+var city = ["Boston", "London", "Chicago", "Atlanta"]
+let filtered = city.filter{$0.range(of: "o") != nil} // ["Boston", "London", "Chicago"]
+```
+
+No código anterior, usamos o método `range()` para retornar verdadeiro se a seqüência contiver a letra "o". Se o método retornar verdadeiro, a cadeia está incluída na matriz filtrada.
+
+##### Map
+
+O algoritmo de `map` retorna uma nova matriz que contém os resultados da aplicação das regras no fechamento para cada elemento da matriz.
+
+```swift
+var arrayOne = [10, 20, 30, 40]
+let applied = arrayOne.map{ $0 / 10} // applied contains 1,2,3 and 4
+```
+
+```swift
+var arrayOne = [1, 2, 3, 4]
+let applied = arrayOne.map{"num: \($0)"} // ["num: 1", "num: 2", "num: 3", "num: 4"]
+```
+
+##### forEach
+
+```swift
+var arrayOne = [10, 20, 30, 40]
+arrayOne.forEach{print($0)}
+
+/*
+10
+20
+30
+40
+*/
+```
+
+#### Iterating over an array
+
+```swift
+var arrayOne = ["one", "two", "three"]
+for item in arrayOne { print(item) }
+```
+
+```swift
+var arrayOne = ["one", "two", "three"]
+for (index,value) in arrayOne.enumerated() {
+    print("\(index) \(value)")
+}
+
+/*
+0 one
+1 two
+2 three
+*/
+```
+
+### Dictionaries
+
+Enquanto os dicionários não são tão comumente usados como arrays, eles têm uma funcionalidade adicional que os torna incrivelmente poderosos. Um dicionário é um recipiente que armazena múltiplos pares de valores-chave, onde todas as chaves são do mesmo tipo e todos os valores são do mesmo tipo. A chave é usada como um identificador exclusivo para o valor. Um dicionário não garante a ordem em que os pares chave-valor são armazenados, pois buscamos os valores pela chave e não pelo índice do valor.
+
+#### Creating and initializing dictionaries
+
+```swift
+let countries = ["US":"UnitedStates","IN":"India","UK":"United Kingdom"]
+var us = countries["US"]
+var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+```
+
+Nos exemplo anterior, criamos um dicionário onde a chave e o valor eram ambas `string`. O compilador inferiu que a chave e o valor eram strings porque esse era o tipo de chaves e valores usados para imitar o dicionário. Se quisermos criar um dicionário vazio, precisamos dizer ao compilador quais são os tipos de chave e de valor.
+
+```swift
+var dic1 = [String:String]()
+var dic2 = [Int:String]()
+var dic3 = [String:MyObject]()
+```
+
+#### Updating the value of a key
+
+```swift
+var countries = ["US":"United States", "IN":"India","UK":"United Kingdom"]
+
+countries["UK"] = "Great Britain" // The value of UK is now set to "Great Britain"
+
+var orig = countries.updateValue("Britain", forKey: "UK") // The value of UK is now set to "Britain" and orig now contains "Great Britain"
+```
+
+#### Adding a key-value pair
+
+```swift
+var countries = ["US":"United States", "IN":"India","UK":"United Kingdom"]
+
+countries["FR"] = "France" // The value of "FR" is set to "France"
+
+var orig = countries.updateValue("Germany", forKey: "DE") // The value of "DE" is set to "Germany" and orig is nil
+
+print(countries) // ["FR": "France", "US": "United States", "DE": "Germany", "UK": "United Kingdom", "IN": "India"]
+print(orig) // nil
+```
+
+#### Removing a key-value pair
+
+```swift
+var countries = ["US":"United States", "IN":"India", "UK":"United Kingdom"];
+
+countries["IN"] = nil // The "IN" key/value pair is removed
+
+print(countries) // ["US": "United States", "UK": "United Kingdom"]
+
+var orig = countries.removeValue(forKey: "UK")
+
+print(countries) // ["US": "United States"]
+print(orig) // "United Kingdom"
+
+countries.removeAll() //Removes all key/value pairs from the countries dictionary
+```
+
+### Set (Conjunto)
+
+O tipo `set` é uma coleção genérica que é semelhante ao tipo de matriz. Enquanto o tipo de matriz é uma coleção ordenada que pode conter itens duplicados, o tipo de conjunto é uma coleção não ordenada em que cada item deve ser exclusivo, não permite itens duplicados.
+
+#### Initializing a set
+
+```swift
+//Initializes an empty set of the String type
+var mySet = Set<String>()
+
+//Initializes a mutable set of the String type with initial values
+var mySet = Set(["one", "two", "three"])
+
+//Creates a immutable set of the String type.
+let mySet = Set(["one", "two", "three"])
+```
+
+#### Inserting items into a set
+
+```swift
+var mySet = Set<String>()
+mySet.insert("One")
+mySet.insert("Two")
+mySet.insert("Three")
+```
+
+#### Checking whether a set contains an item
+
+```swift
+var mySet = Set<String>()
+mySet.insert("One")
+mySet.insert("Two")
+mySet.insert("Three")
+var contain = mySet.contains("Two") // true
+```
+
+#### Removing items in a set
+
+```swift
+var mySet = Set<String>()
+mySet.insert("One")
+mySet.insert("Two")
+mySet.insert("Three")
+
+//The remove method will return and remove an item from a set
+var item = mySet.remove("Two") // Two
+
+//The removeAll method will remove all items from a set
+mySet.removeAll() // Set([])
+```
+
+#### Set operations
+
+A Apple forneceu quatro métodos que podemos usar para construir um conjunto de dois outros conjuntos. Essas operações podem ser executadas no lugar, em um dos conjuntos, ou usadas para criar um novo conjunto. Essas operações são as seguintes:
+
+- `union`: *Eles criam um conjunto com todos os valores exclusivos de ambos os conjuntos*
+- `subtracting`: *Estes criam um conjunto com valores do primeiro conjunto que não estão no segundo conjunto*
+- `intersection`: *Estes criam um conjunto com valores comuns a ambos os conjuntos*
+- `symmetricDifference`: *Estes criam um novo conjunto com valores que estão em conjunto, mas não em ambos os conjuntos*
+
+```swift
+let oddDigits: Set = [1, 3, 5, 7, 9]
+let evenDigits: Set = [0, 2, 4, 6, 8]
+let singleDigitPrimeNumbers: Set = [2, 3, 5, 7]
+
+oddDigits.union(evenDigits).sorted()
+// [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+oddDigits.intersection(evenDigits).sorted()
+// []
+oddDigits.subtracting(singleDigitPrimeNumbers).sorted()
+// [1, 9]
+oddDigits.symmetricDifference(singleDigitPrimeNumbers).sorted()
+// [1, 2, 9]
+```
+
+```swift
+var mySet1 = Set(["One", "Two", "Three", "abc"])
+var mySet2 = Set(["abc","def","ghi", "One"])
+
+var newSetSymmetricDifference = mySet1.symmetricDifference(mySet2) // ["Three", "Two", "def", "ghi"]
+var newSetUnion = mySet1.union(mySet2) // ["Three", "Two", "One", "abc", "def", "ghi"]
+var newSetIntersection = mySet1.intersection(mySet2) // ["One", "abc"]
+var newSetSubtracting = mySet1.subtracting(mySet2) // ["Three", "Two"]
 ```
 
 ## Control Flow
@@ -3723,6 +4425,88 @@ if player.tracker.advance(to: 6) {
 Classes, structures, and enumerations can define subscripts, which are shortcuts for accessing the member elements of a collection, list, or sequence. You use subscripts to set and retrieve values by index without needing separate methods for setting and retrieval. For example, you access elements in an `Array` instance as `someArray[index]` and elements in a `Dictionary` instance as `someDictionary[key]`.
 
 You can define multiple subscripts for a single type, and the appropriate subscript overload to use is selected based on the type of index value you pass to the subscript. Subscripts are not limited to a single dimension, and you can define subscripts with multiple input parameters to suit your custom type’s needs.
+
+Os índices, no idioma Swift, são usados como atalhos para acessar elementos de uma coleção, lista ou seqüência. Podemos usá-los em nossos tipos personalizados para definir ou recuperar os valores por índice, em vez de usar métodos `getter` e `setter`. Subscripts, se usadas corretamente, podem melhorar significativamente a usabilidade e a legibilidade de nossos tipos personalizados.
+
+Usamos subscripts personalizados, assim como usamos subscripts para arrays e dicionários. Por exemplo, para acessar um elemento em uma matriz, usaremos a sintaxe `anArray[index]`. Quando definimos um subscripts personalizado para nossos tipos personalizados, também os acessamos com essa mesma sintaxe, `ourType[key]`.
+
+### Read and write custom subscripts
+
+```swift
+class MyNames
+{
+    private var names = ["Jon", "Kim", "Kailey", "Kara"]
+
+    subscript(index: Int) -> String
+    {
+        get { return names[index] }
+        set { names[index] = newValue }
+    }
+}
+
+var nam = MyNames()
+print(nam[0]) // Displays 'Jon'
+nam[0] = "Buddy"
+print(nam[0]) // Displays 'Buddy'
+```
+
+### Read-only custom subscripts
+
+Também podemos fazer o subscript de somente leitura, não declarando um método setter dentro do subscript ou declarando não implicitamente um método getter ou setter.
+
+```swift
+// No getter/setters implicitly declared
+subscript(index: Int) -> String { return names[index] }
+```
+
+```swift
+// Declaring only a getter
+subscript(index: Int) -> String {
+    get {
+        return names[index]
+    }
+}
+```
+
+### Subscript values
+
+Nos exemplos subscript anteriores, todos os subscritos aceitaram inteiros como o valor para o subscript; no entanto, não estamos limitados a números inteiros.
+
+```swift
+struct Hello
+{
+    subscript (name: String) ->String
+    {
+        return "Hello \(name)"
+    }
+}
+
+var hello = Hello()
+print(hello["Jon"]) // Hello Jon
+```
+
+### External names for subscripts
+
+```swift
+struct MathTable
+{
+    var num: Int
+
+    subscript(multiply index: Int) -> Int
+    {
+        return num * index
+    }
+
+    subscript(addition index: Int) -> Int
+    {
+        return num + index
+    }
+}
+
+var table = MathTable(num: 5)
+print(table[multiply: 4]) // Displays 20 because 5*4=20
+print(table[addition: 4]) // Displays 9 because 5+4=9
+```
 
 ### Sintaxe do Subscripts
 
