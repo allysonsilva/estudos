@@ -321,7 +321,7 @@ func getName(index: Int) -> String?
 ```swift
 subscript(index: Int) -> String?
 {
-	//some statements
+    //some statements
 }
 ```
 
@@ -3922,6 +3922,36 @@ print(manager.importer.filename)
 // Prints "data.txt"
 ```
 
+_Lazy properties can only be declared as mutable variables; you can’t have a `lazy let` variable in your code._
+
+```swift
+class SomeExpensiveClass
+{
+    init(id : Int)
+    {
+        print("Expensive class \(id) created!")
+    }
+}
+
+class LazyPropertyExample
+{
+    var expensiveClass1 = SomeExpensiveClass(id: 1)
+
+    // Note that we're actually constructing a class, but it's labeled as lazy
+    lazy var expensiveClass2 = SomeExpensiveClass(id: 2)
+
+    init()
+    {
+        print("Example class created!")
+    }
+}
+
+var lazyExample = LazyPropertyExample() // prints "Expensive class 1 created", then "Example class created!"
+
+lazyExample.expensiveClass1 // prints nothing, it's already created
+lazyExample.expensiveClass2 // prints "Expensive class 2 created!"
+```
+
 #### Stored Properties and Instance Variables
 
 ### Computed Properties(Propriedades computadas)
@@ -4052,6 +4082,25 @@ Os observadores `willSet` e `didSet` para `totalSteps` são chamados sempre que 
 O observador `willSet` deste exemplo usa um nome de parâmetro personalizado `newTotalSteps` para o próximo novo valor. Neste exemplo, ele simplesmente imprime o valor que está prestes a ser configurado.
 
 O observador `didSet` é chamado após o valor de `totalSteps` ser atualizado. Ele compara o novo valor de `totalSteps` com o valor antigo. Se o número total de etapas aumentou, uma mensagem é impressa para indicar quantos passos novos foram feitos. O observador `didSet` não fornece um nome de parâmetro personalizado para o valor antigo e o nome padrão do `oldValue` é usado em vez disso.
+
+```swift
+class PropertyObserverExample
+{
+    var number : Int = 0 {
+        willSet(newNumber) {
+            print("About to change to \(newNumber)")
+        }
+        didSet(oldNumber) {
+            print("Just changed from \(oldNumber) to \(self.number)!")
+        }
+    }
+}
+```
+
+```swift
+var observer = PropertyObserverExample()
+observer.number = 4 // prints "About to change to 4", then "Just changed from 0 to 4!"
+```
 
 ### Variáveis ​​globais e locais
 
