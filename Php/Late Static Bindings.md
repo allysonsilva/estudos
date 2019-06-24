@@ -58,6 +58,33 @@ var_dump(Child::getEarlyTest()); // "TEST2"
 var_dump(Child::getLateTest());  // "CHILD"
 ```
 
+```php
+class A
+{
+    const MY_CONST = false;
+
+    public function my_const_self()
+    {
+        return self::MY_CONST;
+    }
+
+    public function my_const_static()
+    {
+        return static::MY_CONST;
+    }
+}
+
+class B extends A
+{
+   const MY_CONST = true;
+}
+
+$b = new B();
+
+echo $b->my_const_self ? 'yes' : 'no';   // output: no
+echo $b->my_const_static ? 'yes' : 'no'; // output: yes
+```
+
 --------------------------
 
 **Late Static Bindings: The static Keyword**
