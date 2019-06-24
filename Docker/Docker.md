@@ -22,6 +22,10 @@
 
 > Um **Container** é uma instancia desta imagem, isto é, dada a configuração da imagem, é o que todo o conjunto anterior se torna em memória quando é de fato executado. Um *container* roda de modo isolado do host por padrão, apenas acessando arquivos do host caso haja configuração para tal.
 
+> Um **Container**, nada mais é do que um único processo isolado em execução no sistema operacional host, consumindo apenas os recursos que o aplicativo consome e sem a sobrecarga de nenhum processo adicional.
+
+> Um **Container** em execução é um processo em execução no host que executa o Docker, mas está completamente isolado do host e de todos os outros processos em execução nele. O processo também é restrito por recursos, o que significa que ele só pode acessar e usar a quantidade de recursos (CPU, RAM e assim por diante) alocados a ele.
+
 > Fazendo um paralelo com o conceito de orientação a objeto, a imagem é a classe e o container o objeto, ou seja, a imagem é a abstração da infraestrutura em um estado somente leitura, que é de onde será instanciado o container.
 
 > Todo container é iniciado a partir de uma imagem, dessa forma podemos concluir que nunca teremos uma imagem em execução.
@@ -40,7 +44,15 @@
 
 > Para criar o isolamento necessário entre processos, o **Docker** usa a funcionalidade do *Kernel* denominada **namespaces**, que cria ambientes isolados entre containers, ou seja, os processos em execução de um container não terão acesso aos recursos de outros containers, a não ser que isso seja expressamente liberado em configuração de cada ambiente.
 
+> Como exatamente os **Containers** podem isolar processos se estiverem sendo executados no mesmo sistema operacional? Dois mecanismos tornam isso possível. O primeiro, **Namespaces** do Linux, garante que cada processo veja sua própria visão pessoal do sistema (arquivos, processos, interfaces de rede, nome do host e assim por diante). O segundo é o grupo de controle do Linux (**cgroups**), que limita a quantidade de recursos que o processo pode consumir (CPU, memória, largura de banda de rede e assim por diante).
+
+> Cada tipo de namespace é usado para isolar um determinado grupo de recursos. Por exemplo, o namespace UTS determina qual nome de host e nome de domínio o processo que está sendo executado dentro desse namespace. Atribuindo dois namespaces UTS diferentes a um par de processos, você pode fazê-los ver nomes de host locais diferentes. Em outras palavras, para os dois processos, ele aparecerá como se estivessem sendo executados em duas máquinas diferentes (pelo menos no que se refere ao nome do host). Da mesma forma, o namespace de rede diz quais processo pertence determina interfaces de rede, o aplicativo em execução dentro do processo vê. Cada interface de rede pertence exatamente a um namespace, mas pode ser movida de um namespace para outro. Cada contêiner usa seu próprio namespace de rede e, portanto, cada contêiner vê seu próprio conjunto de interfaces de rede.
+
 > Para evitar a exaustão dos recursos da máquina por apenas um ambiente isolado, o **Docker** usa a funcionalidade **cgroups** do kernel, que é responsável por criar limites de uso do hardware a disposição. Com isso é possível coexistir no mesmo host diferentes containers, sem que um afete diretamente o outro por uso exagerado dos recursos compartilhados.
+
+> **Cgroups** lida com a limitação da quantidade de recursos do sistema que um contêiner pode consumir.
+
+> **Cgroups** é um recurso do kernel do Linux que limita o uso de recursos de um processo (ou um grupo de processos). Um processo não pode usar mais do que a quantidade configurada de CPU, memória, largura de banda de rede, e assim por diante. Dessa forma, os processos não podem consumir recursos reservados para outros processos, o que é semelhante a quando cada processo é executado em uma máquina separada.
 
 ## Arquitetura Docker
 
